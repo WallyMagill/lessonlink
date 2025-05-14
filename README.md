@@ -48,6 +48,11 @@ npm run dev
 ```
 
 ### Backend Setup
+*Temporarily we have to run the server locally so run this in a separate terminal*
+```bash
+mongod 
+```
+Then the usual
 ```bash
 cd project-api
 npm install
