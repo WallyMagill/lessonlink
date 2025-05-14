@@ -34,7 +34,7 @@ This is the frontend application for the LessonLink platform, built with React a
 ## Development Guidelines
 
 - Follow component-based architecture
-- Use TypeScript for type safety
+- Use TypeScript for type safety (if enabled)
 - Implement proper error handling
 - Write unit tests for components
 - Follow accessibility guidelines

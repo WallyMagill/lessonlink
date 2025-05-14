@@ -10,11 +10,33 @@ A platform for teachers to create, edit, share, ensure standards, and organize l
 - React Router for navigation
 - Axios for API communication
 
+#### Structure
+- `src/`
+  - `assets/`: Static assets (images, fonts)
+  - `components/`: Reusable UI components
+  - `features/`: Feature-specific components and logic
+  - `layouts/`: Page layout components
+  - `pages/`: Top-level page components
+  - `routes/`: React Router configuration
+  - `services/`: API service layer
+  - `state/`: Global state management
+  - `styles/`: Global styles and themes
+- `public/`: Static public assets
+
 ### Backend (project-api)
 - Node.js with Express
 - MongoDB for database
 - JWT for authentication
 - Mongoose for ODM
+
+#### Structure
+- `models/`: MongoDB schemas for Users, Lessons, Classes, and Feedback
+- `controllers/`: Business logic for handling API requests
+- `routes/`: Express route definitions for API endpoints
+- `middlewares/`: Authentication and error handling middleware
+- `config/`: Database and environment configuration
+- `app.js`: Express application setup
+- `server.js`: Server entry point
 
 ## Setup
 
@@ -57,3 +79,7 @@ The application will be deployed using:
 - Abby
 
 ## Acknowledgments
+
+- Dartmouth CS52 Course Staff
+- React.js Documentation
+- MongoDB Documentation
