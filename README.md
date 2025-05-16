@@ -76,10 +76,10 @@ The application will be deployed using:
 
 ## Authors
 
-- Annabelle
+- Annabelle Hermey
 - Cam
 - Neal
-- Kalina
+- Kalina Duncheva
 - Wally
 - Abby
 
