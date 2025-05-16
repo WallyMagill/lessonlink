@@ -79,7 +79,7 @@ The application will be deployed using:
 - Annabelle Hermey
 - Cam
 - Neal
-- Kalina
+- Kalina Duncheva
 - Wally
 - Abby
 
