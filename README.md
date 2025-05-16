@@ -22,5 +22,5 @@ TODO: how to deploy the project
 ## Authors
 
 TODO: list of authors
-
+Annabelle Hermey
 ## Acknowledgments
