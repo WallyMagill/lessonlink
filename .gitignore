@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+project-client/node_modules/
+project-api/node_modules/
+
+# Build outputs
+dist/
+build/
+project-client/dist/
+project-client/build/
+project-api/dist/
+project-api/build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+project-client/.env
+project-api/.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Test coverage
+coverage/
+
+# Misc
+*.log 

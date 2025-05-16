@@ -2,6 +2,9 @@
 
 This is the backend API for the LessonLink platform, a modern web application designed to streamline lesson planning for K-12 educators.
 
+## Names 
+Abby, 
+
 ## Project Structure
 
 - `models/`: MongoDB schemas for Users, Lessons, Classes, and Feedback

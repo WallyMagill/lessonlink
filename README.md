@@ -1,26 +1,90 @@
-# **I have not pulled in the starterpack which can be done in Mondays class**
+# LessonLink
 
-# Project Name
-
-![Team Photo](Insert a Team Photo URL here)
-[*how?*](https://help.github.com/articles/about-readmes/#relative-links-and-image-paths-in-readme-files)
-
-TODO: short project description, some sample screenshots or mockups
+A platform for teachers to create, edit, share, ensure standards, and organize lesson plans.
 
 ## Architecture
 
-TODO:  descriptions of code organization and tools and libraries used
+### Frontend (project-client)
+- React.js with Vite for fast development and building
+- TailwindCSS for styling
+- React Router for navigation
+- Axios for API communication
+
+#### Structure
+- `src/`
+  - `assets/`: Static assets (images, fonts)
+  - `components/`: Reusable UI components
+  - `features/`: Feature-specific components and logic
+  - `layouts/`: Page layout components
+  - `pages/`: Top-level page components
+  - `routes/`: React Router configuration
+  - `services/`: API service layer
+  - `state/`: Global state management
+  - `styles/`: Global styles and themes
+- `public/`: Static public assets
+
+### Backend (project-api)
+- Node.js with Express
+- MongoDB for database
+- JWT for authentication
+- Mongoose for ODM
+
+#### Structure
+- `models/`: MongoDB schemas for Users, Lessons, Classes, and Feedback
+- `controllers/`: Business logic for handling API requests
+- `routes/`: Express route definitions for API endpoints
+- `middlewares/`: Authentication and error handling middleware
+- `config/`: Database and environment configuration
+- `app.js`: Express application setup
+- `server.js`: Server entry point
 
 ## Setup
 
-TODO: how to get the project dev environment up and running, npm install etc
+### Frontend Setup
+```bash
+cd project-client
+npm install
+npm run dev
+```
+
+### Backend Setup
+*Temporarily we have to run the server locally so run this in a separate terminal*
+```bash
+mongod 
+```
+Then the usual
+```bash
+cd project-api
+npm install
+npm run dev
+```
+
+## Development
+
+1. Clone the repository
+2. Set up both frontend and backend as described above
+3. Create a new branch for your feature: `git checkout -b feature/your-feature-name`
+4. Make your changes
+5. Create a pull request to merge your changes
 
 ## Deployment
 
-TODO: how to deploy the project
+The application will be deployed using:
+- Frontend: Render (temporary)
+- Backend: Render
+- Database: MongoDB Atlas
 
 ## Authors
 
-TODO: list of authors
-Annabelle Hermey
+- Annabelle Hermey
+- Cam
+- Neal
+- Kalina
+- Wally
+- Abby
+
 ## Acknowledgments
+
+- Dartmouth CS52 Course Staff
+- React.js Documentation
+- MongoDB Documentation
