@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import fetchHelloWorld from '../services/api';
+import LessonCard from '../components/LessonCard';
 
 function Home() {
   const [msg, setMsg] = useState('');
@@ -19,6 +20,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <LessonCard />
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to LessonLink</h1>
         <p className="text-gray-600">Your platform for connecting students with tutors!</p>
