@@ -1,18 +1,20 @@
-/**
- * Vite Configuration
- *
- * Build tool configuration for development and production:
- *
- * Features:
- * - Development server setup
- * - Build optimization
- * - Environment variables
- * - Path aliases
- * - Plugin configuration
- *
- * Plugins:
- * - React
- * - TypeScript
- * - Tailwind CSS
- * - Environment variables
- */
+/* eslint-disable import/no-extraneous-dependencies */
+import eslint from 'vite-plugin-eslint';
+import { defineConfig } from 'vite';
+import autoprefixer from 'autoprefixer';
+import react from '@vitejs/plugin-react';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    eslint(),
+    react(),
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        autoprefixer(),
+      ],
+    },
+  },
+});
