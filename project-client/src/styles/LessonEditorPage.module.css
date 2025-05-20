@@ -1,0 +1,27 @@
+.lesson-editor-root {
+  width: 100vw;
+  min-height: 100vh;
+  background: #f7fafc;
+  font-family: var(--chakra-fonts-body, Arial, sans-serif);
+  overflow-x: hidden;
+}
+.main-content {
+  padding: 24px;
+}
+.lesson-editor-standards-panel {
+  width: 250px;
+  background: white;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border-radius: 8px;
+}
+.lesson-editor-panel {
+  flex: 1;
+}
+.lesson-editor-section {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+} 

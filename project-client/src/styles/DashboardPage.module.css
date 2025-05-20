@@ -1,0 +1,16 @@
+.dashboard-root {
+  width: 100vw;
+  min-height: 100vh;
+  background: #f7fafc;
+  font-family: var(--chakra-fonts-body, Arial, sans-serif);
+  overflow-x: hidden;
+  padding: 0;
+}
+.main-content {
+  padding: 24px;
+}
+.dashboard-sidebar {
+  overflow-y: auto;
+}
+.dashboard-main {
+} 

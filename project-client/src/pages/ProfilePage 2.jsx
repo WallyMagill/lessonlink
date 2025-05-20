@@ -1,6 +1,7 @@
 import './profile_view.css';
+import React from 'react';
 
-function ProfileView() {
+function ProfilePage() {
   return (
     <div className="manage-account-container">
       <header className="header">
@@ -90,4 +91,4 @@ function ProfileView() {
   );
 }
 
-export default ProfileView;
+export default ProfilePage; 
