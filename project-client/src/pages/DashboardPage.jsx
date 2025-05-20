@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Box, Flex, Stack, Input, IconButton, Button,
 } from '@chakra-ui/react';
+
 import { AddIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
@@ -77,8 +78,10 @@ function DashboardPage() {
             </Box>
           </Box>
         </Flex>
+
       </Box>
     </Box>
+
   );
 }
 
