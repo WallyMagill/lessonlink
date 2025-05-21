@@ -3,19 +3,34 @@ import {
   Box, Flex, Stack, Heading, Tag, TagLabel, IconButton, Input, Switch, Avatar,
 } from '@chakra-ui/react';
 import { EditIcon, AddIcon } from '@chakra-ui/icons';
-import styles from '../styles/ProfilePage.module.css';
 import Header from '../components/Header';
 
 function ProfilePage() {
   return (
-    <Box className={styles['profile-root']} minH="100vh" minW="100vw">
-      {/* Header */}
+    <Box
+      width="100vw"
+      minH="100vh"
+      bg="#f7fafc"
+      fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
+      overflowX="hidden"
+    >
       <Header />
-      <Box className={styles['main-content']} p={4}>
+      <Box p={6}>
         <Heading as="h1" size="xl" mb={8}>Hello, Fiona</Heading>
-        <Flex className={styles['profile-details']}>
+        <Flex
+          bg="white"
+          p={8}
+          borderRadius="md"
+          boxShadow="0 2px 6px rgba(0,0,0,0.10)"
+          gap={8}
+        >
           {/* User Preferences */}
-          <Box className={styles['profile-preferences']}>
+          <Box
+            flex={1}
+            pr={8}
+            borderRight="1px solid"
+            borderColor="gray.200"
+          >
             <Stack spacing={8}>
               <Box>
                 <Flex align="center" gap={2} mb={2}>
@@ -60,7 +75,10 @@ function ProfilePage() {
             </Stack>
           </Box>
           {/* Account Settings */}
-          <Box className={styles['profile-settings']}>
+          <Box
+            flex={1}
+            pl={8}
+          >
             <Stack spacing={8}>
               <Box>
                 <Heading as="h3" size="md" mb={2}>Username:</Heading>

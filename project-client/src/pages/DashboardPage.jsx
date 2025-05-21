@@ -6,7 +6,6 @@ import {
 import { AddIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
-import styles from '../styles/DashboardPage.module.css';
 import Header from '../components/Header';
 
 const grades = [
@@ -20,13 +19,30 @@ const lessons = Array.from({ length: 12 }, (_, i) => `Lesson ${i + 1}`);
 
 function DashboardPage() {
   return (
-    <Box className={styles['dashboard-root']} minH="100vh" minW="100vw" bg="gray.50">
-      {/* Header */}
+    <Box
+      minH="100vh"
+      minW="100vw"
+      bg="gray.50"
+      fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
+      overflowX="hidden"
+      padding={0}
+    >
       <Header />
-      <Box className={styles['main-content']} p={4}>
+      <Box p={6}>
         <Flex minH="calc(100vh - 64px)" gap={6}>
           {/* Left Sidebar */}
-          <Box className={styles['dashboard-sidebar']} minW="260px" maxW="320px" bg="gray.100" p={4} borderRadius="md" boxShadow="sm" display="flex" flexDirection="column" height="100%">
+          <Box
+            minW="260px"
+            maxW="320px"
+            bg="gray.100"
+            p={4}
+            borderRadius="md"
+            boxShadow="sm"
+            display="flex"
+            flexDirection="column"
+            height="100%"
+            overflowY="auto"
+          >
             <Flex mb={4} gap={2} align="center">
               <Input placeholder="Search grade..." size="md" bg="white" />
               <IconButton icon={<AddIcon />} aria-label="Add grade" colorScheme="blue" />
@@ -42,7 +58,7 @@ function DashboardPage() {
             </Box>
           </Box>
           {/* Main Content */}
-          <Box className={styles['dashboard-main']}
+          <Box
             flex={1}
             bg="gray.100"
             p={4}
@@ -50,7 +66,7 @@ function DashboardPage() {
             boxShadow="sm"
             display="flex"
             flexDirection="column"
-            height="calc(100vh - 64px - 32px)" // 64px header + 32px page padding
+            height="calc(100vh - 64px - 32px)"
             minH={0}
             overflowY="auto"
           >
@@ -78,10 +94,8 @@ function DashboardPage() {
             </Box>
           </Box>
         </Flex>
-
       </Box>
     </Box>
-
   );
 }
 

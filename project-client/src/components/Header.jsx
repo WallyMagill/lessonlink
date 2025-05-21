@@ -1,25 +1,41 @@
 import React from 'react';
 import {
   Flex, Text, IconButton, Avatar,
-
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
   PopoverBody,
-  // PopoverCloseButton,
   Portal,
   Button,
 } from '@chakra-ui/react';
 import { SettingsIcon } from '@chakra-ui/icons';
-import styles from '../styles/Header.module.css';
 
 function Header() {
   return (
-    <Flex as="header" className={styles.header}>
-      <Text className={styles.logo}>LESSONLINK</Text>
-      <Flex className={styles['header-actions']} align="center" gap={2}>
-        {/* <IconButton icon={<SettingsIcon />} variant="ghost" aria-label="Settings" /> */}
+    <Flex
+      as="header"
+      width="100vw"
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      bg="white"
+      p={4}
+      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+      zIndex={10}
+    >
+      <Text
+        fontWeight="bold"
+        fontSize="1.25rem"
+        color="#1a365d"
+      >
+        LESSONLINK
+      </Text>
+      <Flex
+        display="flex"
+        alignItems="center"
+        gap={2}
+      >
         <Popover>
           <PopoverTrigger>
             <IconButton icon={<SettingsIcon />} variant="ghost" aria-label="Settings" />

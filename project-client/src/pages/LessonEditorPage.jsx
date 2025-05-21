@@ -4,14 +4,19 @@ import {
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
 } from '@chakra-ui/react';
 import { FaPrint, FaFileAlt, FaExternalLinkAlt } from 'react-icons/fa';
-import styles from '../styles/LessonEditorPage.module.css';
 import Header from '../components/Header';
 
 function LessonEditorPage() {
   return (
-    <Box className={styles['lesson-editor-root']} minH="100vh" minW="100vw">
+    <Box
+      width="100vw"
+      minH="100vh"
+      bg="#f7fafc"
+      fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
+      overflowX="hidden"
+    >
       <Header />
-      <Box className={styles['main-content']} p={4}>
+      <Box p={6}>
         <Tabs variant="enclosed" colorScheme="blue">
           <TabList>
             <Tab>View Standards</Tab>
@@ -21,7 +26,13 @@ function LessonEditorPage() {
           <TabPanels>
             <TabPanel p={0} mt={4}>
               <Flex gap={6}>
-                <Box className={styles['lesson-editor-standards-panel']}>
+                <Box
+                  width="250px"
+                  bg="white"
+                  p={4}
+                  boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                  borderRadius="md"
+                >
                   <Input placeholder="Search Standards..." mb={4} />
                   <Stack spacing={3}>
                     <Select placeholder="Filter by Subject">
@@ -41,12 +52,24 @@ function LessonEditorPage() {
                     </Select>
                   </Stack>
                 </Box>
-                <Box className={styles['lesson-editor-panel']}>
+                <Box flex={1}>
                   <Stack spacing={4}>
-                    <Box className={styles['lesson-editor-section']}>
+                    <Box
+                      bg="white"
+                      p={6}
+                      borderRadius="md"
+                      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                      mb={4}
+                    >
                       <Heading as="h2" size="lg" mb={2}>My Lesson</Heading>
                     </Box>
-                    <Box className={styles['lesson-editor-section']}>
+                    <Box
+                      bg="white"
+                      p={6}
+                      borderRadius="md"
+                      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                      mb={4}
+                    >
                       <Heading as="h3" size="md" mb={2}>Materials:</Heading>
                       <List spacing={1} styleType="disc" pl={4}>
                         <ListItem>Worksheet</ListItem>
@@ -56,7 +79,13 @@ function LessonEditorPage() {
                         <ListItem>Beaker</ListItem>
                       </List>
                     </Box>
-                    <Box className={styles['lesson-editor-section']}>
+                    <Box
+                      bg="white"
+                      p={6}
+                      borderRadius="md"
+                      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                      mb={4}
+                    >
                       <Heading as="h3" size="md" mb={2}>Learning Objectives</Heading>
                       <List spacing={1} styleType="disc" pl={4}>
                         <ListItem>Students will be able to define key scientific terms with 80% accuracy.</ListItem>
@@ -64,11 +93,23 @@ function LessonEditorPage() {
                         <ListItem>Students will be able to explain how scientific principles relate to everyday life.</ListItem>
                       </List>
                     </Box>
-                    <Box className={styles['lesson-editor-section']}>
+                    <Box
+                      bg="white"
+                      p={6}
+                      borderRadius="md"
+                      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                      mb={4}
+                    >
                       <Heading as="h3" size="md" mb={2}>Overview</Heading>
                       <Text>In this lesson...</Text>
                     </Box>
-                    <Box className={styles['lesson-editor-section']}>
+                    <Box
+                      bg="white"
+                      p={6}
+                      borderRadius="md"
+                      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                      mb={4}
+                    >
                       <Heading as="h3" size="md" mb={2}>Procedure List</Heading>
                       <OrderedList spacing={1} pl={4}>
                         <ListItem>Hand out the worksheet and go over the objective of the...</ListItem>

@@ -1,54 +1,102 @@
 import React, { useState } from 'react';
-import '../styles/LoginPage.css';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  Heading,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
-  const navigate = useNavigate();
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const toast = useToast();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Login attempted with:', { email, password });
-  };
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevents the default form submission behavior (page reload)
-    navigate('/dashboard');
+    try {
+      // TODO: Implement actual login logic here
+      console.log('Login attempted with:', { email, password });
+      navigate('/dashboard');
+    } catch (error) {
+      toast({
+        title: 'Login failed',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
-    <><Header />
-      <div className="login-container">
-        <div className="holder">
-          <form className="login-form" onSubmit={handleLogin}>
-            <h2>Login</h2>
+    <Box minH="100vh" minW="100vw" bg="gray.50">
+      <Header />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minH="calc(100vh - 64px)"
+        p={4}
+      >
+        <Box
+          w="full"
+          maxW="md"
+          p={8}
+          bg="white"
+          borderRadius="lg"
+          boxShadow="lg"
+        >
+          <VStack spacing={6}>
+            <Heading color="blue.500" size="xl">Welcome Back</Heading>
+            <Text color="gray.600">Sign in to your account</Text>
 
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              aria-label="Email"
-            />
+            <form onSubmit={handleLogin} style={{ width: '100%' }}>
+              <VStack spacing={4} w="100%">
+                <FormControl isRequired>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    size="lg"
+                  />
+                </FormControl>
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              aria-label="Password"
-            />
+                <FormControl isRequired>
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    size="lg"
+                  />
+                </FormControl>
 
-          </form>
-          <form onSubmit={handleSubmit}>
-            <button id="signin" type="submit" className="cta-button">Sign In</button>
-          </form>
-        </div>
-      </div>
-    </>
+                <Button
+                  type="submit"
+                  colorScheme="blue"
+                  size="lg"
+                  width="full"
+                  mt={4}
+                >
+                  Sign In
+                </Button>
+              </VStack>
+            </form>
+          </VStack>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

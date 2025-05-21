@@ -10,7 +10,6 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import Header from '../components/Header';
-import styles from '../styles/LandingPage.module.css';
 
 function LandingPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.900');
@@ -18,12 +17,15 @@ function LandingPage() {
   const borderColor = useColorModeValue('blue.500', 'blue.300');
 
   return (
-    <Box className={styles['landing-root']} minH="100vh" bg={bgColor}>
+    <Box
+      width="100%"
+      minH="100vh"
+      bg={bgColor}
+    >
       <Header />
-      <Container className={styles['main-content']} maxW="container.xl" py={16}>
+      <Container maxW="container.xl" py={16} px={8}>
         {/* Hero Section */}
         <Box
-          className={styles['hero-section']}
           textAlign="center"
           py={20}
           px={8}
@@ -31,6 +33,7 @@ function LandingPage() {
           borderRadius="xl"
           boxShadow="lg"
           mb={16}
+          transition="all 0.2s ease-in-out"
         >
           <VStack spacing={6}>
             <Heading
@@ -60,10 +63,10 @@ function LandingPage() {
 
         {/* Features Grid */}
         <Grid
-          className={styles['features-grid']}
           templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
           gap={8}
           px={4}
+          my={8}
         >
           {[
             {
@@ -85,7 +88,6 @@ function LandingPage() {
           ].map((feature) => (
             <Box
               key={feature.title}
-              className={styles['feature-card']}
               bg={cardBg}
               p={8}
               borderRadius="xl"
@@ -111,7 +113,7 @@ function LandingPage() {
         </Grid>
 
         {/* Footer */}
-        <Box className={styles.footer} textAlign="center" mt={16} color="gray.500">
+        <Box textAlign="center" mt={16} color="gray.500">
           <Text>LessonLink!</Text>
         </Box>
       </Container>
