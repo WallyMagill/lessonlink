@@ -1,8 +1,15 @@
 import React from 'react';
 import '../styles/landing_view.css';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevents the default form submission behavior (page reload)
+    navigate('/login');
+  };
+
   return (
     <><Header />
       <div className="lesson-link-container">
@@ -10,7 +17,7 @@ function LandingPage() {
         <section className="hero">
           <h1>Effortless Lesson Planning for Every Educator</h1>
           <p>Stay organized. Collaborate easily. Share with confidence.</p>
-          <button type="button" className="cta-button">Get Started</button>
+          <button type="button" className="cta-button" onClick={handleSubmit}>Get Started</button>
         </section>
 
         <section className="features">
