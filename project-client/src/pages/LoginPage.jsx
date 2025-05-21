@@ -14,10 +14,6 @@ function LoginPage() {
   };
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevents the default form submission behavior (page reload)
-
-    // Handle your sign-in logic here (e.g., validate credentials, call API)
-
-    // After successful sign-in, navigate to the dashboard
     navigate('/dashboard');
   };
 
@@ -46,11 +42,8 @@ function LoginPage() {
               aria-label="Password"
             />
 
-            {/* <button type="submit" className="cta-button">Sign In</button> */}
           </form>
           <form onSubmit={handleSubmit}>
-            {/* Your form inputs here */}
-
             <button id="signin" type="submit" className="cta-button">Sign In</button>
           </form>
         </div>
