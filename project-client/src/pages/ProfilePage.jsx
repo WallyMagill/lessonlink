@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Box, Flex, Stack, Heading, Tag, TagLabel, IconButton, Input, Switch, Avatar,
 } from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
+import { EditIcon, AddIcon } from '@chakra-ui/icons';
 import styles from '../styles/ProfilePage.module.css';
 import Header from '../components/Header';
 
@@ -18,7 +18,10 @@ function ProfilePage() {
           <Box className={styles['profile-preferences']}>
             <Stack spacing={8}>
               <Box>
-                <Heading as="h3" size="md" mb={2}>Selected Grade Levels:</Heading>
+                <Flex align="center" gap={2} mb={2}>
+                  <Heading as="h3" size="md">Selected Grade Levels:</Heading>
+                  <IconButton icon={<AddIcon />} size="sm" variant="ghost" aria-label="Add grade level" />
+                </Flex>
                 <Stack direction="row" spacing={2}>
                   <Tag size="lg" colorScheme="blue" borderRadius="full">
                     <TagLabel>grade 3</TagLabel>
@@ -31,7 +34,10 @@ function ProfilePage() {
                 </Stack>
               </Box>
               <Box>
-                <Heading as="h3" size="md" mb={2}>Selected Subjects:</Heading>
+                <Flex align="center" gap={2} mb={2}>
+                  <Heading as="h3" size="md">Selected Subjects:</Heading>
+                  <IconButton icon={<AddIcon />} size="sm" variant="ghost" aria-label="Add subject" />
+                </Flex>
                 <Stack direction="row" spacing={2}>
                   <Tag size="lg" colorScheme="teal" borderRadius="full">
                     <TagLabel>math</TagLabel>

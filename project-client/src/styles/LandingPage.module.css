@@ -1,0 +1,29 @@
+.landing-root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 2rem;
+}
+
+.hero-section {
+  margin-bottom: 4rem;
+}
+
+.features-grid {
+  margin: 2rem 0;
+}
+
+.feature-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+.footer {
+  margin-top: 4rem;
+  padding: 1rem;
+} 

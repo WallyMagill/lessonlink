@@ -22,9 +22,7 @@ function Header() {
         {/* <IconButton icon={<SettingsIcon />} variant="ghost" aria-label="Settings" /> */}
         <Popover>
           <PopoverTrigger>
-            <Button size="sm">
-              <IconButton icon={<SettingsIcon />} variant="ghost" aria-label="Settings" />
-            </Button>
+            <IconButton icon={<SettingsIcon />} variant="ghost" aria-label="Settings" />
           </PopoverTrigger>
           <Portal>
             <PopoverContent width="xs" minW="xs" display="flex" flexDirection="column" p={2}>
