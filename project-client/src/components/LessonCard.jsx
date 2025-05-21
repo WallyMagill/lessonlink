@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Avatar, Button, Stack, Box, Text,
 } from '@chakra-ui/react';
@@ -11,6 +12,11 @@ function getBoxShadow(variant) {
 
 function LessonCard({ title = 'Lesson' }) {
   const variants = ['subtle', 'outline', 'elevated'];
+  const navigate = useNavigate();
+  const handleView = (event) => {
+    event.preventDefault(); // Prevents the default form submission behavior (page reload)
+    navigate('/edit');
+  };
   return (
     <Stack gap={4} direction="row" wrap="wrap">
       {variants.map((variant) => (
@@ -30,8 +36,8 @@ function LessonCard({ title = 'Lesson' }) {
               This is the card body. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </Text>
             <Stack direction="row" spacing={2} pt={2} justify="flex-end" width="100%">
-              <Button variant="outline">View</Button>
-              <Button colorScheme="blue">Join</Button>
+              <Button variant="outline" onClick={handleView}>View</Button>
+              <Button colorScheme="blue" onClick={handleView}>Join</Button>
             </Stack>
           </Stack>
         </Box>

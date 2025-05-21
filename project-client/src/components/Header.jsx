@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Flex, Text, IconButton, Avatar,
+  Flex, IconButton, Avatar,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -9,9 +9,19 @@ import {
   Portal,
   Button,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { SettingsIcon } from '@chakra-ui/icons';
 
 function Header() {
+  const navigate = useNavigate();
+  const handleProfile = (event) => {
+    event.preventDefault();
+    navigate('/profile');
+  };
+  const handleName = (event) => {
+    event.preventDefault();
+    navigate('/dashboard');
+  };
   return (
     <Flex
       as="header"
@@ -24,13 +34,16 @@ function Header() {
       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
       zIndex={10}
     >
-      <Text
+      <Button
         fontWeight="bold"
         fontSize="1.25rem"
         color="#1a365d"
+        background="transparent"
+        _active={{ opacity: 0.8 }}
+        onClick={handleName}
       >
         LESSONLINK
-      </Text>
+      </Button>
       <Flex
         display="flex"
         alignItems="center"
@@ -53,7 +66,7 @@ function Header() {
           </Portal>
         </Popover>
 
-        <IconButton icon={<Avatar name="Fiona" size="sm" />} variant="ghost" aria-label="User" />
+        <IconButton icon={<Avatar name="Fiona" size="sm" />} onClick={handleProfile} variant="ghost" aria-label="User" />
       </Flex>
     </Flex>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -15,6 +16,11 @@ function LandingPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.900');
   const cardBg = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('blue.500', 'blue.300');
+  const navigate = useNavigate();
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevents the default form submission behavior (page reload)
+    navigate('/login');
+  };
 
   return (
     <Box
@@ -55,6 +61,7 @@ function LandingPage() {
               fontSize="lg"
               _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
               transition="all 0.2s"
+              onClick={handleSubmit}
             >
               Get Started
             </Button>

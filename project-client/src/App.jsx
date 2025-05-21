@@ -19,7 +19,6 @@ import React from 'react';
 import { unstable_HistoryRouter as HistoryRouter, Routes, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Provider } from './components/ui/provider';
-import Home from './pages/Home';
 import LessonEditorPage from './pages/LessonEditorPage';
 import ProfilePage from './pages/ProfilePage';
 import DashboardPage from './pages/DashboardPage';
@@ -40,12 +39,11 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/edit" element={<LessonEditorPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/land" element={<LandingPage />} />
         </Routes>
       </HistoryRouter>
     </Provider>
