@@ -1,28 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
-  Box, Flex, Stack, Input, IconButton, Button,
+  Box, Flex, Stack, Input, IconButton, Button, Text,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { AddIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
 import Header from '../components/Header';
-
-const grades = [
-  'Grade 3: Biology',
-  'Grade 4: Biology',
-  'Grade 5: Chemistry',
-  'Grade 6: Chemistry',
-];
-
-const lessons = Array.from({ length: 12 }, (_, i) => `Lesson ${i + 1}`);
+import useStore from '../store';
+import useLessonHandlers from '../handlers/lessonHandlers';
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const handleAdd = (event) => {
-    event.preventDefault(); // Prevents the default form submission behavior (page reload)
-    navigate('/edit');
+  const store = useStore();
+  const { handleCreateLesson } = useLessonHandlers();
+
+  useEffect(() => {
+    store.fetchAllLessons();
+  }, []);
+
+  const handleAdd = async (event) => {
+    event.preventDefault();
+    try {
+      const newLesson = await handleCreateLesson({
+        title: 'New Lesson',
+        objectives: '',
+        overview: '',
+        materials: [],
+        steps: [],
+        standards: [],
+        grade: 0,
+        subject: '',
+        status: 'private',
+      });
+      navigate(`/edit/${newLesson._id}`);
+    } catch (error) {
+      console.error('Error creating new lesson:', error);
+    }
   };
+
   return (
     <Box
       minH="100vh"
@@ -54,7 +70,7 @@ function DashboardPage() {
             </Flex>
             <Box flex={1} overflowY="auto">
               <Stack spacing={3}>
-                {grades.map((grade) => (
+                {['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'].map((grade) => (
                   <Button key={grade} w="100%" bg="blue.100" boxShadow="md" _hover={{ bg: 'blue.200' }}>
                     {grade}
                   </Button>
@@ -81,21 +97,27 @@ function DashboardPage() {
               <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">
-              <Flex wrap="wrap" gap={6} justify="flex-start" width="100%">
-                {lessons.map((lesson) => (
-                  <Box key={lesson}
-                    flexBasis={{
-                      base: '100%', sm: '48%', md: '31%', lg: '23%',
-                    }}
-                    maxW={{
-                      base: '100%', sm: '48%', md: '31%', lg: '23%',
-                    }}
-                    minW="220px"
-                  >
-                    <LessonCard title={lesson} />
-                  </Box>
-                ))}
-              </Flex>
+              {store.loading && <Text>Loading lessons...</Text>}
+              {!store.loading && store.all.length === 0 && (
+                <Text>No lessons available. Click the + button to create one!</Text>
+              )}
+              {!store.loading && store.all.length > 0 && (
+                <Flex wrap="wrap" gap={6} justify="flex-start" width="100%">
+                  {store.all.map((lesson) => (
+                    <Box key={lesson._id}
+                      flexBasis={{
+                        base: '100%', sm: '48%', md: '31%', lg: '23%',
+                      }}
+                      maxW={{
+                        base: '100%', sm: '48%', md: '31%', lg: '23%',
+                      }}
+                      minW="220px"
+                    >
+                      <LessonCard lesson={lesson} />
+                    </Box>
+                  ))}
+                </Flex>
+              )}
             </Box>
           </Box>
         </Flex>

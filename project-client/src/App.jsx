@@ -41,7 +41,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/edit" element={<LessonEditorPage />} />
+          <Route path="/edit/:id" element={<LessonEditorPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>

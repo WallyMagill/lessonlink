@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Flex, IconButton, Avatar,
   Popover,
@@ -11,21 +11,35 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsIcon } from '@chakra-ui/icons';
+import useStore from '../store';
 
 function Header() {
   const navigate = useNavigate();
+  const store = useStore();
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      store.fetchUser(userId);
+    }
+  }, []);
+
   const handleProfile = (event) => {
     event.preventDefault();
     navigate('/profile');
   };
+
   const handleName = (event) => {
     event.preventDefault();
     navigate('/dashboard');
   };
+
   const handleOut = (event) => {
     event.preventDefault();
+    localStorage.removeItem('userId');
     navigate('/');
   };
+
   return (
     <Flex
       as="header"
@@ -71,7 +85,17 @@ function Header() {
           </Portal>
         </Popover>
 
-        <IconButton icon={<Avatar name="Fiona" size="sm" />} onClick={handleProfile} variant="ghost" aria-label="User" />
+        <IconButton
+          icon={(
+            <Avatar
+              name={store.current ? `${store.current.firstName} ${store.current.lastName}` : 'User'}
+              size="sm"
+            />
+          )}
+          onClick={handleProfile}
+          variant="ghost"
+          aria-label="User"
+        />
       </Flex>
     </Flex>
   );

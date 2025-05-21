@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_URL = "http://localhost:9090/api";
+const API_URL = 'http://localhost:3001/api';
 
 export default function createUserSlice(set) {
   return {
@@ -9,7 +9,7 @@ export default function createUserSlice(set) {
     error: null,
     loading: false,
 
-    //fetch all users
+    // fetch all users
     fetchAllUsers: async () => {
       set({ loading: true });
       try {
@@ -20,7 +20,7 @@ export default function createUserSlice(set) {
       }
     },
 
-    //fetch one user
+    // fetch one user
     fetchUser: async (id) => {
       set({ loading: true });
       try {
@@ -31,7 +31,7 @@ export default function createUserSlice(set) {
       }
     },
 
-    //creating a new user
+    // creating a new user
     createUser: async (userData) => {
       set({ loading: true });
       try {
@@ -49,15 +49,13 @@ export default function createUserSlice(set) {
       }
     },
 
-    //updating a user
+    // updating a user
     updateUser: async (id, userData) => {
       set({ loading: true });
       try {
         const response = await axios.put(`${API_URL}/users/${id}`, userData);
         set((state) => ({
-          all: state.all.map((user) =>
-            user._id === id ? response.data : user
-          ),
+          all: state.all.map((user) => (user._id === id ? response.data : user)),
           current: response.data,
           loading: false,
           error: null,
@@ -69,7 +67,7 @@ export default function createUserSlice(set) {
       }
     },
 
-    //deleting a user
+    // deleting a user
     deleteUser: async (id) => {
       set({ loading: true });
       try {
@@ -86,12 +84,12 @@ export default function createUserSlice(set) {
       }
     },
 
-    //clearing current user
+    // clearing current user
     clearCurrent: () => {
       set({ current: {} });
     },
 
-    //clear errors
+    // clear errors
     clearError: () => {
       set({ error: null });
     },

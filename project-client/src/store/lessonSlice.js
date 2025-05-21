@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_URL = "http://localhost:9090/api";
+const API_URL = 'http://localhost:3001/api';
 
 export default function createLessonSlice(set) {
   return {
@@ -9,7 +9,7 @@ export default function createLessonSlice(set) {
     error: null,
     loading: false,
 
-    //fetch all lessons
+    // fetch all lessons
     fetchAllLessons: async () => {
       set({ loading: true });
       try {
@@ -20,7 +20,7 @@ export default function createLessonSlice(set) {
       }
     },
 
-    //fetch one lessons
+    // fetch one lessons
     fetchLesson: async (id) => {
       set({ loading: true });
       try {
@@ -31,7 +31,7 @@ export default function createLessonSlice(set) {
       }
     },
 
-    //creating a new lesson
+    // creating a new lesson
     createLesson: async (lessonData) => {
       set({ loading: true });
       try {
@@ -49,18 +49,18 @@ export default function createLessonSlice(set) {
       }
     },
 
-    //updating a lesson
+    // updating a lesson
     updateLesson: async (id, lessonData) => {
       set({ loading: true });
       try {
         const response = await axios.put(
           `${API_URL}/lessons/${id}`,
-          lessonData
+          lessonData,
         );
         set((state) => ({
-          all: state.all.map((lesson) =>
+          all: state.all.map((lesson) => (
             lesson._id === id ? response.data : lesson
-          ),
+          )),
           current: response.data,
           loading: false,
           error: null,
@@ -72,7 +72,7 @@ export default function createLessonSlice(set) {
       }
     },
 
-    //deleting a lesson
+    // deleting a lesson
     deleteLesson: async (id) => {
       set({ loading: true });
       try {
@@ -89,12 +89,12 @@ export default function createLessonSlice(set) {
       }
     },
 
-    //clearing current lesson
+    // clearing current lesson
     clearCurrent: () => {
       set({ current: {} });
     },
 
-    //clear errors
+    // clear errors
     clearError: () => {
       set({ error: null });
     },
