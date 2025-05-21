@@ -7,22 +7,32 @@ import { AddIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
 import Header from '../components/Header';
-import useStore from '../store';
-import useLessonHandlers from '../handlers/lessonHandlers';
+import useStore from '../store/index';
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const store = useStore();
-  const { handleCreateLesson } = useLessonHandlers();
+
+  const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
+  const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
+  const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
 
   useEffect(() => {
-    store.fetchAllLessons();
+  // use a wrapper so can catch failed promises
+    const wrapper = async () => {
+      try {
+        await fetchAllLessons();
+      } catch (error) {
+        // toast.error(`failed to load all the posts: ${error}`);
+      }
+    };
+
+    wrapper();
   }, []);
 
   const handleAdd = async (event) => {
     event.preventDefault();
     try {
-      const newLesson = await handleCreateLesson({
+      const newLesson = await createLesson({
         title: 'New Lesson',
         objectives: '',
         overview: '',
@@ -97,14 +107,13 @@ function DashboardPage() {
               <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">
-              {store.loading && <Text>Loading lessons...</Text>}
-              {!store.loading && store.all.length === 0 && (
+              {lessons.length === 0 && (
                 <Text>No lessons available. Click the + button to create one!</Text>
               )}
-              {!store.loading && store.all.length > 0 && (
+              {lessons.length > 0 && (
                 <Flex wrap="wrap" gap={6} justify="flex-start" width="100%">
-                  {store.all.map((lesson) => (
-                    <Box key={lesson._id}
+                  {lessons.map((lesson) => (
+                    <Box key={lesson.id}
                       flexBasis={{
                         base: '100%', sm: '48%', md: '31%', lg: '23%',
                       }}

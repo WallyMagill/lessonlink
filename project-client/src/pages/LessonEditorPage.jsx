@@ -8,30 +8,43 @@ import {
 import { FaPrint, FaFileAlt, FaExternalLinkAlt } from 'react-icons/fa';
 import Header from '../components/Header';
 import useStore from '../store';
-import useLessonHandlers from '../handlers/lessonHandlers';
 
 function LessonEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const store = useStore();
-  const { handleUpdateLesson } = useLessonHandlers();
   const [editedLesson, setEditedLesson] = useState(null);
 
-  useEffect(() => {
-    if (id) {
-      store.fetchLesson(id);
-    }
-  }, [id]);
+  const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
+  const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
+  const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
 
   useEffect(() => {
-    if (store.current) {
-      setEditedLesson(store.current);
+    // use a wrapper so can catch failed promises
+    const wrapper = async () => {
+      try {
+        await fetchLesson(id);
+      } catch (error) {
+        // toast.error(`failed to load all the posts: ${error}`);
+      }
+    };
+
+    wrapper();
+  }, []);
+
+  useEffect(() => {
+    if (lesson) {
+      setEditedLesson({
+        ...lesson,
+        materials: lesson.materials || [],
+        steps: lesson.steps || [],
+      });
     }
-  }, [store.current]);
+  }, [lesson]);
 
   const handleSave = async () => {
     try {
-      await handleUpdateLesson(id, editedLesson);
+      await updateLesson(id, editedLesson);
       navigate('/dashboard');
     } catch (error) {
       console.error('Error saving lesson:', error);
@@ -129,7 +142,7 @@ function LessonEditorPage() {
                     >
                       <Heading as="h3" size="md" mb={2}>Materials:</Heading>
                       <List spacing={1} styleType="disc" pl={4}>
-                        {editedLesson.materials.map((material) => (
+                        {(editedLesson?.materials || []).map((material) => (
                           <ListItem key={`material-${material}`}>
                             <Input
                               value={material}

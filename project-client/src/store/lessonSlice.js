@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'https://project-api-lessonlink.onrender.com/api';
 
-export default function createLessonSlice(set) {
+export default function createLessonSlice(set, get) {
   return {
     all: [],
     current: {},
@@ -11,92 +11,211 @@ export default function createLessonSlice(set) {
 
     // fetch all lessons
     fetchAllLessons: async () => {
-      set({ loading: true });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          loading: true,
+        },
+      }), false, 'lessons/fetchAllLessons');
+
       try {
         const response = await axios.get(`${API_URL}/lessons`);
-        set({ all: response.data, loading: false, error: null });
+        console.log(response.data);
+
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            all: response.data,
+            loading: false,
+            error: null,
+          },
+        }), false, 'lessons/fetchAllLessons');
       } catch (error) {
-        set({ error: error.message, loading: false });
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            loading: false,
+            error: error.message,
+          },
+        }));
       }
     },
 
-    // fetch one lessons
+    // fetch one lesson
     fetchLesson: async (id) => {
-      set({ loading: true });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          loading: true,
+        },
+      }));
+
       try {
         const response = await axios.get(`${API_URL}/lessons/${id}`);
-        set({ current: response.data, loading: false, error: null });
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            current: response.data,
+            loading: false,
+            error: null,
+          },
+        }));
       } catch (error) {
-        set({ error: error.message, loading: false });
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            loading: false,
+            error: error.message,
+          },
+        }));
       }
     },
 
     // creating a new lesson
     createLesson: async (lessonData) => {
-      set({ loading: true });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          loading: true,
+        },
+      }));
+
       try {
         const response = await axios.post(`${API_URL}/lessons`, lessonData);
+        const newLesson = response.data;
+
         set((state) => ({
-          all: [...state.all, response.data],
-          current: response.data,
-          loading: false,
-          error: null,
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            all: [...state.lessonSlice.all, newLesson],
+            current: newLesson,
+            loading: false,
+            error: null,
+          },
         }));
-        return response.data;
+
+        return newLesson;
       } catch (error) {
-        set({ error: error.message, loading: false });
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            loading: false,
+            error: error.message,
+          },
+        }));
         throw error;
       }
     },
 
     // updating a lesson
     updateLesson: async (id, lessonData) => {
-      set({ loading: true });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          loading: true,
+        },
+      }));
+
       try {
-        const response = await axios.put(
-          `${API_URL}/lessons/${id}`,
-          lessonData,
-        );
+        const response = await axios.put(`${API_URL}/lessons/${id}`, lessonData);
+        const updatedLesson = response.data;
+
         set((state) => ({
-          all: state.all.map((lesson) => (
-            lesson._id === id ? response.data : lesson
-          )),
-          current: response.data,
-          loading: false,
-          error: null,
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            all: state.lessonSlice.all.map((lesson) => (lesson._id === id ? updatedLesson : lesson)),
+            current: updatedLesson,
+            loading: false,
+            error: null,
+          },
         }));
-        return response.data;
+
+        return updatedLesson;
       } catch (error) {
-        set({ error: error.message, loading: false });
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            loading: false,
+            error: error.message,
+          },
+        }));
         throw error;
       }
     },
 
     // deleting a lesson
     deleteLesson: async (id) => {
-      set({ loading: true });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          loading: true,
+        },
+      }));
+
       try {
         await axios.delete(`${API_URL}/lessons/${id}`);
-        set((state) => ({
-          all: state.all.filter((lesson) => lesson._id !== id),
-          current: state.current._id === id ? {} : state.current,
-          loading: false,
-          error: null,
-        }));
+
+        set((state) => {
+          const updatedAll = state.lessonSlice.all.filter((lesson) => lesson._id !== id);
+          const isCurrentDeleted = state.lessonSlice.current._id === id;
+
+          return {
+            ...state,
+            lessonSlice: {
+              ...state.lessonSlice,
+              all: updatedAll,
+              current: isCurrentDeleted ? {} : state.lessonSlice.current,
+              loading: false,
+              error: null,
+            },
+          };
+        });
       } catch (error) {
-        set({ error: error.message, loading: false });
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            loading: false,
+            error: error.message,
+          },
+        }));
         throw error;
       }
     },
 
     // clearing current lesson
     clearCurrent: () => {
-      set({ current: {} });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          current: {},
+        },
+      }));
     },
 
     // clear errors
     clearError: () => {
-      set({ error: null });
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          error: null,
+        },
+      }));
     },
   };
 }

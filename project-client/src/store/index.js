@@ -4,15 +4,10 @@ import createLessonSlice from './lessonSlice';
 import createUserSlice from './userSlice';
 
 const useStore = create(
-  devtools(
-    (set, get) => ({
-      ...createLessonSlice(set, get),
-      ...createUserSlice(set, get),
-    }),
-    {
-      name: 'LessonLink Store',
-    },
-  ),
+  devtools((...args) => ({
+    lessonSlice: createLessonSlice(...args),
+    userSlice: createUserSlice(...args),
+  })),
 );
 
 export default useStore;
