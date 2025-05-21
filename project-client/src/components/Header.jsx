@@ -22,6 +22,10 @@ function Header() {
     event.preventDefault();
     navigate('/dashboard');
   };
+  const handleOut = (event) => {
+    event.preventDefault();
+    navigate('/');
+  };
   return (
     <Flex
       as="header"
@@ -60,7 +64,8 @@ function Header() {
                 <Button w="100%" variant="ghost">Notifications</Button>
                 <Button w="100%" variant="ghost">Display Options</Button>
                 <Button w="100%" variant="ghost">Sharing</Button>
-                <Button w="100%" variant="ghost">Account</Button>
+                <Button w="100%" variant="ghost" onClick={handleProfile}>Account</Button>
+                <Button w="100%" variant="ghost" onClick={handleOut}>Sign Out</Button>
               </PopoverBody>
             </PopoverContent>
           </Portal>

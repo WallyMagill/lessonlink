@@ -14,7 +14,7 @@ function LessonCard({ title = 'Lesson' }) {
   const variants = ['subtle', 'outline', 'elevated'];
   const navigate = useNavigate();
   const handleView = (event) => {
-    event.preventDefault(); // Prevents the default form submission behavior (page reload)
+    event.preventDefault();
     navigate('/edit');
   };
   return (

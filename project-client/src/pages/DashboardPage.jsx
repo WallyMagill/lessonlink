@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Box, Flex, Stack, Input, IconButton, Button,
 } from '@chakra-ui/react';
-
+import { useNavigate } from 'react-router-dom';
 import { AddIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
@@ -18,6 +18,11 @@ const grades = [
 const lessons = Array.from({ length: 12 }, (_, i) => `Lesson ${i + 1}`);
 
 function DashboardPage() {
+  const navigate = useNavigate();
+  const handleAdd = (event) => {
+    event.preventDefault(); // Prevents the default form submission behavior (page reload)
+    navigate('/edit');
+  };
   return (
     <Box
       minH="100vh"
@@ -73,7 +78,7 @@ function DashboardPage() {
             <Flex mb={4} gap={2} align="center">
               <Input placeholder="Search lesson plan..." size="md" bg="white" />
               <IconButton icon={<FaGlobe />} aria-label="Global toggle" colorScheme="gray" />
-              <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" />
+              <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">
               <Flex wrap="wrap" gap={6} justify="flex-start" width="100%">

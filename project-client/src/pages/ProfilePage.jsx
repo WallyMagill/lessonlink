@@ -1,11 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Box, Flex, Stack, Heading, Tag, TagLabel, IconButton, Input, Switch, Avatar,
+  Box, Flex, Stack, Heading, Tag, TagLabel, IconButton, Input, Switch, Avatar, Button,
 } from '@chakra-ui/react';
 import { EditIcon, AddIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 
 function ProfilePage() {
+  const navigate = useNavigate();
+  const handleOut = (event) => {
+    event.preventDefault();
+    navigate('/');
+  };
   return (
     <Box
       width="100vw"
@@ -71,6 +77,20 @@ function ProfilePage() {
               <Box>
                 <Heading as="h3" size="md" mb={2}>Dark Mode:</Heading>
                 <Switch size="lg" colorScheme="blue" />
+              </Box>
+              <Box>
+                <Button
+                  size="lg"
+                  colorScheme="blue"
+                  px={6}
+                  py={4}
+                  fontSize="md"
+                  _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
+                  transition="all 0.2s"
+                  onClick={handleOut}
+                >
+                  Sign Out
+                </Button>
               </Box>
             </Stack>
           </Box>
