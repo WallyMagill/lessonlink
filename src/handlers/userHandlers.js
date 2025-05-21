@@ -1,3 +1,4 @@
+// currently not being used, considering deleting
 import useStore from '../store';
 
 const useUserHandlers = () => {

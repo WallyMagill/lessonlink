@@ -125,7 +125,7 @@ function LessonEditorPage() {
                       mb={4}
                     >
                       <Input
-                        value={editedLesson.title}
+                        value={editedLesson.title || ''}
                         onChange={(e) => handleChange('title', e.target.value)}
                         fontSize="2xl"
                         fontWeight="bold"
@@ -145,7 +145,7 @@ function LessonEditorPage() {
                         {(editedLesson?.materials || []).map((material) => (
                           <ListItem key={`material-${material}`}>
                             <Input
-                              value={material}
+                              value={material || ''}
                               onChange={(e) => {
                                 const newMaterials = [...editedLesson.materials];
                                 newMaterials[editedLesson.materials.indexOf(material)] = e.target.value;
@@ -204,7 +204,7 @@ function LessonEditorPage() {
                         {editedLesson.steps.map((step) => (
                           <ListItem key={`step-${step}`}>
                             <Input
-                              value={step}
+                              value={step || ''}
                               onChange={(e) => {
                                 const newSteps = [...editedLesson.steps];
                                 newSteps[editedLesson.steps.indexOf(step)] = e.target.value;
