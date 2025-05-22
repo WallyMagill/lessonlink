@@ -20,7 +20,7 @@ function Header() {
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (userId) {
-      store.fetchUser(userId);
+      store.userSlice.fetchUser(userId);
     }
   }, []);
 
