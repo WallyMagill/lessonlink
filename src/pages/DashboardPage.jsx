@@ -111,7 +111,7 @@ function DashboardPage() {
                 <Text>No lessons available. Click the + button to create one!</Text>
               )}
               {lessons.length > 0 && (
-                <Flex wrap="wrap" gap={6} justify="flex-start" width="100%">
+                <Flex wrap="wrap" rowGap={6} columnGap={20} justifyContent="space-around" alignItems="flex-start" width="90%">
                   {lessons.map((lesson) => (
                     <Box key={lesson.id}
                       flexBasis={{
