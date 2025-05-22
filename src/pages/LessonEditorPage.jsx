@@ -203,13 +203,15 @@ function LessonEditorPage() {
                     >
                       <Heading as="h3" size="md" mb={2}>Procedure List</Heading>
                       <OrderedList spacing={1} pl={4}>
-                        {editedLesson.steps.map((step) => (
-                          <ListItem key={`step-${step}`}>
+                        {(editedLesson?.steps || []).map((step, index) => (
+                          // !!! TODO fix this to use a proper key
+                          // eslint-disable-next-line react/no-array-index-key
+                          <ListItem key={`step-${index}`}>
                             <Input
                               value={step || ''}
                               onChange={(e) => {
                                 const newSteps = [...editedLesson.steps];
-                                newSteps[editedLesson.steps.indexOf(step)] = e.target.value;
+                                newSteps[index] = e.target.value;
                                 handleChange('steps', newSteps);
                               }}
                             />
