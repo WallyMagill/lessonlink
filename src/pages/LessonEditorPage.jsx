@@ -5,9 +5,11 @@ import {
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
   Button, Textarea,
 } from '@chakra-ui/react';
-import { FaPrint, FaFileAlt, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaFileAlt } from 'react-icons/fa';
 import Header from '../components/Header';
 import useStore from '../store';
+import PrintPage from '../components/printpage';
+import EmailPage from '../components/sharepage';
 
 function LessonEditorPage() {
   const { id } = useParams();
@@ -227,10 +229,18 @@ function LessonEditorPage() {
                         </ListItem>
                       </OrderedList>
                     </Box>
-                    <Flex gap={4} mt={2}>
+                    {/* <Flex gap={4} mt={2}>
                       <IconButton icon={<FaPrint />} aria-label="Print" />
                       <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
                       <IconButton icon={<FaExternalLinkAlt />} aria-label="Share" />
+                      <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
+                    </Flex> */}
+                    <Flex gap={4} mt={2}>
+                      {/* <IconButton icon={<FaPrint />} aria-label="Print" /> */}
+                      <PrintPage />
+                      <EmailPage />
+                      <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
+
                       <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
                     </Flex>
                   </Stack>
