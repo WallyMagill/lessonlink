@@ -79,7 +79,7 @@ function DashboardPage() {
               <IconButton icon={<AddIcon />} aria-label="Add grade" colorScheme="blue" />
             </Flex>
             <Box flex={1} overflowY="auto">
-              <Stack spacing={3}>
+              <Stack spacing={4}>
                 {['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'].map((grade) => (
                   <Button key={grade} w="100%" bg="blue.100" boxShadow="md" _hover={{ bg: 'blue.200' }}>
                     {grade}
@@ -111,16 +111,12 @@ function DashboardPage() {
                 <Text>No lessons available. Click the + button to create one!</Text>
               )}
               {lessons.length > 0 && (
-                <Flex wrap="wrap" gap={6} justify="flex-start" width="100%">
+                <Flex wrap="wrap" columnGap={4} rowGap={6} justify="flex-start" width="100%">
                   {lessons.map((lesson) => (
                     <Box key={lesson.id}
-                      flexBasis={{
-                        base: '100%', sm: '48%', md: '31%', lg: '23%',
-                      }}
-                      maxW={{
-                        base: '100%', sm: '48%', md: '31%', lg: '23%',
-                      }}
-                      minW="220px"
+                      flex="1 0 20rem"
+                      maxW="25rem"
+                      minW="10rem"
                     >
                       <LessonCard lesson={lesson} />
                     </Box>
