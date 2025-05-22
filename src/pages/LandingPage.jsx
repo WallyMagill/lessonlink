@@ -10,7 +10,6 @@ import {
   VStack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import Header from '../components/Header';
 
 function LandingPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.900');
@@ -28,7 +27,6 @@ function LandingPage() {
       minH="100vh"
       bg={bgColor}
     >
-      <Header />
       <Container maxW="container.xl" py={16} px={8}>
         {/* Hero Section */}
         <Box
