@@ -2,6 +2,8 @@
 
 This is the frontend application for the LessonLink platform, built with React and Vite.
 
+Hosted Link: https://project-lessonlink.onrender.com/
+
 ## Project Structure
 
 - `src/`: Source code directory
@@ -19,8 +21,7 @@ This is the frontend application for the LessonLink platform, built with React a
 ## Setup Instructions
 
 1. Install dependencies: `npm install`
-2. Create `.env` file with required variables
-3. Start development server: `npm run dev`
+2. Start development client: `npm run dev`
 
 ## Key Features
 
