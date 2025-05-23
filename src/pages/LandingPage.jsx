@@ -119,7 +119,13 @@ function LandingPage() {
 
         {/* Footer */}
         <Box textAlign="center" mt={16} color="gray.500">
-          <Text>LessonLink!</Text>
+          <Box display="flex" flexDirection="row" textAlign="center" justifyContent="space-around">
+            <Text _hover={{ color: 'blue.500', cursor: 'pointer' }}>Terms</Text>
+            <Text _hover={{ color: 'blue.500', cursor: 'pointer' }}>Privacy</Text>
+            <Text _hover={{ color: 'blue.500', cursor: 'pointer' }}>Security</Text>
+            <Text _hover={{ color: 'blue.500', cursor: 'pointer' }}>Contact</Text>
+          </Box>
+          <Text>© 2025 LessonLink, Inc.</Text>
         </Box>
       </Container>
     </Box>
