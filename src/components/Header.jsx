@@ -75,7 +75,6 @@ function Header() {
             <PopoverContent width="xs" minW="xs" display="flex" flexDirection="column" p={2}>
               <PopoverArrow />
               <PopoverBody display="flex" flexDirection="column" gap={2} p={0}>
-                <Button w="100%" variant="ghost">Display Options</Button>
                 <Button w="100%" variant="ghost">Sharing</Button>
                 <Button w="100%" variant="ghost" onClick={handleProfile}>Account</Button>
                 <Button w="100%" variant="ghost" onClick={handleOut}>Sign Out</Button>
