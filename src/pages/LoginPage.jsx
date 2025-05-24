@@ -11,7 +11,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -38,7 +37,6 @@ function LoginPage() {
 
   return (
     <Box minH="100vh" minW="100vw" bg="gray.50">
-      <Header />
       <Box
         display="flex"
         justifyContent="center"
