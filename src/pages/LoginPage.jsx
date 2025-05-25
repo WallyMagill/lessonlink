@@ -21,7 +21,10 @@ function LoginPage() {
   const toast = useToast();
 
   const signinUser = useStore(({ authSlice }) => authSlice.signinUser);
-
+  const handleSignUp = (event) => {
+    event.preventDefault();
+    navigate('/signup');
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -97,6 +100,17 @@ function LoginPage() {
                 >
                   Sign In
                 </Button>
+
+                <Button
+                  type="submit"
+                  colorScheme="blue"
+                  size="lg"
+                  width="full"
+                  variant="ghost"
+                  onClick={handleSignUp}
+                >New user? Sign up!
+                </Button>
+
               </VStack>
             </form>
           </VStack>
