@@ -17,15 +17,16 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import useLessonHandlers from '../handlers/lessonHandlers';
+import useStore from '../store/index';
 // import updateLessonColor from '../handlers/lessonHandlers';
 
 function LessonCard({ lesson, onDelete }) {
   const navigate = useNavigate();
   const { handleDeleteLesson } = useLessonHandlers();
-  const { updateLessonColor } = useLessonHandlers();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedColor, setSelectedColor] = useState(lesson.color || 'gray');
+  const [selectedColor, setSelectedColor] = useState(lesson.tag || 'white');
+  const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
 
   const COLOR_PALETTE = [
     'red', 'orange', 'yellow',
@@ -42,11 +43,14 @@ function LessonCard({ lesson, onDelete }) {
     try {
       // Update color in backend
       console.log('one');
-      await updateLessonColor(lesson._id, color);
-      console.log('two');
+      await updateLesson(lesson.id, {
+        ...lesson,
+        tag: color,
+      });
+      console.log(color);
       // Update local state
       setSelectedColor(color);
-      console.log('three');
+      console.log(selectedColor);
       // Close modal
       onClose();
       console.log('four');
@@ -92,16 +96,6 @@ function LessonCard({ lesson, onDelete }) {
   if (!lesson) return null;
 
   return (
-    // <Box
-    //   width="320px"
-    //   borderWidth="1px"
-    //   borderRadius="md"
-    //   bg="white"
-    //   p={4}
-    //   boxShadow="md"
-    //   _hover={{ boxShadow: 'lg', transform: 'translateY(-2px)' }}
-    //   transition="all 0.2s"
-    //   position="relative"
     <Box
       width="320px"
       borderWidth="1px"
@@ -109,7 +103,8 @@ function LessonCard({ lesson, onDelete }) {
       bg="white"
       p={4}
       boxShadow="md"
-      borderLeft={`6px solid ${selectedColor}.500`} // Color indicator
+      borderLeftWidth="6px"
+      borderLeftColor={`${selectedColor}.500`}
       _hover={{ boxShadow: 'lg', transform: 'translateY(-2px)' }}
       transition="all 0.2s"
       position="relative"
@@ -159,7 +154,7 @@ function LessonCard({ lesson, onDelete }) {
                   height="50px"
                   borderRadius="md"
                   cursor="pointer"
-                  onClick={() => selectColor(color)}
+                  onClick={(e) => selectColor(color)}
                   _hover={{
                     transform: 'scale(1.1)',
                     boxShadow: 'lg',
