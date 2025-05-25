@@ -1,4 +1,5 @@
 // currently not being used, considering deleting
+import axios from 'axios';
 import useStore from '../store';
 
 const useLessonHandlers = () => {
@@ -42,6 +43,17 @@ const useLessonHandlers = () => {
     }
   };
 
+  const updateLessonColor = async (lessonId, color) => {
+    try {
+      const response = await axios.patch(`/api/lessons/${lessonId}/color`, { color });
+      console.log('made it to updateLC');
+      return response.data;
+    } catch (error) {
+      console.error('Error picking color:', error);
+      throw error;
+    }
+  };
+
   const handleFetchAllLessons = async () => {
     try {
       await store.fetchAllLessons();
@@ -57,6 +69,7 @@ const useLessonHandlers = () => {
     handleDeleteLesson,
     handleFetchLesson,
     handleFetchAllLessons,
+    updateLessonColor,
   };
 };
 
