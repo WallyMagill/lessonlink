@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Flex, IconButton, Avatar,
   Popover,
@@ -15,14 +15,9 @@ import useStore from '../store';
 
 function Header() {
   const navigate = useNavigate();
-  const store = useStore();
-
-  useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      store.fetchUser(userId);
-    }
-  }, []);
+  const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
+  const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
+  const email = useStore(({ authSlice }) => authSlice.email);
 
   const handleProfile = (event) => {
     event.preventDefault();
@@ -34,9 +29,19 @@ function Header() {
     navigate('/dashboard');
   };
 
+  const handleSignUp = (event) => {
+    event.preventDefault();
+    navigate('/signup');
+  };
+
+  const handleLogIn = (event) => {
+    event.preventDefault();
+    navigate('/login');
+  };
+
   const handleOut = (event) => {
     event.preventDefault();
-    localStorage.removeItem('userId');
+    signoutUser();
     navigate('/');
   };
 
@@ -75,20 +80,30 @@ function Header() {
             <PopoverContent width="xs" minW="xs" display="flex" flexDirection="column" p={2}>
               <PopoverArrow />
               <PopoverBody display="flex" flexDirection="column" gap={2} p={0}>
-                <Button w="100%" variant="ghost">Notifications</Button>
-                <Button w="100%" variant="ghost">Display Options</Button>
-                <Button w="100%" variant="ghost">Sharing</Button>
-                <Button w="100%" variant="ghost" onClick={handleProfile}>Account</Button>
-                <Button w="100%" variant="ghost" onClick={handleOut}>Sign Out</Button>
+                {isAuth ? (
+                  <>
+                    <Button w="100%" variant="ghost">Notifications</Button>
+                    <Button w="100%" variant="ghost">Display Options</Button>
+                    <Button w="100%" variant="ghost">Sharing</Button>
+                    <Button w="100%" variant="ghost" onClick={handleProfile}>Account</Button>
+                    <Button w="100%" variant="ghost" onClick={handleOut}>Sign Out</Button>
+                  </>
+                )
+                  : (
+                    <>
+                      <Button w="100%" variant="ghost" onClick={handleLogIn}>Log In</Button>
+                      <Button w="100%" variant="ghost" onClick={handleSignUp}>Sign Up</Button>
+                    </>
+                  )}
               </PopoverBody>
             </PopoverContent>
           </Portal>
         </Popover>
-
+        {isAuth && (
         <IconButton
           icon={(
             <Avatar
-              name={store.current ? `${store.current.firstName} ${store.current.lastName}` : 'User'}
+              name={email ? `${email}` : 'User'}
               size="sm"
             />
           )}
@@ -96,6 +111,7 @@ function Header() {
           variant="ghost"
           aria-label="User"
         />
+        )}
       </Flex>
     </Flex>
   );

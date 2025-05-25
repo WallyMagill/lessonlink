@@ -12,31 +12,32 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import useStore from '../store/index';
+import useStore from '../store';
 
-function LoginPage() {
+function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
   const toast = useToast();
 
-  const signinUser = useStore(({ authSlice }) => authSlice.signinUser);
-  const handleSignUp = (event) => {
-    event.preventDefault();
-    navigate('/signup');
-  };
-  const handleLogin = async (e) => {
+  const signupUser = useStore(({ authSlice }) => authSlice.signupUser);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await signinUser({ email, password }, navigate);
+      // TODO: Implement actual login logic here
+      console.log(username);
+      console.log(email);
 
-      if (!result) {
-        throw new Error('Invalid Login');
-      }
+      console.log(password);
+
+      await signupUser({ username, email, password }, navigate);
+      console.log('Signup attempted with:', { email, password });
       navigate('/dashboard');
     } catch (error) {
       toast({
-        title: 'Login failed',
+        title: 'Signup failed',
         description: error.message,
         status: 'error',
         duration: 5000,
@@ -67,8 +68,19 @@ function LoginPage() {
             <Heading color="blue.500" size="xl">Welcome Back</Heading>
             <Text color="gray.600">Sign in to your account</Text>
 
-            <form onSubmit={handleLogin} style={{ width: '100%' }}>
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
               <VStack spacing={4} w="100%">
+                <FormControl isRequired>
+                  <FormLabel>Username</FormLabel>
+                  <Input
+                    type="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    size="lg"
+                  />
+                </FormControl>
+
                 <FormControl isRequired>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -100,17 +112,6 @@ function LoginPage() {
                 >
                   Sign In
                 </Button>
-
-                <Button
-                  type="submit"
-                  colorScheme="blue"
-                  size="lg"
-                  width="full"
-                  variant="ghost"
-                  onClick={handleSignUp}
-                >New user? Sign up!
-                </Button>
-
               </VStack>
             </form>
           </VStack>
@@ -120,4 +121,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SignupPage;

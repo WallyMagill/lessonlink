@@ -118,7 +118,7 @@ function DashboardPage() {
                       maxW="25rem"
                       minW="10rem"
                     >
-                      <LessonCard lesson={lesson} />
+                      <LessonCard lesson={lesson} onDelete={fetchAllLessons} />
                     </Box>
                   ))}
                 </Flex>

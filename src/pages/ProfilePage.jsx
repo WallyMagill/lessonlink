@@ -21,7 +21,7 @@ function ProfilePage() {
     // Assuming we have the current user's ID stored somewhere
     const userId = localStorage.getItem('userId');
     if (userId) {
-      store.fetchUser(userId);
+      store.userSlice.fetchUser(userId);
     }
   }, []);
 
