@@ -88,7 +88,7 @@ export default function createLessonSlice(set, get) {
       }));
 
       try {
-        const response = await axios.post(`${API_URL}/lessons`, lessonData);
+        const response = await axios.post(`${API_URL}/lessons`, lessonData, { headers: { authorization: localStorage.getItem('token') } });
         const newLesson = response.data;
 
         set((state) => ({
@@ -127,7 +127,7 @@ export default function createLessonSlice(set, get) {
       }));
 
       try {
-        const response = await axios.put(`${API_URL}/lessons/${id}`, lessonData);
+        const response = await axios.put(`${API_URL}/lessons/${id}`, lessonData, { headers: { authorization: localStorage.getItem('token') } });
         const updatedLesson = response.data;
 
         set((state) => ({
@@ -166,7 +166,7 @@ export default function createLessonSlice(set, get) {
       }));
 
       try {
-        await axios.delete(`${API_URL}/lessons/${id}`);
+        await axios.delete(`${API_URL}/lessons/${id}`, { headers: { authorization: localStorage.getItem('token') } });
 
         set((state) => {
           const updatedAll = state.lessonSlice.all.filter((lesson) => lesson._id !== id);
