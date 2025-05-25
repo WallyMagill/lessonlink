@@ -42,18 +42,14 @@ function LessonCard({ lesson, onDelete }) {
   const selectColor = async (color) => {
     try {
       // Update color in backend
-      console.log('one');
       await updateLesson(lesson.id, {
         ...lesson,
         tag: color,
       });
-      console.log(color);
       // Update local state
       setSelectedColor(color);
-      console.log(selectedColor);
       // Close modal
       onClose();
-      console.log('four');
       // Show success toast
       toast({
         title: 'Color Updated',
