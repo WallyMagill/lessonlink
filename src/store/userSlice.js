@@ -9,39 +9,6 @@ export default function createUserSlice(set, get) {
     error: null,
     loading: false,
 
-    // fetch all users
-    fetchAllUsers: async () => {
-      set((state) => ({
-        ...state,
-        userSlice: {
-          ...state.userSlice,
-          loading: true,
-        },
-      }));
-
-      try {
-        const response = await axios.get(`${API_URL}/users`);
-        set((state) => ({
-          ...state,
-          userSlice: {
-            ...state.userSlice,
-            all: response.data,
-            loading: false,
-            error: null,
-          },
-        }));
-      } catch (error) {
-        set((state) => ({
-          ...state,
-          userSlice: {
-            ...state.userSlice,
-            loading: false,
-            error: error.message,
-          },
-        }));
-      }
-    },
-
     // fetch one user
     fetchUser: async (id) => {
       set((state) => ({
@@ -53,7 +20,7 @@ export default function createUserSlice(set, get) {
       }));
 
       try {
-        const response = await axios.get(`${API_URL}/users/${id}`);
+        const response = await axios.get(`${API_URL}/users/`);
         set((state) => ({
           ...state,
           userSlice: {

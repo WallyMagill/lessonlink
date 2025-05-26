@@ -15,16 +15,13 @@ function ProfilePage() {
   const [newSubject, setNewSubject] = useState('');
 
   const updateUser = useStore(({ userSlice }) => userSlice.updateUser);
-  const fetchUser = useStore(({ userSlice }) => userSlice.fetchUser);
-  const currentUser = useStore(({ userSlice }) => userSlice.current);
+  const currentUser = useStore(({ authSlice }) => authSlice.user);
+  const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
 
   // don't have the user's id stored anywhere on front currently
   useEffect(() => {
     // Assuming we have the current user's ID stored somewhere
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      fetchUser(userId); // this will load the user into state
-    }
+    loadUser();
   }, []);
 
   useEffect(() => {
@@ -41,6 +38,7 @@ function ProfilePage() {
 
   const handleSave = async () => {
     try {
+      console.log(editedUser);
       await updateUser(editedUser.id, editedUser);
       // Show success message or handle response
     } catch (error) {
