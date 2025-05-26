@@ -14,12 +14,12 @@ import EmailPage from '../components/sharepage';
 function LessonEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const store = useStore();
   const [editedLesson, setEditedLesson] = useState(null);
 
   const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
+  const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -27,10 +27,9 @@ function LessonEditorPage() {
       try {
         await fetchLesson(id);
       } catch (error) {
-        // toast.error(`failed to load all the posts: ${error}`);
+        console.error('failed to retrieve post', error);
       }
     };
-
     wrapper();
   }, []);
 
@@ -53,6 +52,15 @@ function LessonEditorPage() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteLesson(id);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error deleting lesson:', error);
+    }
+  };
+
   const handleChange = (field, value) => {
     setEditedLesson((prev) => ({
       ...prev,
@@ -60,7 +68,7 @@ function LessonEditorPage() {
     }));
   };
 
-  if (store.loading) {
+  if (!lesson) {
     return <Text>Loading lesson...</Text>;
   }
 
@@ -229,11 +237,14 @@ function LessonEditorPage() {
                         </ListItem>
                       </OrderedList>
                     </Box>
+<<<<<<< HEAD
 
+=======
+>>>>>>> e33b90ed (can delete from edit page)
                     <Flex gap={4} mt={2}>
-                      {/* <IconButton icon={<FaPrint />} aria-label="Print" /> */}
                       <PrintPage />
                       <EmailPage />
+                      <button type="submit" onClick={handleDelete}>Delete Lesson</button>
                       <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
 
                       <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
