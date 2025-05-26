@@ -237,10 +237,6 @@ function LessonEditorPage() {
                         </ListItem>
                       </OrderedList>
                     </Box>
-<<<<<<< HEAD
-
-=======
->>>>>>> e33b90ed (can delete from edit page)
                     <Flex gap={4} mt={2}>
                       <PrintPage />
                       <EmailPage />
