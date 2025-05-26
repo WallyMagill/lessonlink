@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// import { ChromePicker } from 'react-color';
 import {
   Avatar, Stack, Box, Text,
   Menu, MenuButton, MenuList, MenuItem,
   IconButton,
-  useToast, // Center, Portal,
-  useDisclosure, Modal,
+  useToast,
+  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -15,6 +14,9 @@ import {
   ModalBody,
   SimpleGrid,
   Portal,
+  Button,
+  ModalFooter,
+
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import useStore from '../store/index';
@@ -22,10 +24,29 @@ import useStore from '../store/index';
 function LessonCard({ lesson, onDelete }) {
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedColor, setSelectedColor] = useState(lesson.tag || 'white');
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isColorModalOpen, setIsColorModalOpen] = useState(false);
+
+  // added these fns bc both color and delete modals were opening simultaneously
+
+  const openDeleteModal = () => {
+    setIsColorModalOpen(false);
+    setIsDeleteModalOpen(true);
+  };
+  const openColorModal = () => {
+    setIsDeleteModalOpen(false);
+    setIsColorModalOpen(true);
+  };
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const closeColorModal = () => {
+    setIsColorModalOpen(false);
+  };
 
   const COLOR_PALETTE = [
     'red', 'orange', 'yellow',
@@ -33,23 +54,16 @@ function LessonCard({ lesson, onDelete }) {
     'pink', 'teal', 'cyan',
   ];
 
-  const displayColors = (event) => {
-    event.preventDefault();
-    onOpen(); // Open the color selection modal
-  };
-
   const selectColor = async (color) => {
     try {
-      // Update color in backend
       await updateLesson(lesson.id, {
         ...lesson,
         tag: color,
       });
-      // Update local state
       setSelectedColor(color);
-      // Close modal
-      onClose();
-      // Show success toast
+      // Close modal after selected
+      closeColorModal();
+      // Show success
       toast({
         title: 'Color Updated',
         description: `Lesson color changed to ${color}`,
@@ -60,7 +74,7 @@ function LessonCard({ lesson, onDelete }) {
     } catch (error) {
       console.error('Error selecting color:', error);
 
-      // Show error toast
+      // Show error
       toast({
         title: 'Color Update Failed',
         description: 'Unable to update lesson color',
@@ -76,8 +90,7 @@ function LessonCard({ lesson, onDelete }) {
     navigate(`/edit/${lesson._id}`);
   };
 
-  const handleDelete = async (event) => {
-    event.preventDefault();
+  const handleDelete = async () => {
     try {
       await deleteLesson(lesson.id);
       toast({
@@ -87,6 +100,7 @@ function LessonCard({ lesson, onDelete }) {
         duration: 2000,
         isClosable: true,
       });
+      closeDeleteModal(); // close modal after
     } catch (error) {
       console.error('Error deleting lesson:', error);
     }
@@ -132,41 +146,76 @@ function LessonCard({ lesson, onDelete }) {
           <MenuList zIndex="10" position="relative">
             <MenuItem onClick={handleView}>View</MenuItem>
             <MenuItem onClick={handleView}>Edit</MenuItem>
-            <MenuItem onClick={handleDelete} color="red.500">Delete</MenuItem>
-
-            <MenuItem onClick={displayColors}>
+            <MenuItem onClick={openColorModal}>
               Change Folder Color
             </MenuItem>
-            {/* Other menu items */}
+            <MenuItem onClick={openDeleteModal} color="red.500">
+              Delete
+            </MenuItem>
+
+            <Modal
+              isOpen={isColorModalOpen}
+              onClose={closeColorModal}
+              size="md"
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Select Lesson Color</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <SimpleGrid columns={4} spacing={4}>
+                    {COLOR_PALETTE.map((color) => (
+                      <Box
+                        key={color}
+                        bg={`${color}.500`}
+                        height="50px"
+                        borderRadius="md"
+                        cursor="pointer"
+                        onClick={() => selectColor(color)}
+                        _hover={{
+                          transform: 'scale(1.1)',
+                          boxShadow: 'lg',
+                        }}
+                        transition="all 0.2s"
+                      />
+                    ))}
+                  </SimpleGrid>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+
+            <Modal
+              isOpen={isDeleteModalOpen}
+              onClose={closeDeleteModal}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Delete Lesson</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  Are you sure you want to delete this lesson?
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    variant="ghost"
+                    mr={3}
+                    onClick={closeDeleteModal}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+
           </MenuList>
         </Portal>
       </Menu>
-      <Modal isOpen={isOpen} onClose={onClose} size="md">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Select Lesson Color</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <SimpleGrid columns={4} spacing={4}>
-              {COLOR_PALETTE.map((color) => (
-                <Box
-                  key={color}
-                  bg={`${color}.500`}
-                  height="50px"
-                  borderRadius="md"
-                  cursor="pointer"
-                  onClick={(e) => selectColor(color)}
-                  _hover={{
-                    transform: 'scale(1.1)',
-                    boxShadow: 'lg',
-                  }}
-                  transition="all 0.2s"
-                />
-              ))}
-            </SimpleGrid>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
 
     </Box>
 
