@@ -7,29 +7,31 @@ import {
 import { EditIcon, AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import useStore from '../store';
-import useUserHandlers from '../handlers/userHandlers';
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const store = useStore();
-  const { handleUpdateUser } = useUserHandlers();
   const [editedUser, setEditedUser] = useState(null);
   const [newGrade, setNewGrade] = useState('');
   const [newSubject, setNewSubject] = useState('');
 
+  const updateUser = useStore(({ userSlice }) => userSlice.updateUser);
+  const fetchUser = useStore(({ userSlice }) => userSlice.fetchUser);
+  const currentUser = useStore(({ userSlice }) => userSlice.current);
+
+  // don't have the user's id stored anywhere on front currently
   useEffect(() => {
     // Assuming we have the current user's ID stored somewhere
     const userId = localStorage.getItem('userId');
     if (userId) {
-      store.userSlice.fetchUser(userId);
+      fetchUser(userId); // this will load the user into state
     }
   }, []);
 
   useEffect(() => {
-    if (store.current) {
-      setEditedUser(store.current);
+    if (currentUser) {
+      setEditedUser(currentUser);
     }
-  }, [store.current]);
+  }, [currentUser]);
 
   const handleOut = (event) => {
     event.preventDefault();
@@ -39,7 +41,7 @@ function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      await handleUpdateUser(editedUser._id, editedUser);
+      await updateUser(editedUser.id, editedUser);
       // Show success message or handle response
     } catch (error) {
       console.error('Error updating user:', error);
@@ -74,10 +76,6 @@ function ProfilePage() {
   const handleRemoveSubject = (subject) => {
     handleChange('subjects', editedUser.subjects.filter((s) => s !== subject));
   };
-
-  if (store.loading) {
-    return <Text>Loading profile...</Text>;
-  }
 
   if (!editedUser) {
     return <Text>User not found</Text>;
