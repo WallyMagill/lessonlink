@@ -21,6 +21,7 @@ function LoginPage() {
   const toast = useToast();
 
   const signinUser = useStore(({ authSlice }) => authSlice.signinUser);
+
   const handleSignUp = (event) => {
     event.preventDefault();
     navigate('/signup');
@@ -28,11 +29,7 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const result = await signinUser({ email, password }, navigate);
-
-      if (!result) {
-        throw new Error('Invalid Login');
-      }
+      await signinUser({ email, password }, navigate);
       navigate('/dashboard');
     } catch (error) {
       toast({

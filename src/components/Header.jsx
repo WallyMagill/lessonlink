@@ -19,12 +19,13 @@ function Header() {
   const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
   const email = useStore(({ authSlice }) => authSlice.email);
 
+  // this does not work, not connected to the specific user
   const handleProfile = (event) => {
     event.preventDefault();
     navigate('/profile');
   };
 
-  const handleName = (event) => {
+  const handleHome = (event) => {
     event.preventDefault();
     navigate('/dashboard');
   };
@@ -39,7 +40,7 @@ function Header() {
     navigate('/login');
   };
 
-  const handleOut = (event) => {
+  const handleSignOut = (event) => {
     event.preventDefault();
     signoutUser();
     navigate('/');
@@ -63,7 +64,7 @@ function Header() {
         color="#1a365d"
         background="transparent"
         _active={{ opacity: 0.8 }}
-        onClick={handleName}
+        onClick={handleHome}
       >
         LESSONLINK
       </Button>
@@ -86,7 +87,7 @@ function Header() {
                     <Button w="100%" variant="ghost">Display Options</Button>
                     <Button w="100%" variant="ghost">Sharing</Button>
                     <Button w="100%" variant="ghost" onClick={handleProfile}>Account</Button>
-                    <Button w="100%" variant="ghost" onClick={handleOut}>Sign Out</Button>
+                    <Button w="100%" variant="ghost" onClick={handleSignOut}>Sign Out</Button>
                   </>
                 )
                   : (

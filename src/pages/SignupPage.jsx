@@ -26,14 +26,7 @@ function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // TODO: Implement actual login logic here
-      console.log(username);
-      console.log(email);
-
-      console.log(password);
-
       await signupUser({ username, email, password }, navigate);
-      console.log('Signup attempted with:', { email, password });
       navigate('/dashboard');
     } catch (error) {
       toast({
