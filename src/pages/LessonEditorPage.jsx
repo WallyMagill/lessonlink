@@ -250,7 +250,16 @@ function LessonEditorPage() {
               </Flex>
             </TabPanel>
             <TabPanel><Text>Template content goes here.</Text></TabPanel>
-            <TabPanel><Text>Custom content goes here.</Text></TabPanel>
+            <TabPanel>
+              <div style={{ textAlign: 'center' }}>
+                <p>New Feature Coming Soon!</p>
+                <img
+                  src="https://s4.ad.brown.edu/Projects/UTP2/under-construction-yom.png"
+                  alt="Page under construction"
+                  style={{ maxWidth: '100%', height: 'auto', justifySelf: 'center' }}
+                />
+              </div>
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </Box>
