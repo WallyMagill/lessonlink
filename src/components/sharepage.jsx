@@ -73,7 +73,14 @@ function EmailPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@example.com"
                 style={{
-                  width: '100%', marginTop: '8px', marginBottom: '12px', padding: '8px',
+                  width: '100%',
+                  marginTop: '8px',
+                  marginBottom: '12px',
+                  padding: '8px',
+                  borderRadius: '5px',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'black',
                 }}
               />
             </div>

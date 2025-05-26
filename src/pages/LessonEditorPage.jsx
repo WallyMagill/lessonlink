@@ -229,12 +229,7 @@ function LessonEditorPage() {
                         </ListItem>
                       </OrderedList>
                     </Box>
-                    {/* <Flex gap={4} mt={2}>
-                      <IconButton icon={<FaPrint />} aria-label="Print" />
-                      <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
-                      <IconButton icon={<FaExternalLinkAlt />} aria-label="Share" />
-                      <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
-                    </Flex> */}
+
                     <Flex gap={4} mt={2}>
                       {/* <IconButton icon={<FaPrint />} aria-label="Print" /> */}
                       <PrintPage />
