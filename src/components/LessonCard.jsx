@@ -14,6 +14,7 @@ import {
   ModalCloseButton,
   ModalBody,
   SimpleGrid,
+  Portal,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import useStore from '../store/index';
@@ -127,16 +128,18 @@ function LessonCard({ lesson, onDelete }) {
           right="2"
           aria-label="Options"
         />
-        <MenuList>
-          <MenuItem onClick={handleView}>View</MenuItem>
-          <MenuItem onClick={handleView}>Edit</MenuItem>
-          <MenuItem onClick={handleDelete} color="red.500">Delete</MenuItem>
+        <Portal>
+          <MenuList zIndex="10" position="relative">
+            <MenuItem onClick={handleView}>View</MenuItem>
+            <MenuItem onClick={handleView}>Edit</MenuItem>
+            <MenuItem onClick={handleDelete} color="red.500">Delete</MenuItem>
 
-          <MenuItem onClick={displayColors}>
-            Change Folder Color
-          </MenuItem>
-          {/* Other menu items */}
-        </MenuList>
+            <MenuItem onClick={displayColors}>
+              Change Folder Color
+            </MenuItem>
+            {/* Other menu items */}
+          </MenuList>
+        </Portal>
       </Menu>
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
