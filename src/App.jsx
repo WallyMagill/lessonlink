@@ -32,9 +32,20 @@ const history = createBrowserHistory(); // this also allows us pass new future f
 
 function App() {
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+
   useEffect(() => {
-    loadUser();
+  // use a wrapper so can catch failed promises
+    const wrapper = async () => {
+      try {
+        await loadUser();
+      } catch (error) {
+        console.error('Failed to load current user', error);
+      }
+    };
+
+    wrapper();
   }, []);
+
   return (
     <Provider>
       <HistoryRouter

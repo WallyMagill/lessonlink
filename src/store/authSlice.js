@@ -8,6 +8,7 @@ export default function createAuthSlice(set, get) {
   return {
     authenticated: false,
     email: '',
+    // have to update load user to retrieve the user data, set this up on backend
     loadUser: () => {
       const token = localStorage.getItem('token');
       if (token) {
