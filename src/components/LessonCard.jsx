@@ -16,17 +16,15 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import useLessonHandlers from '../handlers/lessonHandlers';
 import useStore from '../store/index';
-// import updateLessonColor from '../handlers/lessonHandlers';
 
 function LessonCard({ lesson, onDelete }) {
   const navigate = useNavigate();
-  const { handleDeleteLesson } = useLessonHandlers();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedColor, setSelectedColor] = useState(lesson.tag || 'white');
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
+  const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
 
   const COLOR_PALETTE = [
     'red', 'orange', 'yellow',
@@ -80,10 +78,14 @@ function LessonCard({ lesson, onDelete }) {
   const handleDelete = async (event) => {
     event.preventDefault();
     try {
-      await handleDeleteLesson(lesson._id);
-      if (onDelete) {
-        onDelete();
-      }
+      await deleteLesson(lesson.id);
+      toast({
+        title: 'Lesson Deleted',
+        description: 'Lesson successfully deleted',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error('Error deleting lesson:', error);
     }

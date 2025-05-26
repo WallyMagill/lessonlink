@@ -15,6 +15,7 @@ function DashboardPage() {
   const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
   const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
+  const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
@@ -31,6 +32,10 @@ function DashboardPage() {
 
   const handleAdd = async (event) => {
     event.preventDefault();
+    if (!isAuth) {
+      navigate('/login');
+      return;
+    }
     try {
       const newLesson = await createLesson({
         title: 'New Lesson',
