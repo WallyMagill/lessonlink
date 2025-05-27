@@ -20,7 +20,7 @@ function DashboardPage() {
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
   const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
   const createFolder = useStore(({ userSlice }) => userSlice.createFolder);
-  const user = useStore(({ authSlice }) => authSlice.user);
+  const user = useStore(({ userSlice }) => userSlice.current);
   const folders = user?.folders || {};
 
   // const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);

@@ -2,8 +2,8 @@
 
 import axios from 'axios';
 
-// const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
-const ROOT_URL = 'http://localhost:3001/api';
+const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
+// const ROOT_URL = 'http://localhost:3001/api';
 
 export default function createAuthSlice(set, get) {
   return {
@@ -24,6 +24,11 @@ export default function createAuthSlice(set, get) {
             authenticated: true,
             email: user.email,
             user,
+          },
+          userSlice: {
+            ...state.userSlice,
+            current: user,
+            error: null,
           },
         }));
       } catch (error) {
