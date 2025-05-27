@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'https://project-api-lessonlink.onrender.com/api';
+// const API_URL = 'http://localhost:3001/api';
 
 export default function createUserSlice(set, get) {
   return {
@@ -92,7 +93,7 @@ export default function createUserSlice(set, get) {
       }));
 
       try {
-        const response = await axios.put(`${API_URL}/users/${id}`, userData);
+        const response = await axios.put(`${API_URL}/users`, userData, { headers: { authorization: localStorage.getItem('token') } });
         const updatedUser = response.data;
 
         set((state) => ({
@@ -131,7 +132,7 @@ export default function createUserSlice(set, get) {
       }));
 
       try {
-        await axios.delete(`${API_URL}/users/${id}`);
+        await axios.delete(`${API_URL}/users`, { headers: { authorization: localStorage.getItem('token') } });
 
         set((state) => {
           const updatedAll = state.userSlice.all.filter((user) => user._id !== id);
