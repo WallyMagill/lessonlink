@@ -2,14 +2,14 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const ROOT_URL = 'http://localhost:3001/api';
+// const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
+const ROOT_URL = 'http://localhost:3001/api';
 
 export default function createAuthSlice(set, get) {
   return {
     authenticated: false,
     email: '',
-    user: null,
+    user: {},
     // have to update load user to retrieve the user data, set this up on backend
     loadUser: async () => {
       const token = localStorage.getItem('token');
@@ -17,6 +17,7 @@ export default function createAuthSlice(set, get) {
       try {
         const response = await axios.get(`${ROOT_URL}/users`, { headers: { authorization: token } });
         const user = response.data;
+        console.log(user);
         set((state) => ({
           authSlice: {
             ...state.authSlice,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box, Flex, Stack, Input, IconButton, Button, Text,
 } from '@chakra-ui/react';
@@ -12,10 +12,20 @@ import useStore from '../store/index';
 function DashboardPage() {
   const navigate = useNavigate();
 
+  const [folderName, setFolderName] = useState('');
+
+  const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
   const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
   const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
   const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
+  const createFolder = useStore(({ userSlice }) => userSlice.createFolder);
+  const user = useStore(({ authSlice }) => authSlice.user);
+  const folders = user?.folders || {};
+
+  // const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
+  // const deleteFolder = useStore(({ userSlice }) => userSlice.deleteFolder);
+  // const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
@@ -29,6 +39,21 @@ function DashboardPage() {
 
     wrapper();
   }, []);
+
+  // Fetch user data if authenticated
+  useEffect(() => {
+    const wrapper = async () => {
+      try {
+        if (isAuth) {
+          await loadUser(); // This should populate userSlice.current
+        }
+      } catch (error) {
+        console.error('Failed to load user', error);
+      }
+    };
+
+    wrapper();
+  }, [isAuth, loadUser]);
 
   const handleAdd = async (event) => {
     event.preventDefault();
@@ -80,13 +105,22 @@ function DashboardPage() {
             overflowY="auto"
           >
             <Flex mb={4} gap={2} align="center">
-              <Input placeholder="Search grade..." size="md" bg="white" />
-              <IconButton icon={<AddIcon />} aria-label="Add grade" colorScheme="blue" />
+              <Input placeholder="Search grade..." size="md" bg="white" onChange={(e) => setFolderName(e.target.value)} />
+              <IconButton icon={<AddIcon />} aria-label="Add grade" colorScheme="blue" onClick={(e) => { createFolder(folderName); }} />
             </Flex>
             <Box flex={1} overflowY="auto">
               <Stack spacing={4}>
-                {['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'].map((grade) => (
-                  <Button key={grade} w="100%" bg="blue.100" boxShadow="md" _hover={{ bg: 'blue.200' }}>
+                {(isAuth
+                  ? Object.keys(folders)
+                  : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6']
+                ).map((grade) => (
+                  <Button
+                    key={grade}
+                    w="100%"
+                    bg="blue.100"
+                    boxShadow="md"
+                    _hover={{ bg: 'blue.200' }}
+                  >
                     {grade}
                   </Button>
                 ))}

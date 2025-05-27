@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const API_URL = 'http://localhost:3001/api';
+// const API_URL = 'https://project-api-lessonlink.onrender.com/api';
+const API_URL = 'http://localhost:3001/api';
 
 export default function createUserSlice(set, get) {
   return {
@@ -155,6 +155,107 @@ export default function createUserSlice(set, get) {
           userSlice: {
             ...state.userSlice,
             loading: false,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
+    createFolder: async (foldername) => {
+      try {
+        console.log(foldername);
+        const body = { foldername };
+        const result = await axios.post(`${API_URL}/users/folders`, body, { headers: { authorization: localStorage.getItem('token') } });
+        const updatedUser = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: updatedUser,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
+    addLessonToFolder: async (foldername, lessonId) => {
+      try {
+        const body = { foldername, lessonId };
+        const result = await axios.put(`${API_URL}/users/folders`, body, { headers: { authorization: localStorage.getItem('token') } });
+        const updatedUser = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: updatedUser,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
+    deleteFolder: async (foldername) => {
+      try {
+        const body = { foldername };
+        const result = await axios.delete(`${API_URL}/users/folders`, body, { headers: { authorization: localStorage.getItem('token') } });
+        const updatedUser = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: updatedUser,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
+    deleteLessonFromFolder: async (foldername, lessonId) => {
+      try {
+        const body = { foldername, lessonId };
+        const result = await axios.delete(`${API_URL}/users/folders/lesson`, body, { headers: { authorization: localStorage.getItem('token') } });
+        const updatedUser = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: updatedUser,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
             error: error.message,
           },
         }));
