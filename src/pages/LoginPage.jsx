@@ -43,7 +43,7 @@ function LoginPage() {
   };
 
   return (
-    <Box minH="100vh" minW="100vw" bg="gray.50">
+    <Box minH="100vh" minW="100%" bg="gray.50">
       <Header />
       <Box
         display="flex"

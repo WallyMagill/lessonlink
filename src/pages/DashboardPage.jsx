@@ -82,7 +82,7 @@ function DashboardPage() {
   return (
     <Box
       minH="100vh"
-      minW="100vw"
+      minW="100%"
       bg="gray.50"
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
       overflowX="hidden"

@@ -49,7 +49,7 @@ function Header() {
   return (
     <Flex
       as="header"
-      width="100vw"
+      width="100%"
       display="flex"
       justifyContent="space-between"
       alignItems="center"
