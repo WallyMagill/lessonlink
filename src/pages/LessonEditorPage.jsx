@@ -78,7 +78,7 @@ function LessonEditorPage() {
 
   return (
     <Box
-      width="100vw"
+      width="100%"
       minH="100vh"
       bg="#f7fafc"
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
