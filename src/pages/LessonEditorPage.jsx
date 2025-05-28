@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
-  Button, Textarea,
+  Button, Textarea, Switch,
 } from '@chakra-ui/react';
 import { FaFileAlt } from 'react-icons/fa';
 import Header from '../components/Header';
@@ -254,7 +254,16 @@ function LessonEditorPage() {
                       <PrintPage />
                       <EmailPage />
                       <button type="submit" onClick={handleDelete}>Delete Lesson</button>
-                      <button type="submit" onClick={() => handleChange('status', 'protected')}>Set Private</button>
+                      {/* <button type="submit" onClick={() => handleChange('status', 'protected')}>Set Private</button> */}
+                      <Flex alignItems="center" gap={2}>
+                        <Text>
+                          {editedLesson.status === 'public' ? 'Public' : 'Private'}
+                        </Text>
+                        <Switch
+                          isChecked={editedLesson.status === 'public'}
+                          onChange={() => handleChange('status', editedLesson.status === 'public' ? 'protected' : 'public')}
+                        />
+                      </Flex>
                       <Input
                         onChange={(e) => setSharedUser(e.target.value)}
                         mb={2}
