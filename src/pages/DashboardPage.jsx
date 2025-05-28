@@ -38,7 +38,7 @@ function DashboardPage() {
   // use a wrapper so can catch failed promises
     const wrapper = async () => {
       try {
-        await fetchAllLessons();
+        await fetchAllLessons(isAuth);
       } catch (error) {
         // toast.error(`failed to load all the posts: ${error}`);
       }
@@ -53,7 +53,7 @@ function DashboardPage() {
       try {
         if (isAuth) {
           await loadUser(); // This should populate userSlice.current
-          await fetchAllLessons();
+          await fetchAllLessons(isAuth);
         }
       } catch (error) {
         console.error('Failed to load user', error);
@@ -363,7 +363,7 @@ function DashboardPage() {
                       maxW="25rem"
                       minW="10rem"
                     >
-                      <LessonCard lesson={lesson} onDelete={(e) => fetchAllLessons()} />
+                      <LessonCard lesson={lesson} onDelete={(e) => fetchAllLessons(isAuth)} />
                     </Box>
                   ))}
                 </Flex>
