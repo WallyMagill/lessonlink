@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Flex, Stack, Input, IconButton, Button, Text,
+  Box, Flex, Stack, Input, IconButton, Button, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
 import Header from '../components/Header';
@@ -11,8 +11,15 @@ import useStore from '../store/index';
 
 function DashboardPage() {
   const navigate = useNavigate();
+  const toast = useToast();
 
-  const [folderName, setFolderName] = useState('');
+  const [folderSearch, setFolderSearch] = useState('');
+  const [newFolderName, setNewFolderName] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [folderToDelete, setFolderToDelete] = useState(null);
+
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
   const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
@@ -20,6 +27,7 @@ function DashboardPage() {
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
   const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
   const createFolder = useStore(({ userSlice }) => userSlice.createFolder);
+  const deleteFolder = useStore(({ userSlice }) => userSlice.deleteFolder);
   const user = useStore(({ userSlice }) => userSlice.current);
   const folders = user?.folders || {};
 
@@ -55,6 +63,51 @@ function DashboardPage() {
 
     wrapper();
   }, [isAuth, loadUser]);
+
+  // Filter folders by search
+  const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
+
+  // Filter lessons by selected folder
+  let displayedLessons = lessons;
+  if (selectedFolder && folders[selectedFolder]) {
+    const lessonIds = folders[selectedFolder];
+    displayedLessons = lessons.filter((lesson) => lessonIds.includes(lesson._id || lesson.id));
+  }
+
+  // Add folder handler
+  const handleAddFolder = async () => {
+    if (!newFolderName.trim()) return;
+    try {
+      await createFolder(newFolderName.trim());
+      setNewFolderName('');
+      onAddClose();
+      toast({
+        title: 'Folder created', status: 'success', duration: 2000, isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
+      });
+    }
+  };
+
+  // Delete folder handler
+  const handleDeleteFolder = async () => {
+    if (!folderToDelete) return;
+    try {
+      await deleteFolder(folderToDelete);
+      if (selectedFolder === folderToDelete) setSelectedFolder(null);
+      setFolderToDelete(null);
+      onDeleteClose();
+      toast({
+        title: 'Folder deleted', status: 'success', duration: 2000, isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
+      });
+    }
+  };
 
   const handleAdd = async (event) => {
     event.preventDefault();
@@ -106,28 +159,92 @@ function DashboardPage() {
             overflowY="auto"
           >
             <Flex mb={4} gap={2} align="center">
-              <Input placeholder="Search grade..." size="md" bg="white" onChange={(e) => setFolderName(e.target.value)} />
-              <IconButton icon={<AddIcon />} aria-label="Add grade" colorScheme="blue" onClick={(e) => { createFolder(folderName); }} />
+              <Input
+                placeholder="Search folders..."
+                size="md"
+                bg="white"
+                value={folderSearch}
+                onChange={(e) => setFolderSearch(e.target.value)}
+              />
+              <IconButton
+                icon={<AddIcon />}
+                aria-label="Add folder"
+                colorScheme="blue"
+                onClick={onAddOpen}
+              />
             </Flex>
             <Box flex={1} overflowY="auto">
-              <Stack spacing={4}>
-                {(isAuth
-                  ? Object.keys(folders)
-                  : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6']
-                ).map((grade) => (
-                  <Button
-                    key={grade}
-                    w="100%"
-                    bg="blue.100"
-                    boxShadow="md"
-                    _hover={{ bg: 'blue.200' }}
-                  >
-                    {grade}
-                  </Button>
-                ))}
+              <Stack spacing={2}>
+                {(isAuth ? filteredFolders : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'])
+                  .map((grade) => (
+                    <Flex key={grade} align="center" position="relative" _hover={{ bg: 'blue.50' }}>
+                      <Button
+                        w="100%"
+                        bg={selectedFolder === grade ? 'blue.200' : 'blue.100'}
+                        boxShadow="md"
+                        _hover={{ bg: 'blue.300' }}
+                        onClick={() => setSelectedFolder(selectedFolder === grade ? null : grade)}
+                        fontWeight={selectedFolder === grade ? 'bold' : 'normal'}
+                        justifyContent="flex-start"
+                        pr={selectedFolder === grade ? 10 : 8}
+                      >
+                        {grade}
+                      </Button>
+                      {isAuth && (
+                        <IconButton
+                          icon={<DeleteIcon />}
+                          aria-label="Delete folder"
+                          size="xs"
+                          colorScheme="red"
+                          variant="ghost"
+                          position="absolute"
+                          right={1}
+                          top="50%"
+                          transform="translateY(-50%)"
+                          opacity={0.7}
+                          onClick={() => { setFolderToDelete(grade); onDeleteOpen(); }}
+                        />
+                      )}
+                    </Flex>
+                  ))}
               </Stack>
             </Box>
           </Box>
+          {/* Add Folder Modal */}
+          <Modal isOpen={isAddOpen} onClose={onAddClose} isCentered>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add New Folder</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Input
+                  placeholder="Folder name"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  autoFocus
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={onAddClose} mr={3} variant="ghost">Cancel</Button>
+                <Button colorScheme="blue" onClick={handleAddFolder}>Add</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          {/* Delete Folder Modal */}
+          <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} isCentered>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Delete Folder</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                Are you sure you want to delete the folder &quot;{folderToDelete}&quot;? This cannot be undone.
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={onDeleteClose} mr={3} variant="ghost">Cancel</Button>
+                <Button colorScheme="red" onClick={handleDeleteFolder}>Delete</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           {/* Main Content */}
           <Box
             flex={1}
@@ -147,13 +264,13 @@ function DashboardPage() {
               <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">
-              {lessons.length === 0 && (
+              {displayedLessons.length === 0 && (
                 <Text>No lessons available. Click the + button to create one!</Text>
               )}
-              {lessons.length > 0 && (
+              {displayedLessons.length > 0 && (
                 <Flex wrap="wrap" rowGap={6} columnGap={20} justifyContent="space-around" alignItems="flex-start" width="90%">
-                  {lessons.map((lesson) => (
-                    <Box key={lesson.id}
+                  {displayedLessons.map((lesson) => (
+                    <Box key={lesson.id || lesson._id}
                       flex="1 0 20rem"
                       maxW="25rem"
                       minW="10rem"

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const API_URL = 'https://project-api-lessonlink.onrender.com/api';
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'https://project-api-lessonlink.onrender.com/api';
+// const API_URL = 'http://localhost:3001/api';
 
 export default function createUserSlice(set, get) {
   return {
@@ -216,7 +216,13 @@ export default function createUserSlice(set, get) {
     deleteFolder: async (foldername) => {
       try {
         const body = { foldername };
-        const result = await axios.delete(`${API_URL}/users/folders`, body, { headers: { authorization: localStorage.getItem('token') } });
+        const result = await axios.delete(
+          `${API_URL}/users/folders`,
+          {
+            data: body,
+            headers: { authorization: localStorage.getItem('token') },
+          },
+        );
         const updatedUser = result.data;
         set((state) => ({
           ...state,

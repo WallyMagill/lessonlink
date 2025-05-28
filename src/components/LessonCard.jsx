@@ -16,7 +16,7 @@ import {
   Portal,
   Button,
   ModalFooter,
-
+  Input,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import useStore from '../store/index';
@@ -29,6 +29,36 @@ function LessonCard({ lesson, onDelete }) {
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isColorModalOpen, setIsColorModalOpen] = useState(false);
+  const [isAddToFolderModalOpen, setIsAddToFolderModalOpen] = useState(false);
+  const [folderSearch, setFolderSearch] = useState('');
+  const [selectedFolders, setSelectedFolders] = useState([]);
+  const user = useStore(({ userSlice }) => userSlice.current);
+  const folders = user?.folders || {};
+  const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
+
+  // Filter folders by search
+  const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
+
+  const handleAddToFolder = async () => {
+    try {
+      await Promise.all(selectedFolders.map((folder) => addLessonToFolder(folder, lesson._id || lesson.id)));
+      toast({
+        title: 'Lesson added to folders', status: 'success', duration: 2000, isClosable: true,
+      });
+      setIsAddToFolderModalOpen(false);
+      setSelectedFolders([]);
+    } catch (error) {
+      toast({
+        title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
+      });
+    }
+  };
+
+  const toggleFolderSelection = (folder) => {
+    setSelectedFolders((prev) => (prev.includes(folder)
+      ? prev.filter((f) => f !== folder)
+      : [...prev, folder]));
+  };
 
   // added these fns bc both color and delete modals were opening simultaneously
 
@@ -147,7 +177,10 @@ function LessonCard({ lesson, onDelete }) {
             <MenuItem onClick={handleView}>View</MenuItem>
             <MenuItem onClick={handleView}>Edit</MenuItem>
             <MenuItem onClick={openColorModal}>
-              Change Folder Color
+              Change Lesson Color
+            </MenuItem>
+            <MenuItem onClick={() => setIsAddToFolderModalOpen(true)}>
+              Add to Folder
             </MenuItem>
             <MenuItem onClick={openDeleteModal} color="red.500">
               Delete
@@ -209,6 +242,42 @@ function LessonCard({ lesson, onDelete }) {
                   >
                     Delete
                   </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+
+            <Modal
+              isOpen={isAddToFolderModalOpen}
+              onClose={() => setIsAddToFolderModalOpen(false)}
+              size="md"
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Add to Folder</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Input
+                    placeholder="Search folders..."
+                    value={folderSearch}
+                    onChange={(e) => setFolderSearch(e.target.value)}
+                    mb={4}
+                  />
+                  <Stack spacing={2}>
+                    {filteredFolders.map((folder) => (
+                      <Button
+                        key={folder}
+                        onClick={() => toggleFolderSelection(folder)}
+                        bg={selectedFolders.includes(folder) ? 'blue.200' : 'blue.100'}
+                        _hover={{ bg: 'blue.300' }}
+                      >
+                        {folder}
+                      </Button>
+                    ))}
+                  </Stack>
+                </ModalBody>
+                <ModalFooter>
+                  <Button onClick={() => setIsAddToFolderModalOpen(false)} mr={3} variant="ghost">Cancel</Button>
+                  <Button colorScheme="blue" onClick={handleAddToFolder}>Add</Button>
                 </ModalFooter>
               </ModalContent>
             </Modal>
