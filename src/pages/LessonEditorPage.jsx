@@ -15,11 +15,13 @@ function LessonEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [editedLesson, setEditedLesson] = useState(null);
+  const [sharedUser, setSharedUser] = useState('');
 
   const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
+  const shareLesson = useStore(({ lessonSlice }) => lessonSlice.shareLesson);
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -66,6 +68,17 @@ function LessonEditorPage() {
       ...prev,
       [field]: value,
     }));
+  };
+
+  const handleAddShared = async () => {
+    if (!sharedUser.trim()) return;
+    try {
+      await shareLesson(id, sharedUser);
+      // Clear input
+      setSharedUser('');
+    } catch (error) {
+      console.error('Failed to add shared user:', error);
+    }
   };
 
   if (!lesson) {
@@ -241,6 +254,13 @@ function LessonEditorPage() {
                       <PrintPage />
                       <EmailPage />
                       <button type="submit" onClick={handleDelete}>Delete Lesson</button>
+                      <button type="submit" onClick={() => handleChange('status', 'protected')}>Set Private</button>
+                      <Input
+                        onChange={(e) => setSharedUser(e.target.value)}
+                        mb={2}
+                        placeholder="enter an email to share with"
+                      />
+                      <Button onClick={handleAddShared} colorScheme="blue" mb={4}>Share</Button>
                       <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
 
                       <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>

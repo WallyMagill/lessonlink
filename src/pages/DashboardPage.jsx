@@ -38,7 +38,7 @@ function DashboardPage() {
     };
 
     wrapper();
-  }, []);
+  }, [user]);
 
   // Fetch user data if authenticated
   useEffect(() => {
@@ -46,6 +46,7 @@ function DashboardPage() {
       try {
         if (isAuth) {
           await loadUser(); // This should populate userSlice.current
+          await fetchAllLessons();
         }
       } catch (error) {
         console.error('Failed to load user', error);
@@ -71,7 +72,7 @@ function DashboardPage() {
         standards: [],
         grade: 0,
         subject: '',
-        status: 'private',
+        status: 'public',
       });
       navigate(`/edit/${newLesson._id}`);
     } catch (error) {
@@ -157,7 +158,7 @@ function DashboardPage() {
                       maxW="25rem"
                       minW="10rem"
                     >
-                      <LessonCard lesson={lesson} onDelete={fetchAllLessons} />
+                      <LessonCard lesson={lesson} onDelete={(e) => fetchAllLessons()} />
                     </Box>
                   ))}
                 </Flex>

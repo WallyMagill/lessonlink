@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const API_URL = 'http://localhost:3001/api';
+// const API_URL = 'https://project-api-lessonlink.onrender.com/api';
+const API_URL = 'http://localhost:3001/api';
 
 export default function createLessonSlice(set, get) {
   return {
@@ -21,7 +21,7 @@ export default function createLessonSlice(set, get) {
       }), false, 'lessons/fetchAllLessons');
 
       try {
-        const response = await axios.get(`${API_URL}/lessons`);
+        const response = await axios.get(`${API_URL}/lessons`, { headers: { authorization: localStorage.getItem('token') } });
         console.log(response.data);
 
         set((state) => ({
@@ -183,6 +183,26 @@ export default function createLessonSlice(set, get) {
               error: null,
             },
           };
+        });
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            loading: false,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
+    // sharing a lesson
+    shareLesson: async (id, email) => {
+      try {
+        const body = { email };
+        await axios.post(`${API_URL}/lessons/${id}/share`, body, {
+          headers: { authorization: localStorage.getItem('token') },
         });
       } catch (error) {
         set((state) => ({
