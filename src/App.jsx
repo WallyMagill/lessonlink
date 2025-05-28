@@ -33,12 +33,17 @@ const history = createBrowserHistory(); // this also allows us pass new future f
 
 function App() {
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+  const fetchStandards = useStore(({ standardSlice }) => standardSlice.fetchStandards);
+  const hasLoadedStandards = useStore(({ standardSlice }) => standardSlice.hasLoadedStandards);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
     const wrapper = async () => {
       try {
         await loadUser();
+        if (!hasLoadedStandards) {
+          await fetchStandards();
+        }
       } catch (error) {
         console.error('Failed to load current user', error);
       }

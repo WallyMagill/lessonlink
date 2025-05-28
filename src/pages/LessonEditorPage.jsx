@@ -26,6 +26,17 @@ function LessonEditorPage() {
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
   const shareLesson = useStore(({ lessonSlice }) => lessonSlice.shareLesson);
+  const standards = useStore(({ standardSlice }) => standardSlice.standards);
+
+  const [subjectFilter, setSubjectFilter] = useState('');
+  const [gradeFilter, setGradeFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredStandards = standards.filter((s) => {
+    return (!subjectFilter || s.subject === subjectFilter)
+         && (!gradeFilter || s.grade.toString() === gradeFilter);
+  });
+  const visibleStandards = filteredStandards.filter((s) => s.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -100,13 +111,19 @@ function LessonEditorPage() {
   return (
     <Box
       width="100%"
-      minH="100vh"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
       bg="#f7fafc"
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
-      overflowX="hidden"
+      overflow="hidden"
     >
       <Header />
-      <Box p={6}>
+      <Box
+        flex="1"
+        overflowY="auto"
+        p={6}
+      >
         <Tabs
           variant="enclosed"
           colorScheme="blue"
@@ -127,17 +144,24 @@ function LessonEditorPage() {
                 {showStandards && (
                   <Box
                     width="250px"
+                    maxH="100vh"
+                    overflowY="auto"
                     bg="white"
                     p={4}
                     boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                     borderRadius="md"
                   >
-                    <Input placeholder="Search Standards..." mb={4} />
+                    <Input
+                      placeholder="Search Standards..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      mb={4}
+                    />
                     <Stack spacing={3}>
                       <Select
                         placeholder="Filter by Subject"
                         value={editedLesson.subject}
-                        onChange={(e) => handleChange('subject', e.target.value)}
+                        onChange={(e) => setSubjectFilter(e.target.value)}
                       >
                         <option>Science</option>
                         <option>Math</option>
@@ -146,13 +170,39 @@ function LessonEditorPage() {
                       <Select
                         placeholder="Filter by Grade"
                         value={editedLesson.grade}
-                        onChange={(e) => handleChange('grade', parseInt(e.target.value, 10))}
+                        onChange={(e) => setGradeFilter(parseInt(e.target.value, 10))}
                       >
+
                         <option value="3">Grade 3</option>
                         <option value="4">Grade 4</option>
                         <option value="5">Grade 5</option>
                         <option value="6">Grade 6</option>
                       </Select>
+                      {Object.entries(
+                        visibleStandards.reduce((acc, s) => {
+                          acc[s.anchorStandard] = acc[s.anchorStandard] || [];
+                          acc[s.anchorStandard].push(s);
+                          return acc;
+                        }, {}),
+                      ).map(([anchor, group]) => (
+                        <Box key={anchor}>
+                          <Text fontWeight="bold" mt={4}>{anchor}</Text>
+                          <Stack spacing={1} pl={2}>
+                            {group.map((standard) => (
+                              <Box
+                                key={standard.standardCode}
+                                p={2}
+                                bg="gray.50"
+                                borderRadius="md"
+                                fontSize="sm"
+                                _hover={{ bg: 'gray.100' }}
+                              >
+                                {standard.description}
+                              </Box>
+                            ))}
+                          </Stack>
+                        </Box>
+                      ))}
                     </Stack>
                   </Box>
                 )}
