@@ -44,6 +44,9 @@ function LessonCard({ lesson, onDelete }) {
   // Get folders the lesson is in
   const lessonFolders = Object.keys(folders).filter((folder) => folders[folder].includes(lesson._id || lesson.id));
 
+  // Filter folders to only show folders the lesson is not in
+  const availableFolders = filteredFolders.filter((folder) => !lessonFolders.includes(folder));
+
   const handleAddToFolder = async () => {
     try {
       await Promise.all(selectedFolders.map((folder) => addLessonToFolder(folder, lesson._id || lesson.id)));
@@ -286,11 +289,11 @@ function LessonCard({ lesson, onDelete }) {
                     mb={4}
                   />
                   <Stack spacing={2}>
-                    {filteredFolders.map((folder) => (
+                    {availableFolders.map((folder) => (
                       <Button
                         key={folder}
                         onClick={() => toggleFolderSelection(folder)}
-                        bg={selectedFolders.includes(folder) ? 'blue.200' : 'blue.100'}
+                        bg={selectedFolders.includes(folder) ? 'blue.300' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
                       >
                         {folder}
@@ -320,7 +323,7 @@ function LessonCard({ lesson, onDelete }) {
                       <Button
                         key={folder}
                         onClick={() => toggleFolderSelection(folder)}
-                        bg={selectedFolders.includes(folder) ? 'blue.200' : 'blue.100'}
+                        bg={selectedFolders.includes(folder) ? 'blue.300' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
                       >
                         {folder}
