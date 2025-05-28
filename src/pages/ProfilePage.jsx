@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Flex, Stack, Heading, IconButton, Input, Avatar, Button, Text,
-  Tag, TagLabel, Select,
+  Tag, TagLabel, Select, useToast,
 } from '@chakra-ui/react';
 import { EditIcon, AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import useStore from '../store';
 
 function ProfilePage() {
+  const toast = useToast();
   const navigate = useNavigate();
   const [editedUser, setEditedUser] = useState(null);
   const [newGrade, setNewGrade] = useState('');
@@ -40,9 +41,41 @@ function ProfilePage() {
     try {
       console.log(editedUser);
       await updateUser(editedUser.id, editedUser);
-      // Show success message or handle response
+      navigate('/dashboard');
+      toast({
+        position: 'top',
+        duration: 2000,
+        render: () => (
+          <Box
+            bg="green.100"
+            color="green.800"
+            rounded="md"
+            shadow="md"
+            fontWeight="medium"
+            p={3}
+          >
+            Your profile was successfully updated!
+          </Box>
+        ),
+      });
     } catch (error) {
       console.error('Error updating user:', error);
+      toast({
+        position: 'top',
+        duration: 2000,
+        render: () => (
+          <Box
+            bg="red.100"
+            color="red.800"
+            rounded="md"
+            shadow="md"
+            fontWeight="medium"
+            p={3}
+          >
+            Sorry! Your profile failed to update.
+          </Box>
+        ),
+      });
     }
   };
 
