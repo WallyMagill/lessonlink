@@ -17,6 +17,8 @@ function DashboardPage() {
   const [newFolderName, setNewFolderName] = useState('');
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [folderToDelete, setFolderToDelete] = useState(null);
+  const [dragOverFolder, setDragOverFolder] = useState(null);
+  const [cardPosition, setCardPosition] = useState(null);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
@@ -30,10 +32,7 @@ function DashboardPage() {
   const deleteFolder = useStore(({ userSlice }) => userSlice.deleteFolder);
   const user = useStore(({ userSlice }) => userSlice.current);
   const folders = user?.folders || {};
-
-  // const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
-  // const deleteFolder = useStore(({ userSlice }) => userSlice.deleteFolder);
-  // const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
+  const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
@@ -133,6 +132,56 @@ function DashboardPage() {
     }
   };
 
+  const handleDragOver = (e, folder) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverFolder(folder);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverFolder(null);
+  };
+
+  const handleDragEnd = () => {
+    setDragOverFolder(null);
+    setCardPosition(null);
+  };
+
+  const handleDrop = async (e, folder) => {
+    e.preventDefault();
+    setDragOverFolder(null);
+    setCardPosition(null);
+
+    try {
+      const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+      await addLessonToFolder(folder, data.lessonId);
+      toast({
+        title: 'Lesson Added',
+        description: `Added "${data.lessonTitle}" to "${folder}"`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleDragStart = (e) => {
+    try {
+      const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+      setCardPosition(data.position);
+    } catch (error) {
+      console.error('Error parsing drag data:', error);
+    }
+  };
+
   return (
     <Box
       minH="100vh"
@@ -141,6 +190,7 @@ function DashboardPage() {
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
       overflowX="hidden"
       padding={0}
+      position="relative"
     >
       <Header />
       <Box p={6}>
@@ -177,7 +227,19 @@ function DashboardPage() {
               <Stack spacing={2}>
                 {(isAuth ? filteredFolders : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'])
                   .map((grade) => (
-                    <Flex key={grade} align="center" position="relative" _hover={{ bg: 'blue.50' }}>
+                    <Flex
+                      key={grade}
+                      align="center"
+                      position="relative"
+                      _hover={{ bg: 'blue.50' }}
+                      onDragOver={(e) => handleDragOver(e, grade)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, grade)}
+                      bg={dragOverFolder === grade ? 'blue.200' : 'transparent'}
+                      transition="background-color 0.2s"
+                      borderRadius="md"
+                      p={1}
+                    >
                       <Button
                         w="100%"
                         bg={selectedFolder === grade ? 'blue.200' : 'blue.100'}
@@ -210,6 +272,30 @@ function DashboardPage() {
               </Stack>
             </Box>
           </Box>
+          {/* Floating Label for Drag Over */}
+          {dragOverFolder && cardPosition && (
+            <Box
+              position="fixed"
+              left={cardPosition.x}
+              top={cardPosition.y}
+              width={cardPosition.width}
+              height={cardPosition.height}
+              bg="blue.500"
+              color="white"
+              borderRadius="md"
+              boxShadow="2xl"
+              zIndex={1000}
+              pointerEvents="none"
+              transition="all 0.2s"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+              opacity={0.9}
+            >
+              <Text fontWeight="bold" fontSize="lg">Add to {dragOverFolder}</Text>
+            </Box>
+          )}
           {/* Add Folder Modal */}
           <Modal isOpen={isAddOpen} onClose={onAddClose} isCentered>
             <ModalOverlay />
@@ -257,6 +343,8 @@ function DashboardPage() {
             height="calc(100vh - 64px - 32px)"
             minH={0}
             overflowY="auto"
+            onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
           >
             <Flex mb={4} gap={2} align="center">
               <Input placeholder="Search lesson plan..." size="md" bg="white" />

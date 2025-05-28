@@ -159,6 +159,21 @@ function LessonCard({ lesson, onDelete }) {
     }
   };
 
+  const handleDragStart = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.dataTransfer.setData('text/plain', JSON.stringify({
+      lessonId: lesson._id || lesson.id,
+      lessonTitle: lesson.title,
+      position: {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      },
+    }));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   if (!lesson) return null;
 
   return (
@@ -174,6 +189,10 @@ function LessonCard({ lesson, onDelete }) {
       _hover={{ boxShadow: 'lg', transform: 'translateY(-2px)' }}
       transition="all 0.2s"
       position="relative"
+      draggable
+      onDragStart={handleDragStart}
+      cursor="grab"
+      _active={{ cursor: 'grabbing' }}
     >
 
       <Stack spacing={3} align="center">
