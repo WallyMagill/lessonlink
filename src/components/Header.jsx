@@ -83,9 +83,7 @@ function Header() {
               <PopoverBody display="flex" flexDirection="column" gap={2} p={0}>
                 {isAuth ? (
                   <>
-                    <Button w="100%" variant="ghost">Notifications</Button>
                     <Button w="100%" variant="ghost">Display Options</Button>
-                    <Button w="100%" variant="ghost">Sharing</Button>
                     <Button w="100%" variant="ghost" onClick={handleProfile}>Account</Button>
                     <Button w="100%" variant="ghost" onClick={handleSignOut}>Sign Out</Button>
                   </>
