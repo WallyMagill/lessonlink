@@ -11,6 +11,7 @@ import {
   useColorModeValue,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react';
+import LandingHeader from '../components/LandingHeader';
 
 function LandingPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.900');
@@ -34,6 +35,7 @@ function LandingPage() {
       minH="100vh"
       bg={bgColor}
     >
+      <LandingHeader />
       <Container maxW="container.xl" py={16} px={8}>
         {/* Hero Section */}
         <Box
