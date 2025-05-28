@@ -35,29 +35,29 @@ function LessonCard({ lesson, onDelete }) {
   const user = useStore(({ userSlice }) => userSlice.current);
   const folders = user?.folders || {};
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
+  const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
 
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
 
-  const handleAddToFolder = async () => {
-    try {
-      await Promise.all(selectedFolders.map((folder) => addLessonToFolder(folder, lesson._id || lesson.id)));
-      toast({
-        title: 'Lesson added to folders', status: 'success', duration: 2000, isClosable: true,
-      });
-      setIsAddToFolderModalOpen(false);
-      setSelectedFolders([]);
-    } catch (error) {
-      toast({
-        title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
-      });
-    }
+  // Check if a folder already contains the lesson
+  const isLessonInFolder = (folder) => {
+    const lessonIds = folders[folder] || [];
+    return lessonIds.includes(lesson._id || lesson.id);
   };
 
-  const toggleFolderSelection = (folder) => {
-    setSelectedFolders((prev) => (prev.includes(folder)
-      ? prev.filter((f) => f !== folder)
-      : [...prev, folder]));
+  const toggleFolderSelection = async (folder) => {
+    if (isLessonInFolder(folder)) {
+      await deleteLessonFromFolder(folder, lesson._id || lesson.id);
+      toast({
+        title: 'Lesson removed from folder', status: 'success', duration: 2000, isClosable: true,
+      });
+    } else {
+      await addLessonToFolder(folder, lesson._id || lesson.id);
+      toast({
+        title: 'Lesson added to folder', status: 'success', duration: 2000, isClosable: true,
+      });
+    }
   };
 
   // added these fns bc both color and delete modals were opening simultaneously
@@ -267,7 +267,7 @@ function LessonCard({ lesson, onDelete }) {
                       <Button
                         key={folder}
                         onClick={() => toggleFolderSelection(folder)}
-                        bg={selectedFolders.includes(folder) ? 'blue.200' : 'blue.100'}
+                        bg={isLessonInFolder(folder) ? 'blue.200' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
                       >
                         {folder}
@@ -277,7 +277,7 @@ function LessonCard({ lesson, onDelete }) {
                 </ModalBody>
                 <ModalFooter>
                   <Button onClick={() => setIsAddToFolderModalOpen(false)} mr={3} variant="ghost">Cancel</Button>
-                  <Button colorScheme="blue" onClick={handleAddToFolder}>Add</Button>
+                  <Button colorScheme="blue" onClick={() => setIsAddToFolderModalOpen(false)}>Done</Button>
                 </ModalFooter>
               </ModalContent>
             </Modal>
