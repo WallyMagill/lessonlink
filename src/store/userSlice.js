@@ -247,7 +247,13 @@ export default function createUserSlice(set, get) {
     deleteLessonFromFolder: async (foldername, lessonId) => {
       try {
         const body = { foldername, lessonId };
-        const result = await axios.delete(`${API_URL}/users/folders/lesson`, body, { headers: { authorization: localStorage.getItem('token') } });
+        const result = await axios.delete(
+          `${API_URL}/users/folders/lesson`,
+          {
+            data: body,
+            headers: { authorization: localStorage.getItem('token') },
+          },
+        );
         const updatedUser = result.data;
         set((state) => ({
           ...state,
