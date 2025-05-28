@@ -140,7 +140,12 @@ function LessonCard({ lesson, onDelete }) {
 
   const handleView = (event) => {
     event.preventDefault();
-    navigate(`/edit/${lesson._id}`);
+    navigate(`/edit/${lesson._id}?tab=1`);
+  };
+
+  const handleEdit = (event) => {
+    event.preventDefault();
+    navigate(`/edit/${lesson._id}?tab=0`);
   };
 
   const handleDelete = async () => {
@@ -198,7 +203,7 @@ function LessonCard({ lesson, onDelete }) {
       <Stack spacing={3} align="center">
         <Avatar size="lg" name={lesson.title} src="https://picsum.photos/200/300" />
         <Text fontWeight="bold" fontSize="lg" mb={2}>{lesson.title}</Text>
-        <Text color="gray.600" noOfLines={2}>
+        <Text color="gray.600" noOfLines={2} maxW="220px" pr="8" textAlign="center">
           {lesson.overview || 'No overview available'}
         </Text>
       </Stack>
@@ -217,7 +222,7 @@ function LessonCard({ lesson, onDelete }) {
         <Portal>
           <MenuList zIndex="10" position="relative">
             <MenuItem onClick={handleView}>View</MenuItem>
-            <MenuItem onClick={handleView}>Edit</MenuItem>
+            <MenuItem onClick={handleEdit}>Edit</MenuItem>
             <MenuItem onClick={openColorModal}>
               Change Lesson Color
             </MenuItem>

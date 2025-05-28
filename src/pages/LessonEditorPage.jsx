@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
@@ -16,6 +16,10 @@ function LessonEditorPage() {
   const navigate = useNavigate();
   const [editedLesson, setEditedLesson] = useState(null);
   const [sharedUser, setSharedUser] = useState('');
+  const [showStandards, setShowStandards] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = parseInt(searchParams.get('tab'), 10);
+  const [tabIndex, setTabIndex] = useState(Number.isNaN(tabParam) ? 0 : tabParam);
 
   const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
@@ -44,6 +48,10 @@ function LessonEditorPage() {
       });
     }
   }, [lesson]);
+
+  useEffect(() => {
+    setTabIndex(Number.isNaN(tabParam) ? 0 : tabParam);
+  }, [tabParam]);
 
   const handleSave = async () => {
     try {
@@ -99,46 +107,65 @@ function LessonEditorPage() {
     >
       <Header />
       <Box p={6}>
-        <Tabs variant="enclosed" colorScheme="blue">
+        <Tabs
+          variant="enclosed"
+          colorScheme="blue"
+          index={tabIndex}
+          onChange={(index) => {
+            setTabIndex(index);
+            setSearchParams({ tab: index });
+          }}
+        >
           <TabList>
-            <Tab>View Standards</Tab>
-            <Tab>Template</Tab>
+            <Tab>Edit</Tab>
+            <Tab>View</Tab>
             <Tab>Custom</Tab>
           </TabList>
           <TabPanels>
             <TabPanel p={0} mt={4}>
               <Flex gap={6}>
-                <Box
-                  width="250px"
-                  bg="white"
-                  p={4}
-                  boxShadow="0 1px 4px rgba(0,0,0,0.08)"
-                  borderRadius="md"
-                >
-                  <Input placeholder="Search Standards..." mb={4} />
-                  <Stack spacing={3}>
-                    <Select
-                      placeholder="Filter by Subject"
-                      value={editedLesson.subject}
-                      onChange={(e) => handleChange('subject', e.target.value)}
-                    >
-                      <option>Science</option>
-                      <option>Math</option>
-                      <option>English</option>
-                    </Select>
-                    <Select
-                      placeholder="Filter by Grade"
-                      value={editedLesson.grade}
-                      onChange={(e) => handleChange('grade', parseInt(e.target.value, 10))}
-                    >
-                      <option value="3">Grade 3</option>
-                      <option value="4">Grade 4</option>
-                      <option value="5">Grade 5</option>
-                      <option value="6">Grade 6</option>
-                    </Select>
-                  </Stack>
-                </Box>
+                {showStandards && (
+                  <Box
+                    width="250px"
+                    bg="white"
+                    p={4}
+                    boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                    borderRadius="md"
+                  >
+                    <Input placeholder="Search Standards..." mb={4} />
+                    <Stack spacing={3}>
+                      <Select
+                        placeholder="Filter by Subject"
+                        value={editedLesson.subject}
+                        onChange={(e) => handleChange('subject', e.target.value)}
+                      >
+                        <option>Science</option>
+                        <option>Math</option>
+                        <option>English</option>
+                      </Select>
+                      <Select
+                        placeholder="Filter by Grade"
+                        value={editedLesson.grade}
+                        onChange={(e) => handleChange('grade', parseInt(e.target.value, 10))}
+                      >
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                      </Select>
+                    </Stack>
+                  </Box>
+                )}
                 <Box flex={1}>
+                  <Flex justify="space-between" align="center" mb={4}>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowStandards(!showStandards)}
+                      leftIcon={<FaFileAlt />}
+                    >
+                      {showStandards ? 'Hide Standards' : 'Show Standards'}
+                    </Button>
+                  </Flex>
                   <Stack spacing={4}>
                     <Box
                       bg="white"
@@ -278,7 +305,46 @@ function LessonEditorPage() {
                 </Box>
               </Flex>
             </TabPanel>
-            <TabPanel><Text>Template content goes here.</Text></TabPanel>
+            <TabPanel>
+              <Box maxW="800px" mx="auto" p={6}>
+                <Stack spacing={6}>
+                  <Box>
+                    <Heading as="h1" size="xl" mb={4}>{lesson.title}</Heading>
+                    <Text fontSize="sm" color="gray.600">
+                      Subject: {lesson.subject} | Grade: {lesson.grade}
+                    </Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2}>Materials</Heading>
+                    <List spacing={2} styleType="disc" pl={4}>
+                      {lesson.materials?.map((material) => (
+                        <ListItem key={`material-${material}`}>{material}</ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2}>Learning Objectives</Heading>
+                    <Text whiteSpace="pre-wrap">{lesson.objectives}</Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2}>Overview</Heading>
+                    <Text whiteSpace="pre-wrap">{lesson.overview}</Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2}>Procedure</Heading>
+                    <OrderedList spacing={2} pl={4}>
+                      {lesson.steps?.map((step) => (
+                        <ListItem key={`step-${step}`}>{step}</ListItem>
+                      ))}
+                    </OrderedList>
+                  </Box>
+                </Stack>
+              </Box>
+            </TabPanel>
             <TabPanel>
               <div style={{ textAlign: 'center' }}>
                 <p>New Feature Coming Soon!</p>
