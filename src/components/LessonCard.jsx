@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import useStore from '../store/index';
+import { useTheme } from './ThemeContext';
 
 function LessonCard({ lesson, onDelete }) {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function LessonCard({ lesson, onDelete }) {
   const folders = user?.folders || {};
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
   const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
+  const { colors } = useTheme();
 
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
@@ -186,7 +188,7 @@ function LessonCard({ lesson, onDelete }) {
       width="320px"
       borderWidth="1px"
       borderRadius="md"
-      bg="white"
+      bg={colors.cardBg}
       p={4}
       boxShadow="md"
       borderLeftWidth="6px"
@@ -202,8 +204,8 @@ function LessonCard({ lesson, onDelete }) {
 
       <Stack spacing={3} align="center">
         <Avatar size="lg" name={lesson.title} src="https://picsum.photos/200/300" />
-        <Text fontWeight="bold" fontSize="lg" mb={2}>{lesson.title}</Text>
-        <Text color="gray.600" noOfLines={2} maxW="220px" pr="8" textAlign="center">
+        <Text fontWeight="bold" fontSize="lg" mb={2} color={colors.text}>{lesson.title}</Text>
+        <Text color={colors.text} noOfLines={2} maxW="220px" pr="8" textAlign="center">
           {lesson.overview || 'No overview available'}
         </Text>
       </Stack>
@@ -218,21 +220,22 @@ function LessonCard({ lesson, onDelete }) {
           bottom="2"
           right="2"
           aria-label="Options"
+          color={colors.text}
         />
         <Portal>
-          <MenuList zIndex="10" position="relative">
-            <MenuItem onClick={handleView}>View</MenuItem>
-            <MenuItem onClick={handleEdit}>Edit</MenuItem>
-            <MenuItem onClick={openColorModal}>
+          <MenuList zIndex="10" position="relative" bg={colors.modalBg}>
+            <MenuItem onClick={handleView} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>View</MenuItem>
+            <MenuItem onClick={handleEdit} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>Edit</MenuItem>
+            <MenuItem onClick={openColorModal} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
               Change Lesson Color
             </MenuItem>
-            <MenuItem onClick={() => setIsAddToFolderModalOpen(true)}>
+            <MenuItem onClick={() => setIsAddToFolderModalOpen(true)} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
               Add to Folder
             </MenuItem>
-            <MenuItem onClick={() => setIsRemoveFromFolderModalOpen(true)}>
+            <MenuItem onClick={() => setIsRemoveFromFolderModalOpen(true)} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
               Remove from Folder
             </MenuItem>
-            <MenuItem onClick={openDeleteModal} color="red.500">
+            <MenuItem onClick={openDeleteModal} bg={colors.modalBg} color="red.500" _hover={{ bg: colors.hover }}>
               Delete
             </MenuItem>
 
@@ -242,9 +245,9 @@ function LessonCard({ lesson, onDelete }) {
               size="md"
             >
               <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Select Lesson Color</ModalHeader>
-                <ModalCloseButton />
+              <ModalContent bg={colors.modalBg}>
+                <ModalHeader color={colors.text}>Select Lesson Color</ModalHeader>
+                <ModalCloseButton color={colors.text} />
                 <ModalBody>
                   <SimpleGrid columns={4} spacing={4}>
                     {COLOR_PALETTE.map((color) => (
@@ -272,10 +275,10 @@ function LessonCard({ lesson, onDelete }) {
               onClose={closeDeleteModal}
             >
               <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Delete Lesson</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
+              <ModalContent bg={colors.modalBg}>
+                <ModalHeader color={colors.text}>Delete Lesson</ModalHeader>
+                <ModalCloseButton color={colors.text} />
+                <ModalBody color={colors.text}>
                   Are you sure you want to delete this lesson?
                 </ModalBody>
                 <ModalFooter>
@@ -283,6 +286,7 @@ function LessonCard({ lesson, onDelete }) {
                     variant="ghost"
                     mr={3}
                     onClick={closeDeleteModal}
+                    color={colors.text}
                   >
                     Cancel
                   </Button>
@@ -302,15 +306,17 @@ function LessonCard({ lesson, onDelete }) {
               size="md"
             >
               <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Add to Folder</ModalHeader>
-                <ModalCloseButton />
+              <ModalContent bg={colors.modalBg}>
+                <ModalHeader color={colors.text}>Add to Folder</ModalHeader>
+                <ModalCloseButton color={colors.text} />
                 <ModalBody>
                   <Input
                     placeholder="Search folders..."
                     value={folderSearch}
                     onChange={(e) => setFolderSearch(e.target.value)}
                     mb={4}
+                    bg={colors.inputBg}
+                    color={colors.text}
                   />
                   <Stack spacing={2}>
                     {availableFolders.map((folder) => (
@@ -319,6 +325,7 @@ function LessonCard({ lesson, onDelete }) {
                         onClick={() => toggleFolderSelection(folder)}
                         bg={selectedFolders.includes(folder) ? 'blue.300' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
+                        color={colors.text}
                       >
                         {folder}
                       </Button>
@@ -326,7 +333,7 @@ function LessonCard({ lesson, onDelete }) {
                   </Stack>
                 </ModalBody>
                 <ModalFooter>
-                  <Button onClick={() => setIsAddToFolderModalOpen(false)} mr={3} variant="ghost">Cancel</Button>
+                  <Button onClick={() => setIsAddToFolderModalOpen(false)} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
                   <Button colorScheme="blue" onClick={handleAddToFolder}>Add</Button>
                 </ModalFooter>
               </ModalContent>
@@ -338,9 +345,9 @@ function LessonCard({ lesson, onDelete }) {
               size="md"
             >
               <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Remove from Folder</ModalHeader>
-                <ModalCloseButton />
+              <ModalContent bg={colors.modalBg}>
+                <ModalHeader color={colors.text}>Remove from Folder</ModalHeader>
+                <ModalCloseButton color={colors.text} />
                 <ModalBody>
                   <Stack spacing={2}>
                     {lessonFolders.map((folder) => (
@@ -349,6 +356,7 @@ function LessonCard({ lesson, onDelete }) {
                         onClick={() => toggleFolderSelection(folder)}
                         bg={selectedFolders.includes(folder) ? 'blue.300' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
+                        color={colors.text}
                       >
                         {folder}
                       </Button>
@@ -356,7 +364,7 @@ function LessonCard({ lesson, onDelete }) {
                   </Stack>
                 </ModalBody>
                 <ModalFooter>
-                  <Button onClick={() => setIsRemoveFromFolderModalOpen(false)} mr={3} variant="ghost">Cancel</Button>
+                  <Button onClick={() => setIsRemoveFromFolderModalOpen(false)} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
                   <Button colorScheme="blue" onClick={handleRemoveFromFolder}>Remove</Button>
                 </ModalFooter>
               </ModalContent>

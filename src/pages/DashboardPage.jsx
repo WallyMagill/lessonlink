@@ -8,10 +8,12 @@ import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
 import Header from '../components/Header';
 import useStore from '../store/index';
+import { useTheme } from '../components/ThemeContext';
 
 function DashboardPage() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { colors } = useTheme();
 
   const [folderSearch, setFolderSearch] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
@@ -186,7 +188,7 @@ function DashboardPage() {
     <Box
       minH="100vh"
       minW="100%"
-      bg="gray.50"
+      bg={colors.background}
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
       overflowX="hidden"
       padding={0}
@@ -199,7 +201,7 @@ function DashboardPage() {
           <Box
             minW="260px"
             maxW="320px"
-            bg="gray.100"
+            bg={colors.sidebarBg}
             p={4}
             borderRadius="md"
             boxShadow="sm"
@@ -212,7 +214,8 @@ function DashboardPage() {
               <Input
                 placeholder="Search folders..."
                 size="md"
-                bg="white"
+                bg={colors.inputBg}
+                color={colors.text}
                 value={folderSearch}
                 onChange={(e) => setFolderSearch(e.target.value)}
               />
@@ -231,7 +234,7 @@ function DashboardPage() {
                       key={grade}
                       align="center"
                       position="relative"
-                      _hover={{ bg: 'blue.50' }}
+                      _hover={{ bg: colors.hover }}
                       onDragOver={(e) => handleDragOver(e, grade)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, grade)}
@@ -249,6 +252,7 @@ function DashboardPage() {
                         fontWeight={selectedFolder === grade ? 'bold' : 'normal'}
                         justifyContent="flex-start"
                         pr={selectedFolder === grade ? 10 : 8}
+                        color={colors.text}
                       >
                         {grade}
                       </Button>
@@ -299,19 +303,21 @@ function DashboardPage() {
           {/* Add Folder Modal */}
           <Modal isOpen={isAddOpen} onClose={onAddClose} isCentered>
             <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Add New Folder</ModalHeader>
-              <ModalCloseButton />
+            <ModalContent bg={colors.modalBg}>
+              <ModalHeader color={colors.text}>Add New Folder</ModalHeader>
+              <ModalCloseButton color={colors.text} />
               <ModalBody>
                 <Input
                   placeholder="Folder name"
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
                   autoFocus
+                  bg={colors.inputBg}
+                  color={colors.text}
                 />
               </ModalBody>
               <ModalFooter>
-                <Button onClick={onAddClose} mr={3} variant="ghost">Cancel</Button>
+                <Button onClick={onAddClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
                 <Button colorScheme="blue" onClick={handleAddFolder}>Add</Button>
               </ModalFooter>
             </ModalContent>
@@ -319,14 +325,14 @@ function DashboardPage() {
           {/* Delete Folder Modal */}
           <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} isCentered>
             <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Delete Folder</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
+            <ModalContent bg={colors.modalBg}>
+              <ModalHeader color={colors.text}>Delete Folder</ModalHeader>
+              <ModalCloseButton color={colors.text} />
+              <ModalBody color={colors.text}>
                 Are you sure you want to delete the folder &quot;{folderToDelete}&quot;? This cannot be undone.
               </ModalBody>
               <ModalFooter>
-                <Button onClick={onDeleteClose} mr={3} variant="ghost">Cancel</Button>
+                <Button onClick={onDeleteClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
                 <Button colorScheme="red" onClick={handleDeleteFolder}>Delete</Button>
               </ModalFooter>
             </ModalContent>
@@ -334,7 +340,7 @@ function DashboardPage() {
           {/* Main Content */}
           <Box
             flex={1}
-            bg="gray.100"
+            bg={colors.sidebarBg}
             p={4}
             borderRadius="md"
             boxShadow="sm"
@@ -347,13 +353,18 @@ function DashboardPage() {
             onDragStart={handleDragStart}
           >
             <Flex mb={4} gap={2} align="center">
-              <Input placeholder="Search lesson plan..." size="md" bg="white" />
+              <Input
+                placeholder="Search lesson plan..."
+                size="md"
+                bg={colors.inputBg}
+                color={colors.text}
+              />
               <IconButton icon={<FaGlobe />} aria-label="Global toggle" colorScheme="gray" />
               <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">
               {displayedLessons.length === 0 && (
-                <Text>No lessons available. Click the + button to create one!</Text>
+                <Text color={colors.text}>No lessons available. Click the + button to create one!</Text>
               )}
               {displayedLessons.length > 0 && (
                 <Flex wrap="wrap" rowGap={6} columnGap={20} justifyContent="space-around" alignItems="flex-start" width="90%">
