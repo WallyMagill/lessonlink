@@ -64,9 +64,6 @@ import { useMobile } from "../../../hooks/use-mobile"
 import { useWindowSize } from "../../../hooks/use-window-size"
 import { useCursorVisibility } from "../../../hooks/use-cursor-visibility"
 
-// --- Components ---
-import { ThemeToggle } from "./theme-toggle"
-
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "../../../lib/tiptap-utils"
 
@@ -126,9 +123,6 @@ const MainToolbarContent = ({
       </ToolbarGroup>
       <Spacer />
       {isMobile && <ToolbarSeparator />}
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
     </>
   );
 }
@@ -164,6 +158,11 @@ export function SimpleEditor() {
   const windowSize = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
   const toolbarRef = React.useRef(null)
+
+  // Ensure light mode by removing dark class
+  React.useEffect(() => {
+    document.documentElement.classList.remove("dark")
+  }, [])
 
   const editor = useEditor({
     immediatelyRender: false,
