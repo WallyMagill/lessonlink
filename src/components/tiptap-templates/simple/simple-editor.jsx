@@ -153,7 +153,7 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ initialContent = null, onChange = null }) {
   const isMobile = useMobile()
   const windowSize = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
@@ -197,8 +197,22 @@ export function SimpleEditor() {
       TrailingNode,
       Link.configure({ openOnClick: false }),
     ],
-    content: content,
+    content: initialContent || content,
+    onUpdate: ({ editor }) => {
+      if (onChange) {
+        // Send HTML content to parent component
+        const html = editor.getHTML()
+        onChange(html)
+      }
+    },
   })
+
+  // Update editor content when initialContent changes
+  React.useEffect(() => {
+    if (editor && initialContent !== null) {
+      editor.commands.setContent(initialContent)
+    }
+  }, [editor, initialContent])
 
   const bodyRect = useCursorVisibility({
     editor,

@@ -126,6 +126,7 @@ function DashboardPage() {
         grade: 0,
         subject: '',
         status: 'public',
+        content: '',
       });
       navigate(`/edit/${newLesson._id}`);
     } catch (error) {

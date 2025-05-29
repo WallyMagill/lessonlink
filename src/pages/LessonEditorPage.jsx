@@ -285,7 +285,10 @@ function LessonEditorPage() {
             </TabPanel>
             <TabPanel><Text>Template content goes here.</Text></TabPanel>
             <TabPanel>
-              <SimpleEditor />
+              <SimpleEditor 
+                initialContent={editedLesson?.content || ''}
+                onChange={(html) => handleChange('content', html)}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>
