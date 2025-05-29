@@ -20,6 +20,7 @@ function ProfilePage() {
   const updateUser = useStore(({ userSlice }) => userSlice.updateUser);
   const currentUser = useStore(({ authSlice }) => authSlice.user);
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+  const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
 
   // don't have the user's id stored anywhere on front currently
   useEffect(() => {
@@ -35,7 +36,7 @@ function ProfilePage() {
 
   const handleOut = (event) => {
     event.preventDefault();
-    localStorage.removeItem('userId');
+    signoutUser();
     navigate('/');
   };
 
