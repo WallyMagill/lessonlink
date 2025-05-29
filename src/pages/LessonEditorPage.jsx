@@ -10,6 +10,11 @@ import Header from '../components/Header';
 import useStore from '../store';
 import PrintPage from '../components/printpage';
 import EmailPage from '../components/sharepage';
+import { SimpleEditor } from '../components/tiptap-templates/simple/simple-editor';
+
+// Import SCSS files for tiptap styling
+import '../styles/_variables.scss';
+import '../styles/_keyframe-animations.scss';
 
 function LessonEditorPage() {
   const { id } = useParams();
@@ -280,14 +285,7 @@ function LessonEditorPage() {
             </TabPanel>
             <TabPanel><Text>Template content goes here.</Text></TabPanel>
             <TabPanel>
-              <div style={{ textAlign: 'center' }}>
-                <p>New Feature Coming Soon!</p>
-                <img
-                  src="https://s4.ad.brown.edu/Projects/UTP2/under-construction-yom.png"
-                  alt="Page under construction"
-                  style={{ maxWidth: '100%', height: 'auto', justifySelf: 'center' }}
-                />
-              </div>
+              <SimpleEditor />
             </TabPanel>
           </TabPanels>
         </Tabs>
