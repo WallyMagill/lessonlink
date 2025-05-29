@@ -10,7 +10,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Getting started"
+          "text": "Create Your Lesson Plan"
         }
       ]
     },
@@ -22,7 +22,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Welcome to the "
+          "text": "Welcome to "
         },
         {
           "type": "text",
@@ -37,24 +37,11 @@
               }
             }
           ],
-          "text": "Simple Editor"
+          "text": "LessonLink"
         },
         {
           "type": "text",
-          "text": " template! This template integrates "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "open source"
-        },
-        {
-          "type": "text",
-          "text": " UI components and Tiptap extensions licensed under "
+          "text": "! This editor is designed to help you create "
         },
         {
           "type": "text",
@@ -63,11 +50,11 @@
               "type": "bold"
             }
           ],
-          "text": "MIT"
+          "text": "comprehensive lesson plans"
         },
         {
           "type": "text",
-          "text": "."
+          "text": " with rich formatting, multimedia content, and interactive elements."
         }
       ]
     },
@@ -79,38 +66,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Integrate it by following the "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Tiptap UI Components docs"
-        },
-        {
-          "type": "text",
-          "text": " or using our CLI tool."
-        }
-      ]
-    },
-    {
-      "type": "codeBlock",
-      "attrs": {
-        "language": null
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "npx @tiptap/cli init"
+          "text": "Use the toolbar above to format your lesson content. You can add headings, lists, images, links, and much more to create engaging and well-structured lesson plans."
         }
       ]
     },
@@ -123,7 +79,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Features"
+          "text": "Lesson Plan Structure"
         }
       ]
     },
@@ -143,51 +99,7 @@
                   "type": "italic"
                 }
               ],
-              "text": "A fully responsive rich text editor with built-in support for common formatting and layout tools. Type markdown "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "**"
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": " or use keyboard shortcuts "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "⌘+B"
-            },
-            {
-              "type": "text",
-              "text": " for "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "strike"
-                }
-              ],
-              "text": "most"
-            },
-            {
-              "type": "text",
-              "text": " all common markdown marks. 🪄"
+              "text": "A well-structured lesson plan includes clear objectives, engaging activities, assessment methods, and materials needed. Use this editor's formatting tools to organize your content effectively."
             }
           ]
         }
@@ -201,33 +113,195 @@
       "content": [
         {
           "type": "text",
-          "text": "Add images, customize alignment, and apply "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-blue)"
-              }
-            }
-          ],
-          "text": "advanced formatting"
-        },
-        {
-          "type": "text",
-          "text": " to make your writing more engaging and professional."
+          "text": "Here are the key components to include in your lesson plan:"
         }
       ]
     },
     {
-      "type": "image",
+      "type": "orderedList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Learning Objectives"
+                },
+                {
+                  "type": "text",
+                  "text": " - What students will know and be able to do"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Materials & Resources"
+                },
+                {
+                  "type": "text",
+                  "text": " - Required supplies, technology, and references"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Introduction/Hook"
+                },
+                {
+                  "type": "text",
+                  "text": " - Engage students and introduce the topic"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Main Activities"
+                },
+                {
+                  "type": "text",
+                  "text": " - Step-by-step instruction and student activities"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Assessment"
+                },
+                {
+                  "type": "text",
+                  "text": " - How you'll measure student understanding"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Closure"
+                },
+                {
+                  "type": "text",
+                  "text": " - Summarize key points and preview next lesson"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
       "attrs": {
-        "src": "/images/placeholder-image.png",
-        "alt": "placeholder-image",
-        "title": "placeholder-image"
-      }
+        "textAlign": null,
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Editor Features"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": "left"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Take advantage of these formatting tools to enhance your lesson plans:"
+        }
+      ]
     },
     {
       "type": "bulletList",
@@ -248,24 +322,11 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Superscript"
+                  "text": "Text Formatting"
                 },
                 {
                   "type": "text",
-                  "text": " (x"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "superscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": ") and "
+                  "text": " - Use "
                 },
                 {
                   "type": "text",
@@ -274,24 +335,40 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Subscript"
+                  "text": "bold"
                 },
                 {
                   "type": "text",
-                  "text": " (H"
+                  "text": ", "
                 },
                 {
                   "type": "text",
                   "marks": [
                     {
-                      "type": "subscript"
+                      "type": "italic"
                     }
                   ],
-                  "text": "2"
+                  "text": "italic"
                 },
                 {
                   "type": "text",
-                  "text": "O) for precision."
+                  "text": ", and "
+                },
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "highlight",
+                      "attrs": {
+                        "color": "var(--tt-color-highlight-blue)"
+                      }
+                    }
+                  ],
+                  "text": "highlighting"
+                },
+                {
+                  "type": "text",
+                  "text": " to emphasize key concepts"
                 }
               ]
             }
@@ -313,25 +390,25 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Typographic conversion"
+                  "text": "Headings & Organization"
                 },
                 {
                   "type": "text",
-                  "text": ": automatically convert to "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ],
-                  "text": "->"
-                },
-                {
-                  "type": "text",
-                  "text": " an arrow "
-                },
+                  "text": " - Structure your lesson with clear headings and subheadings"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
                 {
                   "type": "text",
                   "marks": [
@@ -339,52 +416,69 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "→"
+                  "text": "Lists & Checklists"
                 },
                 {
                   "type": "text",
-                  "text": "."
+                  "text": " - Create step-by-step instructions and task lists"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Images & Media"
+                },
+                {
+                  "type": "text",
+                  "text": " - Add visual aids, diagrams, and multimedia content"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Links & Resources"
+                },
+                {
+                  "type": "text",
+                  "text": " - Connect to external websites, videos, and reference materials"
                 }
               ]
             }
           ]
         }
       ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      },
-      "content": [
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "italic"
-            }
-          ],
-          "text": "→ "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor#features",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Learn more"
-        }
-      ]
-    },
-    {
-      "type": "horizontalRule"
     },
     {
       "type": "heading",
@@ -395,7 +489,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Make it your own"
+          "text": "Getting Started"
         }
       ]
     },
@@ -407,7 +501,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Switch between light and dark modes, and tailor the editor's appearance with customizable CSS to match your style."
+          "text": "Ready to create your lesson plan? Use the checklist below to get started:"
         }
       ]
     },
@@ -417,7 +511,7 @@
         {
           "type": "taskItem",
           "attrs": {
-            "checked": true
+            "checked": false
           },
           "content": [
             {
@@ -428,7 +522,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Test template"
+                  "text": "Replace this content with your lesson title and subject"
                 }
               ]
             }
@@ -448,22 +542,83 @@
               "content": [
                 {
                   "type": "text",
-                  "marks": [
-                    {
-                      "type": "link",
-                      "attrs": {
-                        "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                        "target": "_blank",
-                        "rel": "noopener noreferrer nofollow",
-                        "class": null
-                      }
-                    }
-                  ],
-                  "text": "Integrate the free template"
+                  "text": "Define your learning objectives and outcomes"
                 }
               ]
             }
           ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "List required materials and resources"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Plan your lesson activities and timeline"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Design assessment methods and rubrics"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": "left"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Start typing below this line to begin creating your lesson plan! Use the toolbar above to format your content as you go."
         }
       ]
     },
