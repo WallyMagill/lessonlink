@@ -125,7 +125,7 @@ function ProfilePage() {
       <Header />
       <Box p={6}>
         <Heading as="h1" size="xl" mb={8} color={colors.text}>
-          Hello, {editedUser.firstName} {editedUser.lastName}
+          Hello, {editedUser.username}
         </Heading>
         <Flex
           bg={colors.cardBg}
@@ -308,23 +308,12 @@ function ProfilePage() {
                 />
               </Box>
               <Box>
-                <Heading as="h3" size="md" mb={2} color={colors.text}>First Name:</Heading>
+                <Heading as="h3" size="md" mb={2} color={colors.text}>Username:</Heading>
                 <Input
                   type="text"
-                  value={editedUser.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
-                  placeholder="First Name"
-                  bg={colors.inputBg}
-                  color={colors.text}
-                />
-              </Box>
-              <Box>
-                <Heading as="h3" size="md" mb={2} color={colors.text}>Last Name:</Heading>
-                <Input
-                  type="text"
-                  value={editedUser.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
-                  placeholder="Last Name"
+                  value={editedUser.username}
+                  onChange={(e) => handleChange('username', e.target.value)}
+                  placeholder="Your username"
                   bg={colors.inputBg}
                   color={colors.text}
                 />
@@ -333,7 +322,7 @@ function ProfilePage() {
                 <Heading as="h3" size="md" mb={2} color={colors.text}>Profile Photo:</Heading>
                 <Flex align="center" gap={4}>
                   <Avatar
-                    name={`${editedUser.firstName} ${editedUser.lastName}`}
+                    name={`${editedUser.username}`}
                     size="2xl"
                   />
                   <IconButton icon={<EditIcon />} aria-label="Edit profile photo" color={colors.text} />
