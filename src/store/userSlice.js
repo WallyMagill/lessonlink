@@ -275,6 +275,33 @@ export default function createUserSlice(set, get) {
       }
     },
 
+    toggleTheme: async () => {
+      try {
+        const result = await axios.put(`${API_URL}/users/theme`, {}, { headers: { authorization: localStorage.getItem('token') } });
+        const newTheme = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: {
+              ...state.userSlice.current,
+              theme: newTheme,
+            },
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
     // clearing current user
     clearCurrent: () => {
       set((state) => ({
