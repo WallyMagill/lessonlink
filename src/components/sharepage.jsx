@@ -1,102 +1,106 @@
 import React, { useState } from 'react';
-import { FaExternalLinkAlt } from 'react-icons/fa';
+import {
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  VStack,
+  Input,
+  Flex,
+  Text,
+  Switch,
+  useDisclosure,
+} from '@chakra-ui/react';
 
-function EmailPage() {
-  const [showPrompt, setShowPrompt] = useState(false);
-  const [email, setEmail] = useState('');
+function ShareModal({
+  isOpen, onClose, lesson, updateLesson, shareLesson,
+}) {
+  const [email, setSharedUser] = useState('');
+  const [emailError, setEmailError] = useState('');
 
-  function handleEmailClick() {
-    setShowPrompt(true);
-  }
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Share Lesson</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <VStack spacing={4}>
+            {/* privacy (taken out from lessoneditor) */}
+            <Flex alignItems="center" width="full" justifyContent="space-between">
+              <Text>Lesson Visibility</Text>
+              <Flex alignItems="center" gap={2}>
+                <Text>
+                  {lesson.status === 'public' ? 'Public' : 'Private'}
+                </Text>
+                <Switch
+                  isChecked={lesson.status === 'public'}
+                  onChange={() => updateLesson('status', lesson.status === 'public' ? 'protected' : 'public')}
+                />
+              </Flex>
+            </Flex>
+            <Flex width="full" gap={2}>
 
-  function handleSendEmail() {
-    if (!email) return;
+              <Input
+                placeholder="Enter email to share with"
+                value={email}
+                onChange={(e) => {
+                  setSharedUser(e.target.value);
+                  setEmailError('');
+                }}
+                isInvalid={!!emailError}
+                flex={1}
+              />
+              {emailError && (
+              <Text color="red.500" fontSize="sm" mt={1}>
+                {emailError}
+              </Text>
+              )}
 
-    const subject = encodeURIComponent('View my lesson on LessonLink!');
-    const body = encodeURIComponent(`Hi,\n\nPlease view my lesson plan linked below:\n${window.location.href}`);
+            </Flex>
 
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    setShowPrompt(false);
-    setEmail('');
-  }
+            <Button
+              width="full"
+              colorScheme="blue"
+              onClick={() => {
+                const subject = encodeURIComponent('View my lesson on LessonLink!');
+                const body = encodeURIComponent(`Hi,\n\nPlease view my lesson plan linked below:\n${window.location.href}`);
+                window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+              }}
+            >
+              Share via Email
+            </Button>
+          </VStack>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose}>Close</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
 
-  function handleCancel() {
-    setShowPrompt(false);
-    setEmail('');
-  }
+function ShareButton({ lesson, updateLesson, shareLesson }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <button
-        type="button"
-        onClick={handleEmailClick}
-        style={{
-          backgroundColor: 'rgb(245, 245, 245)',
-          borderRadius: '8px',
-          padding: '8px',
-          cursor: 'pointer',
-          color: 'black',
-        }}
-      >
-        <FaExternalLinkAlt />
-      </button>
-
-      {showPrompt && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '8px',
-              maxWidth: '300px',
-              width: '100%',
-              boxSizing: 'border-box',
-            }}
-          >
-            <div>
-              Enter recipient email:
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="example@example.com"
-                style={{
-                  width: '100%',
-                  marginTop: '8px',
-                  marginBottom: '12px',
-                  padding: '8px',
-                  borderRadius: '5px',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'black',
-                }}
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-              <button type="submit" onClick={handleCancel} style={{ padding: '8px 12px' }}>
-                Cancel
-              </button>
-              <button type="submit" onClick={handleSendEmail} style={{ padding: '8px 12px' }} disabled={!email}>
-                Send
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Button onClick={onOpen} colorScheme="blue">
+        Share
+      </Button>
+      <ShareModal
+        isOpen={isOpen}
+        onClose={onClose}
+        lesson={lesson}
+        updateLesson={updateLesson}
+        shareLesson={shareLesson}
+      />
     </>
   );
 }
 
-export default EmailPage;
+export default ShareButton;

@@ -3,13 +3,13 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
-  Button, Textarea, Switch,
+  Button, Textarea, // Switch,
 } from '@chakra-ui/react';
 import { FaFileAlt } from 'react-icons/fa';
 import Header from '../components/Header';
 import useStore from '../store';
 import PrintPage from '../components/printpage';
-import EmailPage from '../components/sharepage';
+import ShareButton from '../components/sharepage';
 
 function LessonEditorPage() {
   const { id } = useParams();
@@ -279,24 +279,15 @@ function LessonEditorPage() {
                     </Box>
                     <Flex gap={4} mt={2}>
                       <PrintPage />
-                      <EmailPage />
-                      <button type="submit" onClick={handleDelete}>Delete Lesson</button>
-                      {/* <button type="submit" onClick={() => handleChange('status', 'protected')}>Set Private</button> */}
-                      <Flex alignItems="center" gap={2}>
-                        <Text>
-                          {editedLesson.status === 'public' ? 'Public' : 'Private'}
-                        </Text>
-                        <Switch
-                          isChecked={editedLesson.status === 'public'}
-                          onChange={() => handleChange('status', editedLesson.status === 'public' ? 'protected' : 'public')}
-                        />
-                      </Flex>
-                      <Input
-                        onChange={(e) => setSharedUser(e.target.value)}
-                        mb={2}
-                        placeholder="enter an email to share with"
+                      <ShareButton
+                        lesson={editedLesson}
+                        updateLesson={handleChange}
+                        shareLesson={handleAddShared}
                       />
-                      <Button onClick={handleAddShared} colorScheme="blue" mb={4}>Share</Button>
+                      <button type="submit" onClick={handleDelete}>Delete Lesson</button>
+                      <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
+                      <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
+
                       <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
 
                       <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
