@@ -58,8 +58,8 @@ function SignupPage() {
           boxShadow="lg"
         >
           <VStack spacing={6}>
-            <Heading color="blue.500" size="xl">Welcome Back</Heading>
-            <Text color="gray.600">Sign in to your account</Text>
+            <Heading color="blue.500" size="xl">Welcome</Heading>
+            <Text color="gray.600">Please Enter Your Information:</Text>
 
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
               <VStack spacing={4} w="100%">
