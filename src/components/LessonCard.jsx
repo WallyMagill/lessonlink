@@ -152,6 +152,16 @@ function LessonCard({ lesson, onDelete }) {
 
   const handleDelete = async () => {
     try {
+      if (user?.id !== lesson?.author?.id) {
+        toast({
+          title: 'Invalid Delete',
+          description: 'Cannot delete a lesson not created by you',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
+        return;
+      }
       await deleteLesson(lesson.id);
       toast({
         title: 'Lesson Deleted',
@@ -257,11 +267,11 @@ function LessonCard({ lesson, onDelete }) {
       >
         <Avatar
           size="sm"
-          name={lesson.author.username}
+          name={lesson?.author?.username}
           src="https://picsum.photos/40/40"
         />
         <Text fontSize="sm" color={colors.text} fontWeight="medium">
-          {lesson.author.username}
+          {lesson?.author?.username}
         </Text>
       </Box>
 
