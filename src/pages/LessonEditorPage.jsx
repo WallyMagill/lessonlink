@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import useStore from '../store';
 import PrintPage from '../components/printpage';
 import ShareButton from '../components/sharepage';
+import { useTheme } from '../components/ThemeContext';
 
 function LessonEditorPage() {
   const { id } = useParams();
@@ -27,6 +28,7 @@ function LessonEditorPage() {
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
   const shareLesson = useStore(({ lessonSlice }) => lessonSlice.shareLesson);
+  const { colors, isDarkMode } = useTheme();
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -102,7 +104,7 @@ function LessonEditorPage() {
     <Box
       width="100%"
       minH="100vh"
-      bg="#f7fafc"
+      bg={colors.background}
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
       overflowX="hidden"
     >
@@ -118,9 +120,9 @@ function LessonEditorPage() {
           }}
         >
           <TabList>
-            <Tab>Edit</Tab>
-            <Tab>View</Tab>
-            <Tab>Custom</Tab>
+            <Tab color={colors.text}>Edit</Tab>
+            <Tab color={colors.text}>View</Tab>
+            <Tab color={colors.text}>Custom</Tab>
           </TabList>
           <TabPanels>
             <TabPanel p={0} mt={4}>
@@ -128,17 +130,19 @@ function LessonEditorPage() {
                 {showStandards && (
                   <Box
                     width="250px"
-                    bg="white"
+                    bg={colors.cardBg}
                     p={4}
                     boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                     borderRadius="md"
                   >
-                    <Input placeholder="Search Standards..." mb={4} />
+                    <Input placeholder="Search Standards..." mb={4} bg={colors.inputBg} color={colors.text} />
                     <Stack spacing={3}>
                       <Select
                         placeholder="Filter by Subject"
                         value={editedLesson.subject}
                         onChange={(e) => handleChange('subject', e.target.value)}
+                        bg={colors.inputBg}
+                        color={colors.text}
                       >
                         <option>Science</option>
                         <option>Math</option>
@@ -148,6 +152,8 @@ function LessonEditorPage() {
                         placeholder="Filter by Grade"
                         value={editedLesson.grade}
                         onChange={(e) => handleChange('grade', parseInt(e.target.value, 10))}
+                        bg={colors.inputBg}
+                        color={colors.text}
                       >
                         <option value="3">Grade 3</option>
                         <option value="4">Grade 4</option>
@@ -163,13 +169,15 @@ function LessonEditorPage() {
                       size="sm"
                       onClick={() => setShowStandards(!showStandards)}
                       leftIcon={<FaFileAlt />}
+                      color={isDarkMode ? 'white' : colors.text}
+                      colorScheme={isDarkMode ? 'blue' : undefined}
                     >
                       {showStandards ? 'Hide Standards' : 'Show Standards'}
                     </Button>
                   </Flex>
                   <Stack spacing={4}>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
@@ -182,21 +190,25 @@ function LessonEditorPage() {
                         fontWeight="bold"
                         mb={2}
                         placeholder="Lesson Title"
+                        bg={colors.inputBg}
+                        color={colors.text}
                       />
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Materials:</Heading>
-                      <List spacing={1} styleType="disc" pl={4}>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Materials:</Heading>
+                      <List spacing={1}
+                        styleType="disc"
+                        pl={4}
+                        sx={isDarkMode ? { 'li::marker': { color: 'white' } } : {}}
+                      >
                         {(editedLesson?.materials || []).map((material, index) => (
-                          // !!! TODO fix this to use a proper key
-                          // eslint-disable-next-line react/no-array-index-key
-                          <ListItem key={`material-${index}`}>
+                          <ListItem key={typeof material === 'string' ? `material-${material}-${index}` : `material-${index}`}>
                             <Input
                               value={material || ''}
                               onChange={(e) => {
@@ -204,6 +216,8 @@ function LessonEditorPage() {
                                 newMaterials[index] = e.target.value;
                                 handleChange('materials', newMaterials);
                               }}
+                              bg={colors.inputBg}
+                              color={colors.text}
                             />
                           </ListItem>
                         ))}
@@ -211,6 +225,8 @@ function LessonEditorPage() {
                           <Button
                             size="sm"
                             onClick={() => handleChange('materials', [...editedLesson.materials, ''])}
+                            color={isDarkMode ? 'white' : colors.text}
+                            colorScheme={isDarkMode ? 'blue' : undefined}
                           >
                             Add Material
                           </Button>
@@ -218,46 +234,51 @@ function LessonEditorPage() {
                       </List>
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Learning Objectives</Heading>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Learning Objectives</Heading>
                       <Textarea
                         value={editedLesson.objectives}
                         onChange={(e) => handleChange('objectives', e.target.value)}
                         placeholder="Enter learning objectives..."
+                        bg={colors.inputBg}
+                        color={colors.text}
                       />
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Overview</Heading>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Overview</Heading>
                       <Textarea
                         value={editedLesson.overview}
                         onChange={(e) => handleChange('overview', e.target.value)}
                         placeholder="Enter lesson overview..."
+                        bg={colors.inputBg}
+                        color={colors.text}
                       />
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Procedure List</Heading>
-                      <OrderedList spacing={1} pl={4}>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Procedure List</Heading>
+                      <OrderedList spacing={1}
+                        pl={4}
+                        sx={isDarkMode ? { 'li::marker': { color: 'white' } } : {}}
+                      >
                         {(editedLesson?.steps || []).map((step, index) => (
-                          // !!! TODO fix this to use a proper key
-                          // eslint-disable-next-line react/no-array-index-key
-                          <ListItem key={`step-${index}`}>
+                          <ListItem key={typeof step === 'string' ? `step-${step}-${index}` : `step-${index}`}>
                             <Input
                               value={step || ''}
                               onChange={(e) => {
@@ -265,6 +286,8 @@ function LessonEditorPage() {
                                 newSteps[index] = e.target.value;
                                 handleChange('steps', newSteps);
                               }}
+                              bg={colors.inputBg}
+                              color={colors.text}
                             />
                           </ListItem>
                         ))}
@@ -272,6 +295,8 @@ function LessonEditorPage() {
                           <Button
                             size="sm"
                             onClick={() => handleChange('steps', [...editedLesson.steps, ''])}
+                            color={isDarkMode ? 'white' : colors.text}
+                            colorScheme={isDarkMode ? 'blue' : undefined}
                           >
                             Add Step
                           </Button>
@@ -285,6 +310,8 @@ function LessonEditorPage() {
                         type="submit"
                         onClick={handleDelete}
                         aria-label="Delete Lesson"
+                        color={isDarkMode ? 'white' : colors.text}
+                        colorScheme={isDarkMode ? 'blue' : undefined}
                       />
                       <ShareButton
                         lesson={editedLesson}
@@ -300,39 +327,39 @@ function LessonEditorPage() {
               </Flex>
             </TabPanel>
             <TabPanel>
-              <Box maxW="800px" mx="auto" p={6}>
+              <Box maxW="800px" mx="auto" p={6} bg={colors.cardBg} borderRadius="md" boxShadow="0 1px 4px rgba(0,0,0,0.08)">
                 <Stack spacing={6}>
                   <Box>
-                    <Heading as="h1" size="xl" mb={4}>{lesson.title}</Heading>
-                    <Text fontSize="sm" color="gray.600">
+                    <Heading as="h1" size="xl" mb={4} color={colors.text}>{lesson.title}</Heading>
+                    <Text fontSize="sm" color={colors.text}>
                       Subject: {lesson.subject} | Grade: {lesson.grade}
                     </Text>
                   </Box>
 
                   <Box>
-                    <Heading as="h2" size="md" mb={2}>Materials</Heading>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Materials</Heading>
                     <List spacing={2} styleType="disc" pl={4}>
                       {lesson.materials?.map((material) => (
-                        <ListItem key={`material-${material}`}>{material}</ListItem>
+                        <ListItem key={`material-${material}`} color={colors.text}>{material}</ListItem>
                       ))}
                     </List>
                   </Box>
 
                   <Box>
-                    <Heading as="h2" size="md" mb={2}>Learning Objectives</Heading>
-                    <Text whiteSpace="pre-wrap">{lesson.objectives}</Text>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Learning Objectives</Heading>
+                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.objectives}</Text>
                   </Box>
 
                   <Box>
-                    <Heading as="h2" size="md" mb={2}>Overview</Heading>
-                    <Text whiteSpace="pre-wrap">{lesson.overview}</Text>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Overview</Heading>
+                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.overview}</Text>
                   </Box>
 
                   <Box>
-                    <Heading as="h2" size="md" mb={2}>Procedure</Heading>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Procedure</Heading>
                     <OrderedList spacing={2} pl={4}>
                       {lesson.steps?.map((step) => (
-                        <ListItem key={`step-${step}`}>{step}</ListItem>
+                        <ListItem key={`step-${step}`} color={colors.text}>{step}</ListItem>
                       ))}
                     </OrderedList>
                   </Box>
@@ -341,7 +368,7 @@ function LessonEditorPage() {
             </TabPanel>
             <TabPanel>
               <div style={{ textAlign: 'center' }}>
-                <p>New Feature Coming Soon!</p>
+                <p style={{ color: colors.text }}>New Feature Coming Soon!</p>
                 <img
                   src="https://s4.ad.brown.edu/Projects/UTP2/under-construction-yom.png"
                   alt="Page under construction"

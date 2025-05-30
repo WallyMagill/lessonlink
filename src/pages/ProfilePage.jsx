@@ -15,7 +15,7 @@ function ProfilePage() {
   const [editedUser, setEditedUser] = useState(null);
   const [newGrade, setNewGrade] = useState('');
   const [newSubject, setNewSubject] = useState('');
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   const updateUser = useStore(({ userSlice }) => userSlice.updateUser);
   const currentUser = useStore(({ authSlice }) => authSlice.user);
@@ -271,6 +271,7 @@ function ProfilePage() {
                   _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
                   transition="all 0.2s"
                   onClick={handleSave}
+                  color={isDarkMode ? 'white' : undefined}
                 >
                   Save Changes
                 </Button>
@@ -285,6 +286,7 @@ function ProfilePage() {
                   _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
                   transition="all 0.2s"
                   onClick={handleOut}
+                  color={isDarkMode ? 'white' : undefined}
                 >
                   Sign Out
                 </Button>

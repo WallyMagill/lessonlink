@@ -15,28 +15,30 @@ import {
   Switch,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useTheme } from './ThemeContext';
 
 function ShareModal({
   isOpen, onClose, lesson, updateLesson, shareLesson,
 }) {
   const [email, setSharedUser] = useState('');
   const [emailError, setEmailError] = useState('');
+  const { colors, isDarkMode } = useTheme();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Share Lesson</ModalHeader>
-        <ModalCloseButton />
+      <ModalContent bg={colors.modalBg}>
+        <ModalHeader color={colors.text}>Share Lesson</ModalHeader>
+        <ModalCloseButton color={colors.text} />
         <ModalBody>
           <VStack spacing={4}>
             <Flex flexDirection="column">
               {/* privacy (taken out from lessoneditor) */}
               <Flex alignItems="center" width="full" justifyContent="space-between">
-                <Text>Lesson Visibility</Text>
+                <Text color={colors.text}>Lesson Visibility</Text>
                 <Flex alignItems="center" gap={2}>
                   <Flex flexDirection="column"> </Flex>
-                  <Text>
+                  <Text color={colors.text}>
                     {lesson.status === 'public' ? 'Public' : 'Private'}
                   </Text>
                   <Switch
@@ -45,7 +47,7 @@ function ShareModal({
                   />
                 </Flex>
               </Flex>
-              <Text fontSize="sm" color="gray.500" mt={1}>If your lesson is copied from someone else, the original owner will still be able to see it.</Text>
+              <Text fontSize="sm" color={isDarkMode ? 'gray.300' : 'gray.500'} mt={1}>If your lesson is copied from someone else, the original owner will still be able to see it.</Text>
 
             </Flex>
             <Flex width="full" gap={2}>
@@ -59,6 +61,8 @@ function ShareModal({
                 }}
                 isInvalid={!!emailError}
                 flex={1}
+                bg={colors.inputBg}
+                color={colors.text}
               />
               {emailError && (
               <Text color="red.500" fontSize="sm" mt={1}>
@@ -71,6 +75,7 @@ function ShareModal({
             <Button
               width="full"
               colorScheme="blue"
+              color={isDarkMode ? 'white' : undefined}
               onClick={() => {
                 const subject = encodeURIComponent('View my lesson on LessonLink!');
                 const body = encodeURIComponent(`Hi,\n\nPlease view my lesson plan linked below:\n${window.location.href}`);
@@ -82,7 +87,7 @@ function ShareModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose} colorScheme="blue" color={isDarkMode ? 'white' : undefined}>Close</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
@@ -91,10 +96,11 @@ function ShareModal({
 
 function ShareButton({ lesson, updateLesson, shareLesson }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isDarkMode } = useTheme();
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="blue">
+      <Button onClick={onOpen} colorScheme="blue" color={isDarkMode ? 'white' : undefined}>
         Share
       </Button>
       <ShareModal
