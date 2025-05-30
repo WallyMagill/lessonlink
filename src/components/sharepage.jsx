@@ -30,18 +30,23 @@ function ShareModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            {/* privacy (taken out from lessoneditor) */}
-            <Flex alignItems="center" width="full" justifyContent="space-between">
-              <Text>Lesson Visibility</Text>
-              <Flex alignItems="center" gap={2}>
-                <Text>
-                  {lesson.status === 'public' ? 'Public' : 'Private'}
-                </Text>
-                <Switch
-                  isChecked={lesson.status === 'public'}
-                  onChange={() => updateLesson('status', lesson.status === 'public' ? 'protected' : 'public')}
-                />
+            <Flex flexDirection="column">
+              {/* privacy (taken out from lessoneditor) */}
+              <Flex alignItems="center" width="full" justifyContent="space-between">
+                <Text>Lesson Visibility</Text>
+                <Flex alignItems="center" gap={2}>
+                  <Flex flexDirection="column"> </Flex>
+                  <Text>
+                    {lesson.status === 'public' ? 'Public' : 'Private'}
+                  </Text>
+                  <Switch
+                    isChecked={lesson.status === 'public'}
+                    onChange={() => updateLesson('status', lesson.status === 'public' ? 'protected' : 'public')}
+                  />
+                </Flex>
               </Flex>
+              <Text fontSize="sm" color="gray.500" mt={1}>If your lesson is copied from someone else, the original owner will still be able to see it.</Text>
+
             </Flex>
             <Flex width="full" gap={2}>
 
