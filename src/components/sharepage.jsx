@@ -24,6 +24,14 @@ function ShareModal({
   const [emailError, setEmailError] = useState('');
   const { colors, isDarkMode } = useTheme();
 
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      // alert('Link copied to clipboard!'); // Optional confirmation
+    } catch (error) {
+      console.error('Failed to copy link:', error);
+    }
+  };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -83,6 +91,14 @@ function ShareModal({
               }}
             >
               Share via Email
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={handleCopyToClipboard}
+              style={{ border: '1px solid lightblue', color: 'lightblue' }}
+            >
+              Copy Link
             </Button>
           </VStack>
         </ModalBody>
