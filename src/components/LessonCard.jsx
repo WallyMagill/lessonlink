@@ -186,10 +186,10 @@ function LessonCard({ lesson, onDelete }) {
   return (
     <Box
       width="320px"
+      height="230px"
       borderWidth="1px"
       borderRadius="md"
       bg={colors.cardBg}
-      p={4}
       boxShadow="md"
       borderLeftWidth="6px"
       borderLeftColor={`${selectedColor}.500`}
@@ -200,15 +200,72 @@ function LessonCard({ lesson, onDelete }) {
       onDragStart={handleDragStart}
       cursor="grab"
       _active={{ cursor: 'grabbing' }}
+      display="flex"
+      flexDirection="column"
     >
 
-      <Stack spacing={3} align="center">
-        <Avatar size="lg" name={lesson.title} src="https://picsum.photos/200/300" />
-        <Text fontWeight="bold" fontSize="lg" mb={2} color={colors.text}>{lesson.title}</Text>
-        <Text color={colors.text} noOfLines={2} maxW="220px" pr="8" textAlign="center">
+      {/* Lesson image & title */}
+      <Box
+        height="100px"
+        backgroundImage='linear-gradient(rgba(62, 65, 69, 0.59)), url("https://picsum.photos/320/180")'
+        backgroundSize="cover"
+        backgroundPosition="center"
+        backgroundRepeat="no-repeat"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text
+          fontWeight="bold"
+          fontSize="xl"
+          color="white"
+          textAlign="center"
+          textShadow="2px 2px 4px rgba(0,0,0,0.8)"
+          px={4}
+          maxW="220px"
+          noOfLines={2}
+        >
+          {lesson.title}
+        </Text>
+      </Box>
+
+      {/* Lesson Overview */}
+
+      <Box pt="5" px="10">
+        <Text
+          color={colors.text}
+          textAlign="center"
+          maxW="220px"
+          lineHeight="1.4"
+          noOfLines={2}
+        >
           {lesson.overview || 'No overview available'}
         </Text>
-      </Stack>
+      </Box>
+
+      {/** Author Avatar & Name */}
+
+      <Box
+        position="absolute"
+        bottom="2"
+        left="2"
+        display="flex"
+        alignItems="center"
+        gap={2}
+        pl="0.5"
+        pb="1"
+      >
+        <Avatar
+          size="sm"
+          name={lesson.author.username}
+          src="https://picsum.photos/40/40"
+        />
+        <Text fontSize="sm" color={colors.text} fontWeight="medium">
+          {lesson.author.username}
+        </Text>
+      </Box>
+
+      {/** Menu */}
 
       <Menu>
         <MenuButton
@@ -373,9 +430,7 @@ function LessonCard({ lesson, onDelete }) {
           </MenuList>
         </Portal>
       </Menu>
-
     </Box>
-
   );
 }
 
