@@ -30,6 +30,18 @@ function LessonEditorPage() {
   const shareLesson = useStore(({ lessonSlice }) => lessonSlice.shareLesson);
   const { colors, isDarkMode } = useTheme();
 
+  const standards = useStore(({ standardSlice }) => standardSlice.standards);
+
+  const [subjectFilter, setSubjectFilter] = useState('');
+  const [gradeFilter, setGradeFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredStandards = standards.filter((s) => {
+    return (!subjectFilter || s.subject === subjectFilter)
+         && (!gradeFilter || s.grade.toString() === gradeFilter);
+  });
+  const visibleStandards = filteredStandards.filter((s) => s.description.toLowerCase().includes(searchTerm.toLowerCase()));
+
   useEffect(() => {
     // use a wrapper so can catch failed promises
     const wrapper = async () => {
@@ -103,13 +115,18 @@ function LessonEditorPage() {
   return (
     <Box
       width="100%"
-      minH="100vh"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
       bg={colors.background}
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
-      overflowX="hidden"
+      overflow="hidden"
     >
       <Header />
-      <Box p={6}>
+      <Box p={6}
+        flex="1"
+        overflowY="auto"
+      >
         <Tabs
           variant="enclosed"
           colorScheme="blue"
@@ -134,13 +151,15 @@ function LessonEditorPage() {
                     p={4}
                     boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                     borderRadius="md"
+                    overflowY="auto"
+                    maxHeight="calc(100vh + 180px)"
                   >
-                    <Input placeholder="Search Standards..." mb={4} bg={colors.inputBg} color={colors.text} />
+                    <Input placeholder="Search Standards..." mb={4} bg={colors.inputBg} color={colors.text} onChange={(e) => setSearchTerm(e.target.value)} />
                     <Stack spacing={3}>
                       <Select
                         placeholder="Filter by Subject"
                         value={editedLesson.subject}
-                        onChange={(e) => handleChange('subject', e.target.value)}
+                        onChange={(e) => setSubjectFilter(e.target.value)}
                         bg={colors.inputBg}
                         color={colors.text}
                       >
@@ -151,7 +170,7 @@ function LessonEditorPage() {
                       <Select
                         placeholder="Filter by Grade"
                         value={editedLesson.grade}
-                        onChange={(e) => handleChange('grade', parseInt(e.target.value, 10))}
+                        onChange={(e) => setGradeFilter(parseInt(e.target.value, 10))}
                         bg={colors.inputBg}
                         color={colors.text}
                       >
@@ -160,6 +179,30 @@ function LessonEditorPage() {
                         <option value="5">Grade 5</option>
                         <option value="6">Grade 6</option>
                       </Select>
+                      {Object.entries(visibleStandards.reduce((acc, s) => {
+                        acc[s.anchorStandard] = acc[s.anchorStandard] || [];
+                        acc[s.anchorStandard].push(s);
+                        return acc;
+                      }, {})).map(([anchor, group]) => (
+                        <Box key={anchor}>
+                          <Text fontWeight="bold" mt={4} color={colors.text}>{anchor}</Text>
+                          <Stack spacing={1} pl={2}>
+                            {group.map((standard) => (
+                              <Box
+                                key={standard.standardCode}
+                                p={2}
+                                bg={colors.hover}
+                                borderRadius="md"
+                                fontSize="sm"
+                                _hover={{ bg: colors.border }}
+                                color={colors.text}
+                              >
+                                {standard.description}
+                              </Box>
+                            ))}
+                          </Stack>
+                        </Box>
+                      ))}
                     </Stack>
                   </Box>
                 )}
