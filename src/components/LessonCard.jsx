@@ -212,6 +212,7 @@ function LessonCard({ lesson, onDelete }) {
       _active={{ cursor: 'grabbing' }}
       display="flex"
       flexDirection="column"
+      onClick={handleView}
     >
 
       {/* Lesson image & title */}
