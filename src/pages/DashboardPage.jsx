@@ -62,6 +62,8 @@ function DashboardPage() {
         if (isAuth) {
           await loadUser(); // This should populate userSlice.current
           await fetchAllLessons(isAuth);
+        } else {
+          setGlobalView(true);
         }
       } catch (error) {
         console.error('Failed to load user', error);
