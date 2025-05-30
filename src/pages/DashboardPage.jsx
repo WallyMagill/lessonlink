@@ -21,6 +21,7 @@ function DashboardPage() {
   const [folderToDelete, setFolderToDelete] = useState(null);
   const [dragOverFolder, setDragOverFolder] = useState(null);
   const [cardPosition, setCardPosition] = useState(null);
+  const [globalView, setGlobalView] = useState(false);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
@@ -70,9 +71,12 @@ function DashboardPage() {
 
   // Filter lessons by selected folder
   let displayedLessons = lessons;
+  if (!globalView) { // if we are looking at our own lessons, we only want
+    displayedLessons = displayedLessons.filter((lesson) => lesson.status === 'protected' || lesson.author.id === user?.id);
+  }
   if (selectedFolder && folders[selectedFolder]) {
     const lessonIds = folders[selectedFolder];
-    displayedLessons = lessons.filter((lesson) => lessonIds.includes(lesson._id || lesson.id));
+    displayedLessons = displayedLessons.filter((lesson) => lessonIds.includes(lesson._id || lesson.id));
   }
 
   // Add folder handler
@@ -90,6 +94,10 @@ function DashboardPage() {
         title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
       });
     }
+  };
+
+  const handleGlobalToggle = async () => {
+    setGlobalView(!globalView);
   };
 
   // Delete folder handler
@@ -359,7 +367,25 @@ function DashboardPage() {
                 bg={colors.inputBg}
                 color={colors.text}
               />
-              <IconButton icon={<FaGlobe />} aria-label="Global toggle" colorScheme="gray" />
+              <IconButton
+                icon={<FaGlobe />}
+                aria-label="Global toggle"
+                onClick={handleGlobalToggle}
+                bg={globalView ? 'white' : 'transparent'}
+                color={globalView ? 'blue.500' : 'gray.500'}
+                _hover={{
+                  bg: 'gray.100',
+                  color: globalView ? 'blue.600' : 'gray.700',
+                }}
+                _active={{
+                  bg: 'gray.200',
+                  transform: 'scale(0.98)',
+                }}
+                transition="all 0.2s ease"
+                boxShadow={globalView ? 'md' : 'none'}
+                border="none"
+                rounded="full"
+              />
               <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">

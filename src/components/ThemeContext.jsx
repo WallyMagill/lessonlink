@@ -1,21 +1,36 @@
 import React, {
-  createContext, useContext, useState, useEffect, useMemo,
+  createContext, useContext, useState, useEffect, useMemo, useRef,
 } from 'react';
+import useStore from '../store';
 
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme === 'dark';
-  });
+  // Get user and backend toggleTheme from zustand
+  const user = useStore((state) => state.userSlice.current);
+  const backendToggleTheme = useStore((state) => state.userSlice.toggleTheme);
 
+  // Use user's theme as the source of truth
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const initialized = useRef(false);
+  const prevUserId = useRef(null);
+
+  // Only initialize from user.theme on first mount or user change
   useEffect(() => {
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
+    if (user && user._id !== prevUserId.current) {
+      initialized.current = false;
+      prevUserId.current = user?._id;
+    }
+    if (!initialized.current && user && typeof user.theme === 'boolean') {
+      setIsDarkMode(user.theme);
+      initialized.current = true;
+    }
+  }, [user]);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+  // Toggle theme and update backend
+  const toggleTheme = async () => {
+    setIsDarkMode((prev) => !prev); // Optimistically update local state
+    await backendToggleTheme(); // This will update user.theme in zustand
   };
 
   const theme = useMemo(() => ({
