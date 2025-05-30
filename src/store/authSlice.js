@@ -2,16 +2,38 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api/auth';
+const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
+// const ROOT_URL = 'http://localhost:3001/api';
 
 export default function createAuthSlice(set, get) {
   return {
     authenticated: false,
     email: '',
-    loadUser: () => {
+    user: {},
+    // have to update load user to retrieve the user data, set this up on backend
+    loadUser: async () => {
       const token = localStorage.getItem('token');
-      if (token) {
-        set(({ authSlice }) => { authSlice.authenticated = true; });
+      if (!token) return;
+      try {
+        const response = await axios.get(`${ROOT_URL}/users`, { headers: { authorization: token } });
+        const user = response.data;
+        console.log(user);
+        set((state) => ({
+          authSlice: {
+            ...state.authSlice,
+            authenticated: true,
+            email: user.email,
+            user,
+          },
+          userSlice: {
+            ...state.userSlice,
+            current: user,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        console.error('Failed to load user', error);
+        localStorage.removeItem('token');
       }
     },
     signinUser: async (fields, navigate) => {
@@ -21,7 +43,7 @@ export default function createAuthSlice(set, get) {
           password: fields.password,
         };
 
-        const response = await axios.post(`${ROOT_URL}/signin`, extracted);
+        const response = await axios.post(`${ROOT_URL}/auth/signin`, extracted);
         set((state) => ({
           authSlice: {
             ...state.authSlice,
@@ -44,7 +66,7 @@ export default function createAuthSlice(set, get) {
           email: fields.email,
           password: fields.password,
         };
-        const response = await axios.post(`${ROOT_URL}/signup`, extracted);
+        const response = await axios.post(`${ROOT_URL}/auth/signup`, extracted);
         set((state) => ({
           authSlice: {
             ...state.authSlice,

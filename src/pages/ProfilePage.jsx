@@ -2,47 +2,83 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Flex, Stack, Heading, IconButton, Input, Avatar, Button, Text,
-  Tag, TagLabel, Select,
+  Tag, TagLabel, Select, useToast,
 } from '@chakra-ui/react';
 import { EditIcon, AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import useStore from '../store';
-import useUserHandlers from '../handlers/userHandlers';
+import { useTheme } from '../components/ThemeContext';
 
 function ProfilePage() {
+  const toast = useToast();
   const navigate = useNavigate();
-  const store = useStore();
-  const { handleUpdateUser } = useUserHandlers();
   const [editedUser, setEditedUser] = useState(null);
   const [newGrade, setNewGrade] = useState('');
   const [newSubject, setNewSubject] = useState('');
+  const { colors, isDarkMode } = useTheme();
 
+  const updateUser = useStore(({ userSlice }) => userSlice.updateUser);
+  const currentUser = useStore(({ authSlice }) => authSlice.user);
+  const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+  const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
+
+  // don't have the user's id stored anywhere on front currently
   useEffect(() => {
     // Assuming we have the current user's ID stored somewhere
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      store.userSlice.fetchUser(userId);
-    }
+    loadUser();
   }, []);
 
   useEffect(() => {
-    if (store.current) {
-      setEditedUser(store.current);
+    if (currentUser) {
+      setEditedUser(currentUser);
     }
-  }, [store.current]);
+  }, [currentUser]);
 
   const handleOut = (event) => {
     event.preventDefault();
-    localStorage.removeItem('userId');
+    signoutUser();
     navigate('/');
   };
 
   const handleSave = async () => {
     try {
-      await handleUpdateUser(editedUser._id, editedUser);
-      // Show success message or handle response
+      console.log(editedUser);
+      await updateUser(editedUser.id, editedUser);
+      navigate('/dashboard');
+      toast({
+        position: 'top',
+        duration: 2000,
+        render: () => (
+          <Box
+            bg="green.100"
+            color="green.800"
+            rounded="md"
+            shadow="md"
+            fontWeight="medium"
+            p={3}
+          >
+            Your profile was successfully updated!
+          </Box>
+        ),
+      });
     } catch (error) {
       console.error('Error updating user:', error);
+      toast({
+        position: 'top',
+        duration: 2000,
+        render: () => (
+          <Box
+            bg="red.100"
+            color="red.800"
+            rounded="md"
+            shadow="md"
+            fontWeight="medium"
+            p={3}
+          >
+            Sorry! Your profile failed to update.
+          </Box>
+        ),
+      });
     }
   };
 
@@ -75,29 +111,25 @@ function ProfilePage() {
     handleChange('subjects', editedUser.subjects.filter((s) => s !== subject));
   };
 
-  if (store.loading) {
-    return <Text>Loading profile...</Text>;
-  }
-
   if (!editedUser) {
     return <Text>User not found</Text>;
   }
 
   return (
     <Box
-      width="100vw"
+      width="100%"
       minH="100vh"
-      bg="#f7fafc"
+      bg={colors.background}
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
       overflowX="hidden"
     >
       <Header />
       <Box p={6}>
-        <Heading as="h1" size="xl" mb={8}>
-          Hello, {editedUser.firstName} {editedUser.lastName}
+        <Heading as="h1" size="xl" mb={8} color={colors.text}>
+          Hello, {editedUser.username}
         </Heading>
         <Flex
-          bg="white"
+          bg={colors.cardBg}
           p={8}
           borderRadius="md"
           boxShadow="0 2px 6px rgba(0,0,0,0.10)"
@@ -108,18 +140,19 @@ function ProfilePage() {
             flex={1}
             pr={8}
             borderRight="1px solid"
-            borderColor="gray.200"
+            borderColor={colors.border}
           >
             <Stack spacing={8}>
               <Box>
                 <Flex align="center" gap={2} mb={2}>
-                  <Heading as="h3" size="md">Selected Grade Levels:</Heading>
+                  <Heading as="h3" size="md" color={colors.text}>Selected Grade Levels:</Heading>
                   <IconButton
                     icon={<AddIcon />}
                     size="sm"
                     variant="ghost"
                     aria-label="Add grade level"
                     onClick={handleAddGrade}
+                    color={colors.text}
                   />
                 </Flex>
                 <Stack direction="row" spacing={2} mb={2}>
@@ -127,6 +160,8 @@ function ProfilePage() {
                     value={newGrade}
                     onChange={(e) => setNewGrade(e.target.value)}
                     placeholder="Select grade"
+                    bg={colors.inputBg}
+                    color={colors.text}
                   >
                     <option value="Grade 3">Grade 3</option>
                     <option value="Grade 4">Grade 4</option>
@@ -157,13 +192,14 @@ function ProfilePage() {
               </Box>
               <Box>
                 <Flex align="center" gap={2} mb={2}>
-                  <Heading as="h3" size="md">Selected Subjects:</Heading>
+                  <Heading as="h3" size="md" color={colors.text}>Selected Subjects:</Heading>
                   <IconButton
                     icon={<AddIcon />}
                     size="sm"
                     variant="ghost"
                     aria-label="Add subject"
                     onClick={handleAddSubject}
+                    color={colors.text}
                   />
                 </Flex>
                 <Stack direction="row" spacing={2} mb={2}>
@@ -171,6 +207,8 @@ function ProfilePage() {
                     value={newSubject}
                     onChange={(e) => setNewSubject(e.target.value)}
                     placeholder="Select subject"
+                    bg={colors.inputBg}
+                    color={colors.text}
                   >
                     <option value="Math">Math</option>
                     <option value="Science">Science</option>
@@ -201,22 +239,26 @@ function ProfilePage() {
               </Box>
               <Box>
                 <Flex align="center" gap={2} mb={2}>
-                  <Heading as="h3" size="md">School:</Heading>
+                  <Heading as="h3" size="md" color={colors.text}>School:</Heading>
                 </Flex>
                 <Input
                   value={editedUser.school}
                   onChange={(e) => handleChange('school', e.target.value)}
                   placeholder="Enter school name"
+                  bg={colors.inputBg}
+                  color={colors.text}
                 />
               </Box>
               <Box>
                 <Flex align="center" gap={2} mb={2}>
-                  <Heading as="h3" size="md">Role:</Heading>
+                  <Heading as="h3" size="md" color={colors.text}>Role:</Heading>
                 </Flex>
                 <Input
                   value={editedUser.role}
                   onChange={(e) => handleChange('role', e.target.value)}
                   placeholder="Enter role"
+                  bg={colors.inputBg}
+                  color={colors.text}
                 />
               </Box>
               <Box>
@@ -229,6 +271,7 @@ function ProfilePage() {
                   _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
                   transition="all 0.2s"
                   onClick={handleSave}
+                  color={isDarkMode ? 'white' : undefined}
                 >
                   Save Changes
                 </Button>
@@ -243,6 +286,7 @@ function ProfilePage() {
                   _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
                   transition="all 0.2s"
                   onClick={handleOut}
+                  color={isDarkMode ? 'white' : undefined}
                 >
                   Sign Out
                 </Button>
@@ -256,40 +300,35 @@ function ProfilePage() {
           >
             <Stack spacing={8}>
               <Box>
-                <Heading as="h3" size="md" mb={2}>Email:</Heading>
+                <Heading as="h3" size="md" mb={2} color={colors.text}>Email:</Heading>
                 <Input
                   type="email"
                   value={editedUser.email}
                   onChange={(e) => handleChange('email', e.target.value)}
                   placeholder="name@school.org"
+                  bg={colors.inputBg}
+                  color={colors.text}
                 />
               </Box>
               <Box>
-                <Heading as="h3" size="md" mb={2}>First Name:</Heading>
+                <Heading as="h3" size="md" mb={2} color={colors.text}>Username:</Heading>
                 <Input
                   type="text"
-                  value={editedUser.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
-                  placeholder="First Name"
+                  value={editedUser.username}
+                  onChange={(e) => handleChange('username', e.target.value)}
+                  placeholder="Your username"
+                  bg={colors.inputBg}
+                  color={colors.text}
                 />
               </Box>
               <Box>
-                <Heading as="h3" size="md" mb={2}>Last Name:</Heading>
-                <Input
-                  type="text"
-                  value={editedUser.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
-                  placeholder="Last Name"
-                />
-              </Box>
-              <Box>
-                <Heading as="h3" size="md" mb={2}>Profile Photo:</Heading>
+                <Heading as="h3" size="md" mb={2} color={colors.text}>Profile Photo:</Heading>
                 <Flex align="center" gap={4}>
                   <Avatar
-                    name={`${editedUser.firstName} ${editedUser.lastName}`}
+                    name={`${editedUser.username}`}
                     size="2xl"
                   />
-                  <IconButton icon={<EditIcon />} aria-label="Edit profile photo" />
+                  <IconButton icon={<EditIcon />} aria-label="Edit profile photo" color={colors.text} />
                 </Flex>
               </Box>
             </Stack>

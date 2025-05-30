@@ -7,7 +7,7 @@ function RequireAuth({ children }) {
   const authenticated = useStore(({ authSlice }) => authSlice.authenticated);
 
   if (!authenticated) {
-    return <Navigate to="/auth/signin" />;
+    return <Navigate to="/login" />;
   } else {
     return children;
   }

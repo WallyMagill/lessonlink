@@ -26,14 +26,7 @@ function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // TODO: Implement actual login logic here
-      console.log(username);
-      console.log(email);
-
-      console.log(password);
-
       await signupUser({ username, email, password }, navigate);
-      console.log('Signup attempted with:', { email, password });
       navigate('/dashboard');
     } catch (error) {
       toast({
@@ -47,7 +40,7 @@ function SignupPage() {
   };
 
   return (
-    <Box minH="100vh" minW="100vw" bg="gray.50">
+    <Box minH="100vh" minW="100%" bg="gray.50">
       <Header />
       <Box
         display="flex"
@@ -65,8 +58,8 @@ function SignupPage() {
           boxShadow="lg"
         >
           <VStack spacing={6}>
-            <Heading color="blue.500" size="xl">Welcome Back</Heading>
-            <Text color="gray.600">Sign in to your account</Text>
+            <Heading color="blue.500" size="xl">Welcome</Heading>
+            <Text color="gray.600">Please Enter Your Information:</Text>
 
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
               <VStack spacing={4} w="100%">
