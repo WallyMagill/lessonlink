@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Flex, Stack, Input, IconButton, Button, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast,
+  Box, Flex, Stack, Input, IconButton, Button, Text,
+  useDisclosure, Modal, ModalOverlay, ModalContent,
+  ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
+  useToast, Select,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -22,6 +25,8 @@ function DashboardPage() {
   const [dragOverFolder, setDragOverFolder] = useState(null);
   const [cardPosition, setCardPosition] = useState(null);
   const [globalView, setGlobalView] = useState(false);
+  const [filterType, setFilterType] = useState('all');
+  const [lessonSearch, setLessonSearch] = useState('');
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
@@ -69,9 +74,22 @@ function DashboardPage() {
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
 
-  // Filter lessons by selected folder
+  // Filter lessons by selected folder, global view, and current filter
   let displayedLessons = lessons;
-  if (!globalView) { // if we are looking at our own lessons, we only want
+  if (lessonSearch && filterType === 'all') {
+    const lowerSearch = lessonSearch.toLowerCase();
+    displayedLessons = displayedLessons.filter((lesson) => lesson.title?.toLowerCase().includes(lowerSearch)
+    || lesson.overview?.toLowerCase().includes(lowerSearch)
+    || lesson.objectives?.toLowerCase().includes(lowerSearch)
+    || lesson.author?.username?.toLowerCase().includes(lowerSearch));
+  } else if (lessonSearch && filterType === 'user') {
+    const lowerSearch = lessonSearch.toLowerCase();
+    displayedLessons = displayedLessons.filter((lesson) => lesson.author?.username?.toLowerCase().includes(lowerSearch));
+  } else if (lessonSearch && filterType === 'title') {
+    const lowerSearch = lessonSearch.toLowerCase();
+    displayedLessons = displayedLessons.filter((lesson) => lesson.title?.toLowerCase().includes(lowerSearch));
+  }
+  if (!globalView) {
     displayedLessons = displayedLessons.filter((lesson) => lesson.status === 'protected' || lesson.author.id === user?.id);
   }
   if (selectedFolder && folders[selectedFolder]) {
@@ -361,12 +379,35 @@ function DashboardPage() {
             onDragStart={handleDragStart}
           >
             <Flex mb={4} gap={2} align="center">
-              <Input
-                placeholder="Search lesson plan..."
-                size="md"
-                bg={colors.inputBg}
-                color={colors.text}
-              />
+              <Flex maxW="80%" width="100%" align="center" border="1px solid" borderColor="gray.200" borderRadius="md" overflow="hidden">
+                <Input
+                  flex="1"
+                  placeholder="Search lesson..."
+                  value={lessonSearch}
+                  onChange={(e) => setLessonSearch(e.target.value)}
+                  border="none"
+                  borderRadius="0"
+                  bg={colors.inputBg}
+                  color={colors.text}
+                />
+                <Select
+                  width="10%"
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value)}
+                  bg={colors.inputBg}
+                  color={colors.text}
+                  border="none"
+                  borderLeft="1px solid"
+                  borderRight="1px solid"
+                  borderColor="gray.200"
+                  borderRadius="0"
+                >
+                  <option value="all">All</option>
+                  <option value="title">Title</option>
+                  <option value="user">User</option>
+                </Select>
+              </Flex>
+
               <IconButton
                 icon={<FaGlobe />}
                 aria-label="Global toggle"
