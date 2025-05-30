@@ -5,7 +5,8 @@ import {
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
   Button, Textarea, // Switch,
 } from '@chakra-ui/react';
-import { FaFileAlt } from 'react-icons/fa';
+import { FaFileAlt, FaTrash } from 'react-icons/fa';
+
 import Header from '../components/Header';
 import useStore from '../store';
 import PrintPage from '../components/printpage';
@@ -279,18 +280,20 @@ function LessonEditorPage() {
                     </Box>
                     <Flex gap={4} mt={2}>
                       <PrintPage />
+                      <IconButton
+                        icon={<FaTrash />}
+                        type="submit"
+                        onClick={handleDelete}
+                        aria-label="Delete Lesson"
+                      />
                       <ShareButton
                         lesson={editedLesson}
                         updateLesson={handleChange}
                         shareLesson={handleAddShared}
                       />
-                      <button type="submit" onClick={handleDelete}>Delete Lesson</button>
-                      <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
-                      <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
-
-                      <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
 
                       <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
+
                     </Flex>
                   </Stack>
                 </Box>
