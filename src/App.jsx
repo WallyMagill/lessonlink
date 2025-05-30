@@ -19,6 +19,7 @@ import React, { useEffect } from 'react';
 import { unstable_HistoryRouter as HistoryRouter, Routes, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Provider } from './components/ui/provider';
+import { ThemeProvider } from './components/ThemeContext';
 import LessonEditorPage from './pages/LessonEditorPage';
 import ProfilePage from './pages/ProfilePage';
 import DashboardPage from './pages/DashboardPage';
@@ -33,12 +34,17 @@ const history = createBrowserHistory(); // this also allows us pass new future f
 
 function App() {
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+  const fetchStandards = useStore(({ standardSlice }) => standardSlice.fetchStandards);
+  const hasLoadedStandards = useStore(({ standardSlice }) => standardSlice.hasLoadedStandards);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
     const wrapper = async () => {
       try {
         await loadUser();
+        if (!hasLoadedStandards) {
+          await fetchStandards();
+        }
       } catch (error) {
         console.error('Failed to load current user', error);
       }
@@ -49,22 +55,24 @@ function App() {
 
   return (
     <Provider>
-      <HistoryRouter
-        history={history}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/edit/:id" element={<RequireAuth><LessonEditorPage /></RequireAuth>} />
-          <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
-      </HistoryRouter>
+      <ThemeProvider>
+        <HistoryRouter
+          history={history}
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/edit/:id" element={<RequireAuth><LessonEditorPage /></RequireAuth>} />
+            <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Routes>
+        </HistoryRouter>
+      </ThemeProvider>
     </Provider>
   );
 }

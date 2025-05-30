@@ -11,7 +11,7 @@ export default function createLessonSlice(set, get) {
     loading: false,
 
     // fetch all lessons
-    fetchAllLessons: async () => {
+    fetchAllLessons: async (isAuth) => {
       set((state) => ({
         ...state,
         lessonSlice: {
@@ -21,8 +21,12 @@ export default function createLessonSlice(set, get) {
       }), false, 'lessons/fetchAllLessons');
 
       try {
-        const response = await axios.get(`${API_URL}/lessons`, { headers: { authorization: localStorage.getItem('token') } });
-        console.log(response.data);
+        let response;
+        if (isAuth) {
+          response = await axios.get(`${API_URL}/lessons`, { headers: { authorization: localStorage.getItem('token') } });
+        } else {
+          response = await axios.get(`${API_URL}/lessons/public`, { headers: { authorization: localStorage.getItem('token') } });
+        }
 
         set((state) => ({
           ...state,
