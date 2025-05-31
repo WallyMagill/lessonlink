@@ -2,8 +2,8 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const ROOT_URL = 'http://localhost:3001/api';
+// const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
+const ROOT_URL = 'http://localhost:3001/api';
 
 export default function createAuthSlice(set, get) {
   return {
@@ -11,6 +11,15 @@ export default function createAuthSlice(set, get) {
     email: '',
     user: {},
     loading: true,
+    intendedPath: null,
+
+    // these update the path the user was trying to reach
+    setIntendedPath: (path) => set((state) => {
+      state.authSlice.intendedPath = path;
+    }),
+    clearIntendedPath: () => set((state) => {
+      state.authSlice.intendedPath = null;
+    }),
     // have to update load user to retrieve the user data, set this up on backend
     loadUser: async () => {
       const token = localStorage.getItem('token');
@@ -74,7 +83,6 @@ export default function createAuthSlice(set, get) {
           },
         }));
         localStorage.setItem('token', response.data.token);
-        navigate('/');
         return true;
       } catch (error) {
         console.error('Sign In Failed:', error);
@@ -98,7 +106,6 @@ export default function createAuthSlice(set, get) {
           },
         }));
         localStorage.setItem('token', response.data.token);
-        navigate('/');
       } catch (error) {
         console.error('Sign Up Failed:', error);
       }

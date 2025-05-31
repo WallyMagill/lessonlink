@@ -18,6 +18,8 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const intendedPath = useStore((state) => state.authSlice.intendedPath);
+  const clearIntendedPath = useStore((state) => state.authSlice.clearIntendedPath);
   const toast = useToast();
 
   const signinUser = useStore(({ authSlice }) => authSlice.signinUser);
@@ -30,7 +32,8 @@ function LoginPage() {
     e.preventDefault();
     try {
       await signinUser({ email, password }, navigate);
-      navigate('/dashboard');
+      navigate(intendedPath || '/dashboard');
+      clearIntendedPath();
     } catch (error) {
       toast({
         title: 'Login failed',

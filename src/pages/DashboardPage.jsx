@@ -74,7 +74,7 @@ function DashboardPage() {
     displayedLessons = displayedLessons.filter((lesson) => lesson.title?.toLowerCase().includes(lowerSearch));
   }
   if (!globalView) {
-    displayedLessons = displayedLessons.filter((lesson) => lesson.status === 'protected' || lesson?.author?.id === user?.id);
+    displayedLessons = displayedLessons.filter((lesson) => lesson.status === 'protected' || lesson?.author?.username === user?.username);
   }
   if (selectedFolder && folders[selectedFolder]) {
     const lessonIds = folders[selectedFolder];

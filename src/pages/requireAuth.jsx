@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router-dom';
 import { Flex, Spinner } from '@chakra-ui/react';
 import useStore from '../store';
 
@@ -7,6 +7,8 @@ import useStore from '../store';
 function RequireAuth({ children }) {
   const authenticated = useStore(({ authSlice }) => authSlice.authenticated);
   const loading = useStore(({ authSlice }) => authSlice.loading);
+  const setIntendedPath = useStore((state) => state.authSlice.setIntendedPath);
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -17,6 +19,9 @@ function RequireAuth({ children }) {
   }
 
   if (!authenticated) {
+    // we need to store the path (where user wsa trying to go)
+    console.log(location.pathname);
+    setIntendedPath(location.pathname);
     return <Navigate to="/login" />;
   } else {
     return children;

@@ -19,6 +19,8 @@ function SignupPage() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+  const intendedPath = useStore((state) => state.authSlice.intendedPath);
+  const clearIntendedPath = useStore((state) => state.authSlice.clearIntendedPath);
   const toast = useToast();
 
   const signupUser = useStore(({ authSlice }) => authSlice.signupUser);
@@ -27,7 +29,8 @@ function SignupPage() {
     e.preventDefault();
     try {
       await signupUser({ username, email, password }, navigate);
-      navigate('/dashboard');
+      navigate(intendedPath || '/dashboard');
+      clearIntendedPath();
     } catch (error) {
       toast({
         title: 'Signup failed',
