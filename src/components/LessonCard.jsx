@@ -28,6 +28,8 @@ function LessonCard({ lesson, onDelete }) {
   const [selectedColor, setSelectedColor] = useState(lesson.tag || 'white');
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
+  const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
+  const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isColorModalOpen, setIsColorModalOpen] = useState(false);
   const [isAddToFolderModalOpen, setIsAddToFolderModalOpen] = useState(false);
@@ -50,31 +52,67 @@ function LessonCard({ lesson, onDelete }) {
   const availableFolders = filteredFolders.filter((folder) => !lessonFolders.includes(folder));
 
   const handleAddToFolder = async () => {
+    if (selectedFolders.length === 0) {
+      toast({
+        title: 'No Folders Selected',
+        description: 'Please select at least one folder to add the lesson to',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     try {
       await Promise.all(selectedFolders.map((folder) => addLessonToFolder(folder, lesson._id || lesson.id)));
       toast({
-        title: 'Lesson added to folders', status: 'success', duration: 2000, isClosable: true,
+        title: 'Lesson added to folders',
+        description: `Added to ${selectedFolders.length} folder${selectedFolders.length > 1 ? 's' : ''}`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
       });
       setIsAddToFolderModalOpen(false);
       setSelectedFolders([]);
     } catch (error) {
       toast({
-        title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
       });
     }
   };
 
   const handleRemoveFromFolder = async () => {
+    if (selectedFolders.length === 0) {
+      toast({
+        title: 'No Folders Selected',
+        description: 'Please select at least one folder to remove the lesson from',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     try {
       await Promise.all(selectedFolders.map((folder) => deleteLessonFromFolder(folder, lesson._id || lesson.id)));
       toast({
-        title: 'Lesson removed from folders', status: 'success', duration: 2000, isClosable: true,
+        title: 'Lesson removed from folders',
+        description: `Removed from ${selectedFolders.length} folder${selectedFolders.length > 1 ? 's' : ''}`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
       });
       setIsRemoveFromFolderModalOpen(false);
       setSelectedFolders([]);
     } catch (error) {
       toast({
-        title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
       });
     }
   };
@@ -126,6 +164,8 @@ function LessonCard({ lesson, onDelete }) {
         duration: 2000,
         isClosable: true,
       });
+      // Refresh lessons after color update
+      await fetchAllLessons(isAuth);
     } catch (error) {
       console.error('Error selecting color:', error);
 
@@ -289,21 +329,22 @@ function LessonCard({ lesson, onDelete }) {
           right="2"
           aria-label="Options"
           color={colors.text}
+          onClick={(e) => e.stopPropagation()}
         />
         <Portal>
-          <MenuList zIndex="10" position="relative" bg={colors.modalBg}>
-            <MenuItem onClick={handleView} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>View</MenuItem>
-            <MenuItem onClick={handleEdit} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>Edit</MenuItem>
-            <MenuItem onClick={openColorModal} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
+          <MenuList zIndex="10" position="relative" bg={colors.modalBg} onClick={(e) => e.stopPropagation()}>
+            <MenuItem onClick={(e) => { e.stopPropagation(); handleView(e); }} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>View</MenuItem>
+            <MenuItem onClick={(e) => { e.stopPropagation(); handleEdit(e); }} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>Edit</MenuItem>
+            <MenuItem onClick={(e) => { e.stopPropagation(); openColorModal(); }} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
               Change Lesson Color
             </MenuItem>
-            <MenuItem onClick={() => setIsAddToFolderModalOpen(true)} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
+            <MenuItem onClick={(e) => { e.stopPropagation(); setIsAddToFolderModalOpen(true); }} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
               Add to Folder
             </MenuItem>
-            <MenuItem onClick={() => setIsRemoveFromFolderModalOpen(true)} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
+            <MenuItem onClick={(e) => { e.stopPropagation(); setIsRemoveFromFolderModalOpen(true); }} bg={colors.modalBg} color={colors.text} _hover={{ bg: colors.hover }}>
               Remove from Folder
             </MenuItem>
-            <MenuItem onClick={openDeleteModal} bg={colors.modalBg} color="red.500" _hover={{ bg: colors.hover }}>
+            <MenuItem onClick={(e) => { e.stopPropagation(); openDeleteModal(); }} bg={colors.modalBg} color="red.500" _hover={{ bg: colors.hover }}>
               Delete
             </MenuItem>
 
@@ -325,7 +366,7 @@ function LessonCard({ lesson, onDelete }) {
                         height="50px"
                         borderRadius="md"
                         cursor="pointer"
-                        onClick={() => selectColor(color)}
+                        onClick={(e) => { e.stopPropagation(); selectColor(color); }}
                         _hover={{
                           transform: 'scale(1.1)',
                           boxShadow: 'lg',
@@ -390,7 +431,7 @@ function LessonCard({ lesson, onDelete }) {
                     {availableFolders.map((folder) => (
                       <Button
                         key={folder}
-                        onClick={() => toggleFolderSelection(folder)}
+                        onClick={(e) => { e.stopPropagation(); toggleFolderSelection(folder); }}
                         bg={selectedFolders.includes(folder) ? 'blue.300' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
                         color={colors.text}
@@ -421,7 +462,7 @@ function LessonCard({ lesson, onDelete }) {
                     {lessonFolders.map((folder) => (
                       <Button
                         key={folder}
-                        onClick={() => toggleFolderSelection(folder)}
+                        onClick={(e) => { e.stopPropagation(); toggleFolderSelection(folder); }}
                         bg={selectedFolders.includes(folder) ? 'blue.300' : 'blue.100'}
                         _hover={{ bg: 'blue.300' }}
                         color={colors.text}

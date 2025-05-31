@@ -3,7 +3,7 @@ import {
   Box, Flex, Stack, Input, IconButton, Button, Text,
   useDisclosure, Modal, ModalOverlay, ModalContent,
   ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
-  useToast, Select,
+  useToast, Select, SimpleGrid,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -273,14 +273,14 @@ function DashboardPage() {
                     >
                       <Button
                         w="100%"
-                        bg={selectedFolder === grade ? 'blue.200' : 'blue.100'}
+                        bg={selectedFolder === grade ? 'blue.500' : 'blue.400'}
                         boxShadow="md"
-                        _hover={{ bg: 'blue.300' }}
+                        _hover={{ bg: 'blue.600' }}
                         onClick={() => setSelectedFolder(selectedFolder === grade ? null : grade)}
                         fontWeight={selectedFolder === grade ? 'bold' : 'normal'}
                         justifyContent="flex-start"
                         pr={selectedFolder === grade ? 10 : 8}
-                        color={colors.text}
+                        color="white"
                       >
                         {grade}
                       </Button>
@@ -381,72 +381,67 @@ function DashboardPage() {
             onDragStart={handleDragStart}
           >
             <Flex mb={4} gap={2} align="center">
-              <Flex maxW="80%" width="100%" align="center" border="1px solid" borderColor="gray.200" borderRadius="md" overflow="hidden">
+              <Flex flex="1" align="center" gap={0}>
                 <Input
                   flex="1"
                   placeholder="Search lesson..."
                   value={lessonSearch}
                   onChange={(e) => setLessonSearch(e.target.value)}
-                  border="none"
-                  borderRadius="0"
+                  borderRightRadius={0}
+                  borderTopRightRadius={0}
+                  borderBottomRightRadius={0}
                   bg={colors.inputBg}
                   color={colors.text}
                 />
                 <Select
-                  width="10%"
+                  width="120px"
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
                   bg={colors.inputBg}
                   color={colors.text}
-                  border="none"
-                  borderLeft="1px solid"
-                  borderRight="1px solid"
-                  borderColor="gray.200"
-                  borderRadius="0"
+                  borderLeftRadius={0}
+                  borderTopLeftRadius={0}
+                  borderBottomLeftRadius={0}
+                  borderLeft="none"
                 >
                   <option value="all">All</option>
                   <option value="title">Title</option>
                   <option value="user">User</option>
                 </Select>
               </Flex>
-
-              <IconButton
-                icon={<FaGlobe />}
-                aria-label="Global toggle"
-                onClick={handleGlobalToggle}
-                bg={globalView ? 'white' : 'transparent'}
-                color={globalView ? 'blue.500' : 'gray.500'}
-                _hover={{
-                  bg: 'gray.100',
-                  color: globalView ? 'blue.600' : 'gray.700',
-                }}
-                _active={{
-                  bg: 'gray.200',
-                  transform: 'scale(0.98)',
-                }}
-                transition="all 0.2s ease"
-                boxShadow={globalView ? 'md' : 'none'}
-                border="none"
-                rounded="full"
-              />
-              <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
+              <Flex gap={2} ml={2}>
+                <IconButton
+                  icon={<FaGlobe />}
+                  aria-label="Global toggle"
+                  onClick={handleGlobalToggle}
+                  bg={globalView ? 'white' : 'transparent'}
+                  color={globalView ? 'blue.500' : 'gray.500'}
+                  _hover={{
+                    bg: 'gray.100',
+                    color: globalView ? 'blue.600' : 'gray.700',
+                  }}
+                  _active={{
+                    bg: 'gray.200',
+                    transform: 'scale(0.98)',
+                  }}
+                  transition="all 0.2s ease"
+                  boxShadow={globalView ? 'md' : 'none'}
+                  border="none"
+                  rounded="full"
+                />
+                <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
+              </Flex>
             </Flex>
             <Box flex={1} overflowY="auto" width="100%">
               {displayedLessons.length === 0 && (
                 <Text color={colors.text}>No lessons available. Click the + button to create one!</Text>
               )}
               {displayedLessons.length > 0 && (
-                <Flex wrap="wrap" rowGap={6} columnGap={20} justifyContent="space-around" alignItems="flex-start" width="90%">
+                <SimpleGrid minChildWidth="320px" spacing="40px" justifyItems="center">
                   {displayedLessons.map((lesson) => (
-                    <Box key={lesson.id || lesson._id}
-                      flex="1 0 20rem"
-                      maxW="25rem"
-                      minW="10rem"
-                    >
-                      <LessonCard lesson={lesson} onDelete={(e) => fetchAllLessons(isAuth)} />
-                    </Box>
+                    <LessonCard key={lesson.id || lesson._id} lesson={lesson} onDelete={(e) => fetchAllLessons(isAuth)} />
                   ))}
-                </Flex>
+                </SimpleGrid>
               )}
             </Box>
           </Box>

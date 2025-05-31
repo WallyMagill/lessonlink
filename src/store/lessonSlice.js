@@ -60,7 +60,7 @@ export default function createLessonSlice(set, get) {
       }));
 
       try {
-        const response = await axios.get(`${API_URL}/lessons/${id}`);
+        const response = await axios.get(`${API_URL}/lessons/${id}`, { headers: { authorization: localStorage.getItem('token') } });
         set((state) => ({
           ...state,
           lessonSlice: {

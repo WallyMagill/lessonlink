@@ -328,7 +328,12 @@ function ProfilePage() {
                     name={`${editedUser.username}`}
                     size="2xl"
                   />
-                  <IconButton icon={<EditIcon />} aria-label="Edit profile photo" color={colors.text} />
+                  <IconButton
+                    icon={<EditIcon />}
+                    aria-label="Edit profile photo"
+                    colorScheme="blue"
+                    color="white"
+                  />
                 </Flex>
               </Box>
             </Stack>

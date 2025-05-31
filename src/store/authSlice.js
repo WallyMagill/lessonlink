@@ -13,11 +13,20 @@ export default function createAuthSlice(set, get) {
     // have to update load user to retrieve the user data, set this up on backend
     loadUser: async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        set((state) => ({
+          authSlice: {
+            ...state.authSlice,
+            authenticated: false,
+            email: '',
+            user: {},
+          },
+        }));
+        return;
+      }
       try {
         const response = await axios.get(`${ROOT_URL}/users`, { headers: { authorization: token } });
         const user = response.data;
-        console.log(user);
         set((state) => ({
           authSlice: {
             ...state.authSlice,
@@ -34,6 +43,14 @@ export default function createAuthSlice(set, get) {
       } catch (error) {
         console.error('Failed to load user', error);
         localStorage.removeItem('token');
+        set((state) => ({
+          authSlice: {
+            ...state.authSlice,
+            authenticated: false,
+            email: '',
+            user: {},
+          },
+        }));
       }
     },
     signinUser: async (fields, navigate) => {
