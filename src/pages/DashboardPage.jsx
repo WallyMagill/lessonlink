@@ -56,24 +56,6 @@ function DashboardPage() {
     wrapper();
   }, [user]);
 
-  // Fetch user data if authenticated
-  // useEffect(() => {
-  //   const wrapper = async () => {
-  //     try {
-  //       if (isAuth) {
-  //         await loadUser(); // This should populate userSlice.current
-  //         await fetchAllLessons(isAuth);
-  //       } else {
-  //         setGlobalView(true);
-  //       }
-  //     } catch (error) {
-  //       console.error('Failed to load user', error);
-  //     }
-  //   };
-
-  //   wrapper();
-  // }, [isAuth, loadUser]);
-
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
 
