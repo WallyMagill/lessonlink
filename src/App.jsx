@@ -20,6 +20,7 @@ import { unstable_HistoryRouter as HistoryRouter, Routes, Route } from 'react-ro
 import { createBrowserHistory } from 'history';
 import { Provider } from './components/ui/provider';
 import { ThemeProvider } from './components/ThemeContext';
+import LessonView from './pages/LessonView';
 import LessonEditorPage from './pages/LessonEditorPage';
 import ProfilePage from './pages/ProfilePage';
 import DashboardPage from './pages/DashboardPage';
@@ -67,6 +68,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/view/:id" element={<LessonView />} />
             <Route path="/edit/:id" element={<RequireAuth><LessonEditorPage /></RequireAuth>} />
             <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
             <Route path="/dashboard" element={<DashboardPage />} />

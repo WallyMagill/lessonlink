@@ -182,12 +182,22 @@ function LessonCard({ lesson, onDelete }) {
 
   const handleView = (event) => {
     event.preventDefault();
-    navigate(`/edit/${lesson._id}?tab=1`);
+    // navigate(`/edit/${lesson._id}?tab=1`);
+    navigate(`/view/${lesson._id}`);
   };
 
   const handleEdit = (event) => {
     event.preventDefault();
-    navigate(`/edit/${lesson._id}?tab=0`);
+    if (!isAuth) {
+      toast({
+        title: 'Please log in',
+        description: 'Please log in or sign up to make changes.',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+    navigate(`/edit/${lesson._id}?tab=1`);
   };
 
   const handleDelete = async () => {

@@ -137,11 +137,51 @@ function LessonEditorPage() {
           }}
         >
           <TabList>
-            <Tab color={colors.text}>Edit</Tab>
             <Tab color={colors.text}>View</Tab>
+            <Tab color={colors.text}>Edit</Tab>
             <Tab color={colors.text}>Custom</Tab>
           </TabList>
           <TabPanels>
+            <TabPanel>
+              <Box maxW="800px" mx="auto" p={6} bg={colors.cardBg} borderRadius="md" boxShadow="0 1px 4px rgba(0,0,0,0.08)">
+                <Stack spacing={6}>
+                  <Box>
+                    <Heading as="h1" size="xl" mb={4} color={colors.text}>{lesson.title}</Heading>
+                    <Text fontSize="sm" color={colors.text}>
+                      Subject: {lesson.subject} | Grade: {lesson.grade}
+                    </Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Materials</Heading>
+                    <List spacing={2} styleType="disc" pl={4}>
+                      {lesson.materials?.map((material) => (
+                        <ListItem key={`material-${material}`} color={colors.text}>{material}</ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Learning Objectives</Heading>
+                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.objectives}</Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Overview</Heading>
+                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.overview}</Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Procedure</Heading>
+                    <OrderedList spacing={2} pl={4}>
+                      {lesson.steps?.map((step) => (
+                        <ListItem key={`step-${step}`} color={colors.text}>{step}</ListItem>
+                      ))}
+                    </OrderedList>
+                  </Box>
+                </Stack>
+              </Box>
+            </TabPanel>
             <TabPanel p={0} mt={4}>
               <Flex gap={6}>
                 {showStandards && (
@@ -368,46 +408,6 @@ function LessonEditorPage() {
                   </Stack>
                 </Box>
               </Flex>
-            </TabPanel>
-            <TabPanel>
-              <Box maxW="800px" mx="auto" p={6} bg={colors.cardBg} borderRadius="md" boxShadow="0 1px 4px rgba(0,0,0,0.08)">
-                <Stack spacing={6}>
-                  <Box>
-                    <Heading as="h1" size="xl" mb={4} color={colors.text}>{lesson.title}</Heading>
-                    <Text fontSize="sm" color={colors.text}>
-                      Subject: {lesson.subject} | Grade: {lesson.grade}
-                    </Text>
-                  </Box>
-
-                  <Box>
-                    <Heading as="h2" size="md" mb={2} color={colors.text}>Materials</Heading>
-                    <List spacing={2} styleType="disc" pl={4}>
-                      {lesson.materials?.map((material) => (
-                        <ListItem key={`material-${material}`} color={colors.text}>{material}</ListItem>
-                      ))}
-                    </List>
-                  </Box>
-
-                  <Box>
-                    <Heading as="h2" size="md" mb={2} color={colors.text}>Learning Objectives</Heading>
-                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.objectives}</Text>
-                  </Box>
-
-                  <Box>
-                    <Heading as="h2" size="md" mb={2} color={colors.text}>Overview</Heading>
-                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.overview}</Text>
-                  </Box>
-
-                  <Box>
-                    <Heading as="h2" size="md" mb={2} color={colors.text}>Procedure</Heading>
-                    <OrderedList spacing={2} pl={4}>
-                      {lesson.steps?.map((step) => (
-                        <ListItem key={`step-${step}`} color={colors.text}>{step}</ListItem>
-                      ))}
-                    </OrderedList>
-                  </Box>
-                </Stack>
-              </Box>
             </TabPanel>
             <TabPanel>
               <div style={{ textAlign: 'center' }}>
