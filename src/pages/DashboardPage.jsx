@@ -3,7 +3,7 @@ import {
   Box, Flex, Stack, Input, IconButton, Button, Text,
   useDisclosure, Modal, ModalOverlay, ModalContent,
   ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
-  useToast, Select, SimpleGrid,
+  useToast, Select, SimpleGrid, Spinner,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -31,7 +31,8 @@ function DashboardPage() {
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
-  const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+  // const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
+  const isLoading = useStore(({ authSlice }) => authSlice.loading);
   const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
   const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
@@ -56,22 +57,22 @@ function DashboardPage() {
   }, [user]);
 
   // Fetch user data if authenticated
-  useEffect(() => {
-    const wrapper = async () => {
-      try {
-        if (isAuth) {
-          await loadUser(); // This should populate userSlice.current
-          await fetchAllLessons(isAuth);
-        } else {
-          setGlobalView(true);
-        }
-      } catch (error) {
-        console.error('Failed to load user', error);
-      }
-    };
+  // useEffect(() => {
+  //   const wrapper = async () => {
+  //     try {
+  //       if (isAuth) {
+  //         await loadUser(); // This should populate userSlice.current
+  //         await fetchAllLessons(isAuth);
+  //       } else {
+  //         setGlobalView(true);
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to load user', error);
+  //     }
+  //   };
 
-    wrapper();
-  }, [isAuth, loadUser]);
+  //   wrapper();
+  // }, [isAuth, loadUser]);
 
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
@@ -211,6 +212,14 @@ function DashboardPage() {
       console.error('Error parsing drag data:', error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Flex minH="100vh" align="center" justify="center">
+        <Spinner size="xl" thickness="4px" color="blue.500" />
+      </Flex>
+    );
+  }
 
   return (
     <Box

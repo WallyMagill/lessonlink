@@ -10,6 +10,7 @@ export default function createAuthSlice(set, get) {
     authenticated: false,
     email: '',
     user: {},
+    loading: true,
     // have to update load user to retrieve the user data, set this up on backend
     loadUser: async () => {
       const token = localStorage.getItem('token');
@@ -20,6 +21,7 @@ export default function createAuthSlice(set, get) {
             authenticated: false,
             email: '',
             user: {},
+            loading: false,
           },
         }));
         return;
@@ -32,6 +34,7 @@ export default function createAuthSlice(set, get) {
             ...state.authSlice,
             authenticated: true,
             email: user.email,
+            loading: false,
             user,
           },
           userSlice: {
@@ -49,6 +52,7 @@ export default function createAuthSlice(set, get) {
             authenticated: false,
             email: '',
             user: {},
+            loading: false,
           },
         }));
       }
@@ -66,6 +70,7 @@ export default function createAuthSlice(set, get) {
             ...state.authSlice,
             authenticated: true,
             email: fields.email,
+            loading: false,
           },
         }));
         localStorage.setItem('token', response.data.token);
@@ -89,6 +94,7 @@ export default function createAuthSlice(set, get) {
             ...state.authSlice,
             authenticated: true,
             email: fields.email,
+            loading: false,
           },
         }));
         localStorage.setItem('token', response.data.token);
@@ -104,6 +110,13 @@ export default function createAuthSlice(set, get) {
           ...state.authSlice,
           authenticated: false,
           email: '',
+          user: {},
+          loading: false,
+        },
+        userSlice: {
+          ...state.userSlice,
+          current: null,
+          error: null,
         },
       }));
     },
