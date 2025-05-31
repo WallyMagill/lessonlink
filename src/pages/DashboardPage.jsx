@@ -46,6 +46,9 @@ function DashboardPage() {
   // use a wrapper so can catch failed promises
     const wrapper = async () => {
       try {
+        if (!isAuth) {
+          setGlobalView(true);
+        }
         await fetchAllLessons(isAuth);
       } catch (error) {
         // toast.error(`failed to load all the posts: ${error}`);
