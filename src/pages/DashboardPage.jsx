@@ -31,7 +31,6 @@ function DashboardPage() {
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
-  // const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
   const isLoading = useStore(({ authSlice }) => authSlice.loading);
   const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
   const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
