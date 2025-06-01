@@ -38,7 +38,7 @@ function LessonView() {
       if (!isLoggedIn) {
         navigate('/login', { state: { from: `/edit/${id}` } });
       } else {
-        navigate(`/edit/${id}`);
+        navigate(`/edit/${id}?tab=1`);
       }
     } else {
       setTabIndex(index);

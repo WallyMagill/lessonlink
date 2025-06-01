@@ -25,7 +25,7 @@ import { useTheme } from './ThemeContext';
 function LessonCard({ lesson, onDelete }) {
   const navigate = useNavigate();
   const toast = useToast();
-  const [selectedColor, setSelectedColor] = useState(lesson.tag || 'white');
+  const [selectedColor, setSelectedColor] = useState(lesson.tag || 'blue');
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
   const fetchAllLessons = useStore(({ lessonSlice }) => lessonSlice.fetchAllLessons);
@@ -182,7 +182,6 @@ function LessonCard({ lesson, onDelete }) {
 
   const handleView = (event) => {
     event.preventDefault();
-    // navigate(`/edit/${lesson._id}?tab=1`);
     navigate(`/view/${lesson._id}`);
   };
 
@@ -252,7 +251,6 @@ function LessonCard({ lesson, onDelete }) {
       bg={colors.cardBg}
       boxShadow="md"
       borderLeftWidth="6px"
-      borderLeftColor={`${selectedColor}.500`}
       _hover={{ boxShadow: 'lg', transform: 'translateY(-2px)' }}
       transition="all 0.2s"
       position="relative"
@@ -268,20 +266,18 @@ function LessonCard({ lesson, onDelete }) {
       {/* Lesson image & title */}
       <Box
         height="100px"
-        backgroundImage='linear-gradient(rgba(62, 65, 69, 0.59)), url("https://picsum.photos/320/180")'
-        backgroundSize="cover"
-        backgroundPosition="center"
-        backgroundRepeat="no-repeat"
+        bgGradient={`linear(135deg, ${selectedColor}.500), ${selectedColor}.600`}
         display="flex"
         alignItems="center"
         justifyContent="center"
+        borderTopRadius="md"
       >
         <Text
           fontWeight="bold"
           fontSize="xl"
           color="white"
           textAlign="center"
-          textShadow="2px 2px 4px rgba(0,0,0,0.8)"
+          textShadow="2px 2px 4px rgba(0,0,0,0.5)"
           px={4}
           maxW="220px"
           noOfLines={2}
