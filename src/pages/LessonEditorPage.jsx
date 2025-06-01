@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect, useState,
+} from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
-  Heading, List, ListItem, OrderedList, IconButton, Select, Text,
+  Heading, List, ListItem, OrderedList, IconButton, Text,
   Button, Textarea, useToast, // Switch,
 } from '@chakra-ui/react';
 import { FaFileAlt, FaTrash } from 'react-icons/fa';
@@ -12,6 +14,7 @@ import useStore from '../store';
 import PrintPage from '../components/printpage';
 import ShareButton from '../components/sharepage';
 import { useTheme } from '../components/ThemeContext';
+import StandardsPanel from '../components/StandardsPanel';
 
 function LessonEditorPage() {
   const { id } = useParams();
@@ -32,16 +35,6 @@ function LessonEditorPage() {
   const { colors, isDarkMode } = useTheme();
 
   const standards = useStore(({ standardSlice }) => standardSlice.standards);
-
-  const [subjectFilter, setSubjectFilter] = useState('');
-  const [gradeFilter, setGradeFilter] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredStandards = standards.filter((s) => {
-    return (!subjectFilter || s.subject === subjectFilter)
-         && (!gradeFilter || s.grade.toString() === gradeFilter);
-  });
-  const visibleStandards = filteredStandards.filter((s) => s.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -200,66 +193,10 @@ function LessonEditorPage() {
             <TabPanel p={0} mt={4}>
               <Flex gap={6}>
                 {showStandards && (
-                  <Box
-                    width="250px"
-                    bg={colors.cardBg}
-                    p={4}
-                    boxShadow="0 1px 4px rgba(0,0,0,0.08)"
-                    borderRadius="md"
-                    overflowY="auto"
-                    maxHeight="calc(100vh + 180px)"
-                  >
-                    <Input placeholder="Search Standards..." mb={4} bg={colors.inputBg} color={colors.text} onChange={(e) => setSearchTerm(e.target.value)} />
-                    <Stack spacing={3}>
-                      <Select
-                        placeholder="Filter by Subject"
-                        value={editedLesson.subject}
-                        onChange={(e) => setSubjectFilter(e.target.value)}
-                        bg={colors.inputBg}
-                        color={colors.text}
-                      >
-                        <option>Science</option>
-                        <option>Math</option>
-                        <option>English</option>
-                      </Select>
-                      <Select
-                        placeholder="Filter by Grade"
-                        value={editedLesson.grade}
-                        onChange={(e) => setGradeFilter(parseInt(e.target.value, 10))}
-                        bg={colors.inputBg}
-                        color={colors.text}
-                      >
-                        <option value="3">Grade 3</option>
-                        <option value="4">Grade 4</option>
-                        <option value="5">Grade 5</option>
-                        <option value="6">Grade 6</option>
-                      </Select>
-                      {Object.entries(visibleStandards.reduce((acc, s) => {
-                        acc[s.anchorStandard] = acc[s.anchorStandard] || [];
-                        acc[s.anchorStandard].push(s);
-                        return acc;
-                      }, {})).map(([anchor, group]) => (
-                        <Box key={anchor}>
-                          <Text fontWeight="bold" mt={4} color={colors.text}>{anchor}</Text>
-                          <Stack spacing={1} pl={2}>
-                            {group.map((standard) => (
-                              <Box
-                                key={standard.standardCode}
-                                p={2}
-                                bg={colors.hover}
-                                borderRadius="md"
-                                fontSize="sm"
-                                _hover={{ bg: colors.border }}
-                                color={colors.text}
-                              >
-                                {standard.description}
-                              </Box>
-                            ))}
-                          </Stack>
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Box>
+                  <StandardsPanel
+                    standards={standards}
+                    colors={colors}
+                  />
                 )}
                 <Box flex={1}>
                   <Flex justify="space-between" align="center" mb={4}>

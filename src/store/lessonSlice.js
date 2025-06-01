@@ -9,6 +9,44 @@ export default function createLessonSlice(set, get) {
     current: {},
     error: null,
     loading: false,
+    selectedStandards: [],
+
+    setSelectedStandards: (standards) => {
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          selectedStandards: standards,
+        },
+      }), false, 'lessons/setSelectedStandards');
+    },
+
+    toggleStandard: (standard) => {
+      set((state) => {
+        const exists = state.lessonSlice.selectedStandards.some(
+          (s) => s.standardCode === standard.standardCode,
+        );
+
+        let updatedSelectedStandards;
+        if (exists) {
+          // we remove the standard if it exists
+          updatedSelectedStandards = state.lessonSlice.selectedStandards.filter(
+            (s) => s.standardCode !== standard.standardCode,
+          );
+        } else {
+          // otherwise add the standard if it doesn't exist
+          updatedSelectedStandards = [...state.lessonSlice.selectedStandards, standard];
+        }
+
+        return {
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            selectedStandards: updatedSelectedStandards,
+          },
+        };
+      }, false, 'lessons/toggleStandard');
+    },
 
     // fetch all lessons
     fetchAllLessons: async (isAuth) => {
