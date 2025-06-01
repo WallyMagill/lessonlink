@@ -40,6 +40,7 @@ function LessonCard({ lesson, onDelete }) {
   const folders = user?.folders || {};
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
   const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
+  const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
   const { colors } = useTheme();
 
   // Filter folders by search
@@ -123,6 +124,27 @@ function LessonCard({ lesson, onDelete }) {
       : [...prev, folder]));
   };
 
+  const handleCreateCopy = async () => {
+    try {
+      const lessonCopy = await createLesson({
+        title: lesson.title,
+        objectives: lesson.objectives,
+        overview: lesson.overview,
+        materials: lesson.materials,
+        steps: lesson.steps,
+        standards: lesson.standards,
+        grade: lesson.grade,
+        subject: lesson.subject,
+        status: 'public',
+        shared: [lesson.author.id],
+      });
+      return lessonCopy;
+    } catch (error) {
+      console.error('Error remixing lesson');
+      return false;
+    }
+  };
+
   // added these fns bc both color and delete modals were opening simultaneously
 
   const openDeleteModal = () => {
@@ -185,7 +207,7 @@ function LessonCard({ lesson, onDelete }) {
     navigate(`/view/${lesson._id}`);
   };
 
-  const handleEdit = (event) => {
+  const handleEdit = async (event) => {
     event.preventDefault();
     if (!isAuth) {
       toast({
@@ -196,7 +218,13 @@ function LessonCard({ lesson, onDelete }) {
       });
       return;
     }
-    navigate(`/edit/${lesson._id}?tab=1`);
+    // If we try to edit a lesson that isn't ours
+    if (user?.id !== lesson?.author?.id) {
+      const lessonCopy = await handleCreateCopy();
+      navigate(`/edit/${lessonCopy._id}?tab=1`);
+    } else {
+      navigate(`/edit/${lesson._id}?tab=1`);
+    }
   };
 
   const handleDelete = async () => {
