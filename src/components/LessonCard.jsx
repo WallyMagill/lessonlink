@@ -343,7 +343,6 @@ function LessonCard({ lesson, onDelete }) {
         <Avatar
           size="sm"
           name={lesson?.author?.username}
-          src="https://picsum.photos/40/40"
         />
         <Text fontSize="sm" color={colors.text} fontWeight="medium">
           {lesson?.author?.username}
