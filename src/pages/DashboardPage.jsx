@@ -204,9 +204,8 @@ function DashboardPage() {
       </Flex>
     );
   }
-
   return (
-    <Box
+    <Flex
       minH="100vh"
       minW="100%"
       bg={colors.background}
@@ -214,233 +213,277 @@ function DashboardPage() {
       overflowX="hidden"
       padding={0}
       position="relative"
+      flexDirection="column"
     >
       <Header />
-      <Box p={6}>
-        <Flex minH="calc(100vh - 64px)" gap={6}>
-          {/* Left Sidebar */}
-          <Box
-            minW="260px"
-            maxW="320px"
-            bg={colors.sidebarBg}
-            p={4}
-            borderRadius="md"
-            boxShadow="sm"
-            display="flex"
+      <Flex
+        flexGrow={1}
+        p={6}
+        flexDirection={{ base: 'column', md: 'row' }}
+        gap={6}
+      >
+        {/* Left Sidebar */}
+        <Flex
+          minW={{ base: '100%', md: '260px' }}
+          maxW={{ base: '100%', md: '320px' }}
+          bg={colors.sidebarBg}
+          p={4}
+          borderRadius="md"
+          boxShadow="sm"
+          height={{ base: 'auto', md: 'calc(100vh - 64px - 32px)' }}
+          overflowY="auto"
+          flexDirection="column"
+        >
+          <Flex
+            mb={4}
             flexDirection="column"
-            height="100%"
-            overflowY="auto"
+            width="100%"
+            align="stretch"
           >
-            <Flex mb={4} gap={2} align="center">
+            <Flex
+              width="100%"
+              gap={2}
+              align="center"
+              flexDirection={{ base: 'column', sm: 'row' }}
+            >
               <Input
+                width="100%"
                 placeholder="Search folders..."
-                size="md"
                 bg={colors.inputBg}
                 color={colors.text}
                 value={folderSearch}
                 onChange={(e) => setFolderSearch(e.target.value)}
+                mb={{ base: 2, sm: 0 }}
               />
               <IconButton
                 icon={<AddIcon />}
                 aria-label="Add folder"
                 colorScheme="blue"
                 onClick={onAddOpen}
+                alignSelf={{ base: 'stretch', sm: 'center' }}
               />
             </Flex>
-            <Box flex={1} overflowY="auto">
-              <Stack spacing={2}>
-                {(isAuth ? filteredFolders : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'])
-                  .map((grade) => (
-                    <Flex
-                      key={grade}
-                      align="center"
-                      position="relative"
-                      _hover={{ bg: colors.hover }}
-                      onDragOver={(e) => handleDragOver(e, grade)}
-                      onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, grade)}
-                      bg={dragOverFolder === grade ? 'blue.200' : 'transparent'}
-                      transition="background-color 0.2s"
-                      borderRadius="md"
-                      p={1}
-                    >
-                      <Button
-                        w="100%"
-                        bg={selectedFolder === grade ? 'blue.500' : 'blue.400'}
-                        boxShadow="md"
-                        _hover={{ bg: 'blue.600' }}
-                        onClick={() => setSelectedFolder(selectedFolder === grade ? null : grade)}
-                        fontWeight={selectedFolder === grade ? 'bold' : 'normal'}
-                        justifyContent="flex-start"
-                        pr={selectedFolder === grade ? 10 : 8}
-                        color="white"
-                      >
-                        {grade}
-                      </Button>
-                      {isAuth && (
-                        <IconButton
-                          icon={<DeleteIcon />}
-                          aria-label="Delete folder"
-                          size="xs"
-                          colorScheme="red"
-                          variant="ghost"
-                          position="absolute"
-                          right={1}
-                          top="50%"
-                          transform="translateY(-50%)"
-                          opacity={0.7}
-                          onClick={() => { setFolderToDelete(grade); onDeleteOpen(); }}
-                        />
-                      )}
-                    </Flex>
-                  ))}
-              </Stack>
-            </Box>
-          </Box>
-          {/* Floating Label for Drag Over */}
-          {dragOverFolder && cardPosition && (
-            <Box
-              position="fixed"
-              left={cardPosition.x}
-              top={cardPosition.y}
-              width={cardPosition.width}
-              height={cardPosition.height}
-              bg="blue.500"
-              color="white"
-              borderRadius="md"
-              boxShadow="2xl"
-              zIndex={1000}
-              pointerEvents="none"
-              transition="all 0.2s"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              textAlign="center"
-              opacity={0.9}
-            >
-              <Text fontWeight="bold" fontSize="lg">Add to {dragOverFolder}</Text>
-            </Box>
-          )}
-          {/* Add Folder Modal */}
-          <Modal isOpen={isAddOpen} onClose={onAddClose} isCentered>
-            <ModalOverlay />
-            <ModalContent bg={colors.modalBg}>
-              <ModalHeader color={colors.text}>Add New Folder</ModalHeader>
-              <ModalCloseButton color={colors.text} />
-              <ModalBody>
-                <Input
-                  placeholder="Folder name"
-                  value={newFolderName}
-                  onChange={(e) => setNewFolderName(e.target.value)}
-                  autoFocus
-                  bg={colors.inputBg}
-                  color={colors.text}
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={onAddClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
-                <Button colorScheme="blue" onClick={handleAddFolder}>Add</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-          {/* Delete Folder Modal */}
-          <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} isCentered>
-            <ModalOverlay />
-            <ModalContent bg={colors.modalBg}>
-              <ModalHeader color={colors.text}>Delete Folder</ModalHeader>
-              <ModalCloseButton color={colors.text} />
-              <ModalBody color={colors.text}>
-                Are you sure you want to delete the folder &quot;{folderToDelete}&quot;? This cannot be undone.
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={onDeleteClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
-                <Button colorScheme="red" onClick={handleDeleteFolder}>Delete</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-          {/* Main Content */}
-          <Box
-            flex={1}
-            bg={colors.sidebarBg}
-            p={4}
-            borderRadius="md"
-            boxShadow="sm"
-            display="flex"
-            flexDirection="column"
-            height="calc(100vh - 64px - 32px)"
-            minH={0}
-            overflowY="auto"
-            onDragEnd={handleDragEnd}
-            onDragStart={handleDragStart}
-          >
-            <Flex mb={4} gap={2} align="center">
-              <Flex flex="1" align="center" gap={0}>
-                <Input
-                  flex="1"
-                  placeholder="Search lesson..."
-                  value={lessonSearch}
-                  onChange={(e) => setLessonSearch(e.target.value)}
-                  borderRightRadius={0}
-                  borderTopRightRadius={0}
-                  borderBottomRightRadius={0}
-                  bg={colors.inputBg}
-                  color={colors.text}
-                />
-                <Select
-                  width="120px"
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                  bg={colors.inputBg}
-                  color={colors.text}
-                  borderLeftRadius={0}
-                  borderTopLeftRadius={0}
-                  borderBottomLeftRadius={0}
-                  borderLeft="none"
+          </Flex>
+          <Stack spacing={2} align="stretch" width="100%">
+            {(isAuth ? filteredFolders : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'])
+              .map((grade) => (
+                <Flex
+                  key={grade}
+                  align="center"
+                  position="relative"
+                  width="100%"
+                  hover={{ bg: colors.hover }}
+                  onDragOver={(e) => handleDragOver(e, grade)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, grade)}
+                  bg={dragOverFolder === grade ? 'blue.200' : 'transparent'}
+                  transition="background-color 0.2s"
                 >
-                  <option value="all">All</option>
-                  <option value="title">Title</option>
-                  <option value="user">User</option>
-                </Select>
-              </Flex>
-              <Flex gap={2} ml={2}>
-                <IconButton
-                  icon={<FaGlobe />}
-                  aria-label="Global toggle"
-                  onClick={handleGlobalToggle}
-                  bg={globalView ? 'white' : 'transparent'}
-                  color={globalView ? 'blue.500' : 'gray.500'}
-                  _hover={{
-                    bg: 'gray.100',
-                    color: globalView ? 'blue.600' : 'gray.700',
-                  }}
-                  _active={{
-                    bg: 'gray.200',
-                    transform: 'scale(0.98)',
-                  }}
-                  transition="all 0.2s ease"
-                  boxShadow={globalView ? 'md' : 'none'}
-                  border="none"
-                  rounded="full"
-                />
-                <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
-              </Flex>
+                  <Button
+                    w="100%"
+                    bg={selectedFolder === grade ? 'blue.500' : 'blue.400'}
+                    boxShadow="md"
+                    _hover={{ bg: 'blue.600' }}
+                    onClick={() => setSelectedFolder(selectedFolder === grade ? null : grade)}
+                    fontWeight={selectedFolder === grade ? 'bold' : 'normal'}
+                    justifyContent="flex-start"
+                    pr={selectedFolder === grade ? 10 : 8}
+                    color="white"
+                  >
+                    {grade}
+                  </Button>
+                  {isAuth && (
+                  <IconButton
+                    icon={<DeleteIcon />}
+                    aria-label="Delete folder"
+                    size="xs"
+                    colorScheme="red"
+                    variant="ghost"
+                    position="absolute"
+                    right={1}
+                    top="50%"
+                    transform="translateY(-50%)"
+                    opacity={0.7}
+                    onClick={() => { setFolderToDelete(grade); onDeleteOpen(); }}
+                  />
+                  )}
+                </Flex>
+              ))}
+          </Stack>
+        </Flex>
+
+        {/* Floating Label for Drag Over */}
+        {dragOverFolder && cardPosition && (
+          <Flex
+            flex={1}
+            position="fixed"
+            left={cardPosition.x}
+            top={cardPosition.y}
+            width={cardPosition.width}
+            height={cardPosition.height}
+            bg="blue.500"
+            color="white"
+            borderRadius="md"
+            boxShadow="2xl"
+            zIndex={1000}
+            pointerEvents="none"
+            transition="all 0.2s"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            opacity={0.9}
+          >
+            <Text fontWeight="bold" fontSize="lg">Add to {dragOverFolder}</Text>
+          </Flex>
+        )}
+        {/* Add Folder Modal */}
+        <Modal isOpen={isAddOpen} onClose={onAddClose} isCentered>
+          <ModalOverlay />
+          <ModalContent bg={colors.modalBg}>
+            <ModalHeader color={colors.text}>Add New Folder</ModalHeader>
+            <ModalCloseButton color={colors.text} />
+            <ModalBody>
+              <Input
+                placeholder="Folder name"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                autoFocus
+                bg={colors.inputBg}
+                color={colors.text}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={onAddClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
+              <Button colorScheme="blue" onClick={handleAddFolder}>Add</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        {/* Delete Folder Modal */}
+        <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} isCentered>
+          <ModalOverlay />
+          <ModalContent bg={colors.modalBg}>
+            <ModalHeader color={colors.text}>Delete Folder</ModalHeader>
+            <ModalCloseButton color={colors.text} />
+            <ModalBody color={colors.text}>
+              Are you sure you want to delete the folder &quot;{folderToDelete}&quot;? This cannot be undone.
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={onDeleteClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
+              <Button colorScheme="red" onClick={handleDeleteFolder}>Delete</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        {/* Floating Label for Drag Over */}
+        {dragOverFolder && cardPosition && (
+        <Flex
+          flex={1}
+          position="fixed"
+          left={cardPosition.x}
+          top={cardPosition.y}
+          width={cardPosition.width}
+          height={cardPosition.height}
+          bg="blue.500"
+          color="white"
+          borderRadius="md"
+          boxShadow="2xl"
+          zIndex={1000}
+          pointerEvents="none"
+          transition="all 0.2s"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
+          opacity={0.9}
+        >
+          <Text fontWeight="bold" fontSize="lg">Add to {dragOverFolder}</Text>
+        </Flex>
+        )}
+
+        <Flex
+          flex={1}
+          bg={colors.sidebarBg}
+          p={4}
+          borderRadius="md"
+          boxShadow="sm"
+          display="flex"
+          flexDirection="column"
+          height="calc(100vh - 64px - 32px)"
+          minH={0}
+          onDragEnd={handleDragEnd}
+          onDragStart={handleDragStart}
+        >
+          <Flex mb={4} gap={2} align="center" flexDirection={{ base: 'column', sm: 'row' }}>
+            <Input
+              flex={1}
+              placeholder="Search lesson..."
+              value={lessonSearch}
+              onChange={(e) => setLessonSearch(e.target.value)}
+              borderRightRadius={{ base: 'md', sm: 0 }}
+              borderTopRightRadius={{ base: 'md', sm: 0 }}
+              borderBottomRightRadius={{ base: 'md', sm: 0 }}
+              bg={colors.inputBg}
+              color={colors.text}
+              mb={{ base: 2, sm: 0 }}
+            />
+            <Select
+              width={{ base: '100%', sm: '120px' }}
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              bg={colors.inputBg}
+              color={colors.text}
+              borderLeftRadius={{ base: 'md', sm: 0 }}
+              borderTopLeftRadius={{ base: 'md', sm: 0 }}
+              borderBottomLeftRadius={{ base: 'md', sm: 0 }}
+              borderLeft="none"
+            >
+              <option value="all">All</option>
+              <option value="title">Title</option>
+              <option value="user">User</option>
+            </Select>
+            <Flex gap={2}
+              ml={2}
+              width={{ base: '100%', sm: 'auto' }}
+              justifyContent={{ base: 'space-between', sm: 'flex-end' }}
+            >
+              <IconButton
+                icon={<FaGlobe />}
+                aria-label="Global toggle"
+                onClick={handleGlobalToggle}
+                bg={globalView ? 'white' : 'transparent'}
+                color={globalView ? 'blue.500' : 'gray.500'}
+                _hover={{
+                  bg: 'gray.100',
+                  color: globalView ? 'blue.600' : 'gray.700',
+                }}
+                _active={{
+                  bg: 'gray.200',
+                  transform: 'scale(0.98)',
+                }}
+                transition="all 0.2s ease"
+                boxShadow={globalView ? 'md' : 'none'}
+                border="none"
+                rounded="full"
+              />
+              <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
-            <Box flex={1} overflowY="auto" width="100%">
-              {displayedLessons.length === 0 && (
-                <Text color={colors.text}>No lessons available. Click the + button to create one!</Text>
-              )}
-              {displayedLessons.length > 0 && (
-                <SimpleGrid minChildWidth="320px" spacing="40px" justifyItems="center">
-                  {displayedLessons.map((lesson) => (
-                    <LessonCard key={lesson.id || lesson._id} lesson={lesson} onDelete={(e) => fetchAllLessons(isAuth)} />
-                  ))}
-                </SimpleGrid>
-              )}
-            </Box>
+          </Flex>
+          <Box flex={1} overflowY="auto" width="100%">
+            {displayedLessons.length === 0 && (
+            <Text color={colors.text}>No lessons available. Click the + button to create one!</Text>
+            )}
+            {displayedLessons.length > 0 && (
+            <SimpleGrid minChildWidth="320px" spacing="40px" justifyItems="center">
+              {displayedLessons.map((lesson) => (
+                <LessonCard key={lesson.id || lesson._id} lesson={lesson} onDelete={(e) => fetchAllLessons(isAuth)} />
+              ))}
+            </SimpleGrid>
+            )}
           </Box>
         </Flex>
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
+
   );
 }
 
