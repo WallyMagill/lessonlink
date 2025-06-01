@@ -28,6 +28,7 @@ function Header() {
   const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
   const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
   const email = useStore(({ authSlice }) => authSlice.email);
+  const user = useStore(({ authSlice }) => authSlice.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isDarkMode, toggleTheme, colors } = useTheme();
 
@@ -113,7 +114,7 @@ function Header() {
           <IconButton
             icon={(
               <Avatar
-                name={email ? `${email}` : 'User'}
+                name={user?.username || email || 'User'}
                 size="sm"
               />
             )}
