@@ -36,13 +36,13 @@ function LessonCard({ lesson, onDelete }) {
   const [isRemoveFromFolderModalOpen, setIsRemoveFromFolderModalOpen] = useState(false);
   const [folderSearch, setFolderSearch] = useState('');
   const [selectedFolders, setSelectedFolders] = useState([]);
+  const [isRemixModalOpen, setIsRemixModalOpen] = useState(false);
   const user = useStore(({ userSlice }) => userSlice.current);
   const folders = user?.folders || {};
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
   const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
   const { colors } = useTheme();
-
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
 
@@ -137,6 +137,7 @@ function LessonCard({ lesson, onDelete }) {
         subject: lesson.subject,
         status: 'public',
         shared: [lesson.author.id],
+        tag: lesson.tag,
       });
       return lessonCopy;
     } catch (error) {
@@ -220,8 +221,7 @@ function LessonCard({ lesson, onDelete }) {
     }
     // If we try to edit a lesson that isn't ours
     if (user?.id !== lesson?.author?.id) {
-      const lessonCopy = await handleCreateCopy();
-      navigate(`/edit/${lessonCopy._id}?tab=1`);
+      setIsRemixModalOpen(true);
     } else {
       navigate(`/edit/${lesson._id}?tab=1`);
     }
@@ -382,6 +382,48 @@ function LessonCard({ lesson, onDelete }) {
               Delete
             </MenuItem>
 
+            <Modal
+              isOpen={isRemixModalOpen}
+              onClose={() => {
+                setIsRemixModalOpen(false);
+              }}
+              size="md"
+            >
+              <ModalOverlay />
+              <ModalContent bg={colors.modalBg}>
+                <ModalHeader color={colors.text}>Remix Lesson</ModalHeader>
+                <ModalCloseButton color={colors.text} />
+                <ModalBody color={colors.text}>
+                  <Text mb={3}>
+                    {'You are about to remix someone else\'s lesson. This will create a copy that you can edit. The original author will be able to view your new lesson.'}
+                  </Text>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setIsRemixModalOpen(false);
+                    }}
+                    mr={3}
+                    color={colors.text}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="blue"
+                    onClick={async () => {
+                      const lessonCopy = await handleCreateCopy();
+                      if (lessonCopy) {
+                        navigate(`/edit/${lessonCopy._id}?tab=1`);
+                      }
+                      setIsRemixModalOpen(false);
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
             <Modal
               isOpen={isColorModalOpen}
               onClose={closeColorModal}
