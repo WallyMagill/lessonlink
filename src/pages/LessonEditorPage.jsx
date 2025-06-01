@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
-  Button, Textarea, // Switch,
+  Button, Textarea, useToast, // Switch,
 } from '@chakra-ui/react';
 import { FaFileAlt, FaTrash } from 'react-icons/fa';
 
@@ -22,6 +22,7 @@ function LessonEditorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = parseInt(searchParams.get('tab'), 10);
   const [tabIndex, setTabIndex] = useState(Number.isNaN(tabParam) ? 0 : tabParam);
+  const toast = useToast();
 
   const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
@@ -71,8 +72,22 @@ function LessonEditorPage() {
   const handleSave = async () => {
     try {
       await updateLesson(id, editedLesson);
-      navigate('/dashboard');
+      toast({
+        title: 'Success!',
+        description: 'All changes have been saved. You can now safely navigate away from the editor.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      // navigate('/dashboard');
     } catch (error) {
+      toast({
+        title: 'Failed to save!',
+        description: 'Changes not saved',
+        status: 'failure',
+        duration: 3000,
+        isClosable: true,
+      });
       console.error('Error saving lesson:', error);
     }
   };

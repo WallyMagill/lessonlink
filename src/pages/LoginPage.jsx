@@ -32,6 +32,13 @@ function LoginPage() {
     e.preventDefault();
     try {
       await signinUser({ email, password }, navigate);
+      toast({
+        title: 'Login successful',
+        description: 'Welcome back!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       navigate(intendedPath || '/dashboard');
       clearIntendedPath();
     } catch (error) {
