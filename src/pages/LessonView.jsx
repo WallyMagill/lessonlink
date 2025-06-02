@@ -175,11 +175,7 @@ function LessonView() {
                 <Stack spacing={6}>
                   <Box>
                     <Heading as="h1" size="xl" mb={4} color={colors.text}>{lesson.title}</Heading>
-                    <Text fontSize="sm" color={colors.text}>
-                      Subject: {lesson.subject} | Grade: {lesson.grade}
-                    </Text>
                   </Box>
-
                   <Box>
                     <Heading as="h2" size="md" mb={2} color={colors.text}>Materials</Heading>
                     <List spacing={2} styleType="disc" pl={4}>
