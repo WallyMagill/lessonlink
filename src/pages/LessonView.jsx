@@ -13,6 +13,15 @@ import {
   List,
   OrderedList,
   ListItem,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
 import useStore from '../store';
 import Header from '../components/Header';
@@ -25,33 +34,59 @@ function LessonView() {
 
   const lesson = useStore((state) => state.lessonSlice.current);
   const fetchLesson = useStore((state) => state.lessonSlice.fetchLesson);
-  const isLoggedIn = useStore((state) => state.authSlice.authenticated);
+  const toast = useToast();
 
-  const [tabIndex, setTabIndex] = useState(0);
+  const user = useStore(({ userSlice }) => userSlice.current);
+  const isAuth = useStore(({ authSlice }) => authSlice.authenticated);
+  const [isRemixModalOpen, setIsRemixModalOpen] = useState(false);
+  const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
+
+  const [tabIndex] = useState(0);
 
   useEffect(() => {
     fetchLesson(id).catch((err) => console.error('Error fetching lesson:', err));
   }, [id]);
 
-  const handleTabChange = (index) => {
-    if (index === 1) {
-      if (!isLoggedIn) {
-        navigate('/login', { state: { from: `/edit/${id}` } });
-      } else {
-        navigate(`/edit/${id}?tab=1`);
-      }
+  const handleEdit = async (event) => {
+    event.preventDefault();
+    if (!isAuth) {
+      toast({
+        title: 'Please log in',
+        description: 'Please log in or sign up to make changes.',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+    // If we try to edit a lesson that isn't ours
+    if (user?.username !== lesson?.author?.username) {
+      setIsRemixModalOpen(true);
     } else {
-      setTabIndex(index);
+      navigate(`/edit/${lesson._id}?tab=1`);
     }
   };
 
-  if (!lesson) {
-    return (
-      <Box p={8}>
-        <Text>Loading lesson...</Text>
-      </Box>
-    );
-  }
+  const handleCreateCopy = async () => {
+    try {
+      const lessonCopy = await createLesson({
+        title: lesson.title,
+        objectives: lesson.objectives,
+        overview: lesson.overview,
+        materials: lesson.materials,
+        steps: lesson.steps,
+        standards: lesson.standards,
+        grade: lesson.grade,
+        subject: lesson.subject,
+        status: 'public',
+        shared: [lesson.author.id],
+        tag: lesson.tag,
+      });
+      return lessonCopy;
+    } catch (error) {
+      console.error('Error remixing lesson');
+      return false;
+    }
+  };
 
   return (
     <Box
@@ -71,13 +106,62 @@ function LessonView() {
       >
         <Tabs
           index={tabIndex}
-          onChange={handleTabChange}
           variant="enclosed"
           colorScheme="blue"
         >
           <TabList>
             <Tab color={colors.text}>View</Tab>
-            <Tab color={colors.text}>Edit</Tab>
+            <Tab
+              color={colors.text}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleEdit(e);
+              }}
+            >Edit
+            </Tab>
+            <Modal
+              isOpen={isRemixModalOpen}
+              onClose={() => {
+                setIsRemixModalOpen(false);
+              }}
+              size="md"
+            >
+              <ModalOverlay />
+              <ModalContent bg={colors.modalBg}>
+                <ModalHeader color={colors.text}>Remix Lesson</ModalHeader>
+                <ModalCloseButton color={colors.text} />
+                <ModalBody color={colors.text}>
+                  <Text mb={3}>
+                    {'You are about to remix someone else\'s lesson. This will create a copy that you can edit. The original author will be able to view your new lesson.'}
+                  </Text>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setIsRemixModalOpen(false);
+                    }}
+                    mr={3}
+                    color={colors.text}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="blue"
+                    onClick={async () => {
+                      const lessonCopy = await handleCreateCopy();
+                      if (lessonCopy) {
+                        navigate(`/edit/${lessonCopy._id}?tab=1`);
+                      }
+                      setIsRemixModalOpen(false);
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </TabList>
 
           <TabPanels

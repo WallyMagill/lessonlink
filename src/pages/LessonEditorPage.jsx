@@ -185,7 +185,8 @@ function LessonEditorPage() {
         >
           <TabList>
             <Tab color={colors.text}>View</Tab>
-            <Tab color={colors.text}>Edit</Tab>
+            <Tab>Edit
+            </Tab>
             <Tab color={colors.text}>Custom</Tab>
           </TabList>
           <TabPanels>
@@ -418,6 +419,7 @@ function LessonEditorPage() {
         </Tabs>
       </Box>
     </Box>
+
   );
 }
 
