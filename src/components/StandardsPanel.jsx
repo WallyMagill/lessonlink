@@ -33,7 +33,7 @@ function RecursiveAccordion({
               fontSize="sm"
               _hover={{ bg: colors.hover }}
               cursor="pointer"
-              onClick={() => toggleStandardSelection(standard)}
+              onClick={() => toggleStandardSelection({ standardCode: standard.standardCode })}
               border={isSelected ? '2px solid' : '1px solid'}
               borderColor={isSelected ? 'blue.400' : colors.border}
               mb={2}
@@ -92,7 +92,7 @@ function StandardsPanel({ standards, colors }) {
   const [subjectFilter, setSubjectFilter] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
 
-  const selectedCodes = selectedStandards.map((s) => s.standardCode);
+  const selectedCodes = selectedStandards.filter(Boolean);
 
   const filteredStandards = useMemo(() => {
     return standards.filter((standard) => {
@@ -144,7 +144,7 @@ function StandardsPanel({ standards, colors }) {
               >
                 <TagLabel>{code}</TagLabel>
                 <TagCloseButton
-                  onClick={() => toggleStandard(selectedStandards.find((s) => s.standardCode === code))}
+                  onClick={() => toggleStandard({ standardCode: code })}
                 />
               </Tag>
             ))}

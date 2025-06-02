@@ -35,6 +35,8 @@ function LessonEditorPage() {
   const { colors, isDarkMode } = useTheme();
 
   const standards = useStore(({ standardSlice }) => standardSlice.standards);
+  const selectedStandards = useStore(({ lessonSlice }) => lessonSlice.selectedStandards);
+  const setSelectedStandards = useStore(({ lessonSlice }) => lessonSlice.setSelectedStandards);
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -61,6 +63,9 @@ function LessonEditorPage() {
           content: step,
         })),
       });
+      setSelectedStandards(lesson.standards || []);
+    } else {
+      setSelectedStandards([]);
     }
   }, [lesson]);
 
@@ -75,6 +80,7 @@ function LessonEditorPage() {
         ...editedLesson,
         materials: editedLesson.materials.map((m) => m.content),
         steps: editedLesson.steps.map((s) => s.content),
+        standards: (selectedStandards.map((s) => s) || []),
       };
 
       await updateLesson(id, lessonToSave);

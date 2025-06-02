@@ -23,19 +23,17 @@ export default function createLessonSlice(set, get) {
 
     toggleStandard: (standard) => {
       set((state) => {
-        const exists = state.lessonSlice.selectedStandards.some(
-          (s) => s.standardCode === standard.standardCode,
-        );
+        const code = standard.standardCode;
+
+        const exists = state.lessonSlice.selectedStandards.includes(code);
 
         let updatedSelectedStandards;
         if (exists) {
-          // we remove the standard if it exists
           updatedSelectedStandards = state.lessonSlice.selectedStandards.filter(
-            (s) => s.standardCode !== standard.standardCode,
+            (c) => c !== code,
           );
         } else {
-          // otherwise add the standard if it doesn't exist
-          updatedSelectedStandards = [...state.lessonSlice.selectedStandards, standard];
+          updatedSelectedStandards = [...state.lessonSlice.selectedStandards, code];
         }
 
         return {
