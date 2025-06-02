@@ -92,6 +92,7 @@ function Header() {
           onClick={onOpenDashboardModal}
           colorScheme="blue"
           variant="outline"
+          color={isDarkMode ? 'white' : undefined}
         >
           Dashboard
         </Button>
@@ -162,14 +163,14 @@ function Header() {
           <ModalCloseButton color={colors.text} />
           <ModalBody>
             <Text color={colors.text}>
-              Are you sure you want to leave this page? If you made changes and haven’t saved your work, they may be lost.
+              Are you sure you want to leave this page? If you made changes and haven&apos;t saved your work, they may be lost.
             </Text>
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleHomeConfirmed} colorScheme="blue" mr={3}>
               Yes
             </Button>
-            <Button onClick={onCloseDashboardModal} colorScheme="blue" variant="outline">
+            <Button onClick={onCloseDashboardModal} colorScheme="blue" variant="outline" color={isDarkMode ? 'white' : undefined}>
               No
             </Button>
           </ModalFooter>

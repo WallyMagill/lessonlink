@@ -382,7 +382,7 @@ function LessonEditorPage() {
                       </OrderedList>
                     </Box>
                     <Flex gap={4} mt={2}>
-                      <PrintPage />
+                      <PrintPage isDarkMode={isDarkMode} />
                       <IconButton
                         icon={<FaTrash />}
                         type="submit"
