@@ -279,14 +279,17 @@ function ProfilePage() {
               <Box>
                 <Button
                   size="lg"
-                  colorScheme="red"
+                  colorScheme="blue"
                   px={6}
                   py={4}
                   fontSize="md"
-                  _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
+                  _hover={{
+                    transform: 'translateY(-2px)', boxShadow: 'lg',
+                  }}
                   transition="all 0.2s"
                   onClick={handleOut}
                   color={isDarkMode ? 'white' : undefined}
+                  variant="outline"
                 >
                   Sign Out
                 </Button>
