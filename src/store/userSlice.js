@@ -243,6 +243,35 @@ export default function createUserSlice(set, get) {
       }
     },
 
+    renameFolder: async (oldName, newName) => {
+      try {
+        const body = { oldName, newName };
+        const result = await axios.put(
+          `${API_URL}/users/folders/rename`,
+          body,
+          { headers: { authorization: localStorage.getItem('token') } },
+        );
+        const updatedUser = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: updatedUser,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
     deleteLessonFromFolder: async (foldername, lessonId) => {
       try {
         const body = { foldername, lessonId };

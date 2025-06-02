@@ -6,7 +6,7 @@ import {
   useToast, Select, SimpleGrid, Spinner,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
 import Header from '../components/DashHeader';
@@ -27,9 +27,11 @@ function DashboardPage() {
   const [globalView, setGlobalView] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const [lessonSearch, setLessonSearch] = useState('');
+  const [folderToRename, setFolderToRename] = useState(null);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
+  const { isOpen: isRenameOpen, onOpen: onRenameOpen, onClose: onRenameClose } = useDisclosure();
 
   const isLoading = useStore(({ authSlice }) => authSlice.loading);
   const lessons = useStore(({ lessonSlice }) => lessonSlice.all);
@@ -42,6 +44,7 @@ function DashboardPage() {
   const folders = user?.folders || {};
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
+  const renameFolder = useStore(({ userSlice }) => userSlice.renameFolder);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
@@ -200,6 +203,31 @@ function DashboardPage() {
     }
   };
 
+  const handleRenameFolder = async () => {
+    if (!folderToRename || !newFolderName.trim()) return;
+    try {
+      await renameFolder(folderToRename, newFolderName.trim());
+      if (selectedFolder === folderToRename) setSelectedFolder(newFolderName.trim());
+      setFolderToRename(null);
+      setNewFolderName('');
+      onRenameClose();
+      toast({
+        title: 'Folder renamed',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <Flex minH="100vh" align="center" justify="center">
@@ -296,19 +324,27 @@ function DashboardPage() {
                     {grade}
                   </Button>
                   {isAuth && (
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    aria-label="Delete folder"
-                    size="xs"
-                    colorScheme="red"
-                    variant="ghost"
-                    position="absolute"
-                    right={1}
-                    top="50%"
-                    transform="translateY(-50%)"
-                    opacity={0.7}
-                    onClick={() => { setFolderToDelete(grade); onDeleteOpen(); }}
-                  />
+                    <Flex position="absolute" right={1} top="50%" transform="translateY(-50%)" gap={1}>
+                      <IconButton
+                        icon={<EditIcon />}
+                        aria-label="Rename folder"
+                        size="xs"
+                        colorScheme="blue"
+                        variant="ghost"
+                        opacity={0.7}
+                        color="white"
+                        onClick={() => { setFolderToRename(grade); setNewFolderName(grade); onRenameOpen(); }}
+                      />
+                      <IconButton
+                        icon={<DeleteIcon />}
+                        aria-label="Delete folder"
+                        size="xs"
+                        colorScheme="red"
+                        variant="ghost"
+                        opacity={0.7}
+                        onClick={() => { setFolderToDelete(grade); onDeleteOpen(); }}
+                      />
+                    </Flex>
                   )}
                 </Flex>
               ))}
@@ -374,6 +410,28 @@ function DashboardPage() {
             <ModalFooter>
               <Button onClick={onDeleteClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
               <Button colorScheme="red" onClick={handleDeleteFolder}>Delete</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        {/* Rename Folder Modal */}
+        <Modal isOpen={isRenameOpen} onClose={onRenameClose} isCentered>
+          <ModalOverlay />
+          <ModalContent bg={colors.modalBg}>
+            <ModalHeader color={colors.text}>Rename Folder</ModalHeader>
+            <ModalCloseButton color={colors.text} />
+            <ModalBody>
+              <Input
+                placeholder="New folder name"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                autoFocus
+                bg={colors.inputBg}
+                color={colors.text}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={onRenameClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
+              <Button colorScheme="blue" onClick={handleRenameFolder}>Rename</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
