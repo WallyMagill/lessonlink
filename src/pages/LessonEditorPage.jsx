@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
   Heading, List, ListItem, OrderedList, IconButton, Select, Text,
-  Button, Textarea, Switch,
+  Button, Textarea, Switch, AlertDialog, AlertDialogBody, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, useDisclosure,
 } from '@chakra-ui/react';
 import { FaFileAlt } from 'react-icons/fa';
 import Header from '../components/Header';
@@ -21,6 +22,10 @@ function LessonEditorPage() {
   const navigate = useNavigate();
   const [editedLesson, setEditedLesson] = useState(null);
   const [sharedUser, setSharedUser] = useState('');
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const [hasUsedCustomView, setHasUsedCustomView] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
 
   const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
@@ -42,13 +47,68 @@ function LessonEditorPage() {
 
   useEffect(() => {
     if (lesson) {
-      setEditedLesson({
+      console.log('Loading lesson:', lesson);
+      const initialLesson = {
         ...lesson,
         materials: lesson.materials || [],
         steps: lesson.steps || [],
-      });
+        content: lesson.content || '', // Ensure content is initialized
+      };
+      console.log('Setting edited lesson:', initialLesson);
+      setEditedLesson(initialLesson);
+      // Check if lesson already has content (indicating it might have been edited in custom view)
+      if (lesson.content && lesson.content.trim() !== '') {
+        console.log('Lesson has existing content, marking as used custom view');
+        setHasUsedCustomView(true);
+      }
     }
   }, [lesson]);
+
+  // Function to convert structured lesson data to HTML content
+  const convertLessonToHTML = (lessonData) => {
+    const materials = lessonData.materials?.filter((m) => m && m.trim()).map((m) => `<li>${m}</li>`).join('') || '';
+    const steps = lessonData.steps?.filter((s) => s && s.trim()).map((s) => `<li>${s}</li>`).join('') || '';
+
+    const html = `
+      <h1>${lessonData.title || 'Untitled Lesson'}</h1>
+
+      ${lessonData.subject ? `<h2>Subject</h2><p>${lessonData.subject}</p>` : ''}
+
+      ${lessonData.grade ? `<h2>Grade</h2><p>Grade ${lessonData.grade}</p>` : ''}
+
+      ${lessonData.objectives ? `<h2>Learning Objectives</h2><p>${lessonData.objectives}</p>` : ''}
+
+      ${lessonData.overview ? `<h2>Overview</h2><p>${lessonData.overview}</p>` : ''}
+
+      ${materials ? `<h2>Materials</h2><ul>${materials}</ul>` : ''}
+
+      ${steps ? `<h2>Procedure</h2><ol>${steps}</ol>` : ''}
+    `.trim();
+
+    console.log('Generated HTML:', html);
+    return html;
+  };
+
+  const handleTabChange = (index) => {
+    // If switching to custom view (index 1) and haven't used it before
+    if (index === 1 && !hasUsedCustomView) {
+      onOpen(); // Show warning dialog
+      return;
+    }
+    setCurrentTabIndex(index);
+  };
+
+  const handleConfirmCustomView = () => {
+    // Convert current lesson data to HTML and populate content
+    const htmlContent = convertLessonToHTML(editedLesson);
+    setEditedLesson((prev) => ({
+      ...prev,
+      content: htmlContent,
+    }));
+    setHasUsedCustomView(true);
+    setCurrentTabIndex(1);
+    onClose();
+  };
 
   const handleSave = async () => {
     try {
@@ -69,10 +129,20 @@ function LessonEditorPage() {
   };
 
   const handleChange = (field, value) => {
-    setEditedLesson((prev) => ({
-      ...prev,
+    const updatedLesson = {
+      ...editedLesson,
       [field]: value,
-    }));
+    };
+
+    // Only auto-update content field with HTML if:
+    // 1. We're in template view AND
+    // 2. We haven't used custom view (meaning we're still using template-generated content)
+    if (currentTabIndex === 0 && !hasUsedCustomView) {
+      const htmlContent = convertLessonToHTML(updatedLesson);
+      updatedLesson.content = htmlContent;
+    }
+
+    setEditedLesson(updatedLesson);
   };
 
   const handleAddShared = async () => {
@@ -104,13 +174,13 @@ function LessonEditorPage() {
     >
       <Header />
       <Box p={6}>
-        <Tabs variant="enclosed" colorScheme="blue">
+        <Tabs variant="enclosed" colorScheme="blue" index={currentTabIndex} onChange={handleTabChange}>
           <TabList>
-            <Tab>View Standards</Tab>
             <Tab>Template</Tab>
             <Tab>Custom</Tab>
           </TabList>
           <TabPanels>
+            {/* Template View */}
             <TabPanel p={0} mt={4}>
               <Flex gap={6}>
                 <Box
@@ -255,6 +325,34 @@ function LessonEditorPage() {
                         </ListItem>
                       </OrderedList>
                     </Box>
+                    {/* HTML Preview Section */}
+                    <Box
+                      bg="white"
+                      p={6}
+                      borderRadius="md"
+                      boxShadow="0 1px 4px rgba(0,0,0,0.08)"
+                      mb={4}
+                    >
+                      <Heading as="h3" size="md" mb={4}>Lesson Preview</Heading>
+                      <Box
+                        border="1px solid #e2e8f0"
+                        borderRadius="md"
+                        p={4}
+                        bg="#f7fafc"
+                        maxH="400px"
+                        overflowY="auto"
+                      >
+                        {/* eslint-disable-next-line react/no-danger */}
+                        <div
+                          dangerouslySetInnerHTML={{ __html: editedLesson.content || '<p>No content yet</p>' }}
+                          style={{
+                            lineHeight: '1.6',
+                            fontFamily: 'inherit',
+                          }}
+                        />
+                      </Box>
+                    </Box>
+
                     <Flex gap={4} mt={2}>
                       <PrintPage />
                       <EmailPage />
@@ -283,15 +381,58 @@ function LessonEditorPage() {
                 </Box>
               </Flex>
             </TabPanel>
-            <TabPanel><Text>Template content goes here.</Text></TabPanel>
+
+            {/* Custom View */}
             <TabPanel>
-              <SimpleEditor
-                initialContent={editedLesson?.content || ''}
-                onChange={(html) => handleChange('content', html)}
-              />
+              <Box mb={4}>
+                {hasUsedCustomView && (
+                  <Box bg="yellow.100" p={3} borderRadius="md" mb={4}>
+                    <Text fontSize="sm" color="yellow.800">
+                      ⚠️ You are in custom view. Changes made here will not be reflected in the template view.
+                    </Text>
+                  </Box>
+                )}
+                <SimpleEditor
+                  initialContent={editedLesson?.content || ''}
+                  onChange={(html) => handleChange('content', html)}
+                />
+              </Box>
+              <Flex gap={4} justify="flex-end">
+                <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
+              </Flex>
             </TabPanel>
           </TabPanels>
         </Tabs>
+
+        {/* Warning Dialog */}
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Switch to Custom View
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                Switching to custom view will convert your structured lesson data into a rich text format.
+                Changes made in custom view will not be reflected back in the template view.
+                Do you want to continue?
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button colorScheme="blue" onClick={handleConfirmCustomView} ml={3}>
+                  Continue to Custom View
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
       </Box>
     </Box>
   );
