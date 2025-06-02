@@ -220,7 +220,7 @@ function LessonCard({ lesson, onDelete }) {
       return;
     }
     // If we try to edit a lesson that isn't ours
-    if (user?.id !== lesson?.author?.id) {
+    if (user?.username !== lesson?.author?.username) {
       setIsRemixModalOpen(true);
     } else {
       navigate(`/edit/${lesson._id}?tab=1`);
