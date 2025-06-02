@@ -213,6 +213,15 @@ function DashboardPage() {
 
   const handleRenameFolder = async () => {
     if (!folderToRename || !newFolderName.trim()) return;
+    if (folderToRename === newFolderName) {
+      toast({
+        title: 'New Name Needed',
+        description: 'Please enter a new name',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     try {
       await renameFolder(folderToRename, newFolderName.trim());
       if (selectedFolder === folderToRename) setSelectedFolder(newFolderName.trim());
