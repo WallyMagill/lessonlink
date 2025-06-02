@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { FaGlobe } from 'react-icons/fa';
 import LessonCard from '../components/LessonCard';
-import Header from '../components/Header';
+import Header from '../components/DashHeader';
 import useStore from '../store/index';
 import { useTheme } from '../components/ThemeContext';
 

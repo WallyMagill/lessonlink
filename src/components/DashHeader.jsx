@@ -13,7 +13,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   ModalCloseButton,
   Switch,
   Text,
@@ -30,13 +29,7 @@ function Header() {
   const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
   const email = useStore(({ authSlice }) => authSlice.email);
   const user = useStore(({ authSlice }) => authSlice.user);
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Theme modal
-  const {
-    isOpen: isDashboardModalOpen,
-    onOpen: onOpenDashboardModal,
-    onClose: onCloseDashboardModal,
-  } = useDisclosure(); // Dashboard confirmation modal
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { isDarkMode, toggleTheme, colors } = useTheme();
 
   const handleProfile = (event) => {
@@ -44,8 +37,8 @@ function Header() {
     navigate('/profile');
   };
 
-  const handleHomeConfirmed = () => {
-    onCloseDashboardModal();
+  const handleHome = (event) => {
+    event.preventDefault();
     navigate('/dashboard');
   };
 
@@ -69,6 +62,7 @@ function Header() {
     <Flex
       as="header"
       width="100%"
+      display="flex"
       justifyContent="space-between"
       alignItems="center"
       bg={colors.cardBg}
@@ -82,26 +76,22 @@ function Header() {
         color={colors.text}
         background="transparent"
         _active={{ opacity: 0.8 }}
-        onClick={onOpenDashboardModal}
+        onClick={handleHome}
       >
         LESSONLINK
       </Button>
-
-      <Flex alignItems="center" gap={2}>
-        <Button
-          onClick={onOpenDashboardModal}
-          colorScheme="blue"
-          variant="outline"
-        >
-          Dashboard
-        </Button>
+      <Flex
+        display="flex"
+        alignItems="center"
+        gap={2}
+      >
 
         <Popover>
           <PopoverTrigger>
             <IconButton icon={<SettingsIcon />} variant="ghost" aria-label="Settings" color={colors.text} />
           </PopoverTrigger>
           <Portal>
-            <PopoverContent width="xs" minW="xs" p={2} bg={colors.modalBg}>
+            <PopoverContent width="xs" minW="xs" display="flex" flexDirection="column" p={2} bg={colors.modalBg}>
               <PopoverArrow bg={colors.modalBg} />
               <PopoverBody display="flex" flexDirection="column" gap={2} p={0}>
                 {isAuth ? (
@@ -110,17 +100,17 @@ function Header() {
                     <Button w="100%" variant="ghost" onClick={handleProfile} color={colors.text}>Account</Button>
                     <Button w="100%" variant="ghost" onClick={handleSignOut} color={colors.text}>Sign Out</Button>
                   </>
-                ) : (
-                  <>
-                    <Button w="100%" variant="ghost" onClick={handleLogIn} color={colors.text}>Log In</Button>
-                    <Button w="100%" variant="ghost" onClick={handleSignUp} color={colors.text}>Sign Up</Button>
-                  </>
-                )}
+                )
+                  : (
+                    <>
+                      <Button w="100%" variant="ghost" onClick={handleLogIn} color={colors.text}>Log In</Button>
+                      <Button w="100%" variant="ghost" onClick={handleSignUp} color={colors.text}>Sign Up</Button>
+                    </>
+                  )}
               </PopoverBody>
             </PopoverContent>
           </Portal>
         </Popover>
-
         {isAuth && (
           <IconButton
             icon={(
@@ -152,27 +142,6 @@ function Header() {
               />
             </Flex>
           </ModalBody>
-        </ModalContent>
-      </Modal>
-
-      <Modal isOpen={isDashboardModalOpen} onClose={onCloseDashboardModal} isCentered>
-        <ModalOverlay />
-        <ModalContent bg={colors.modalBg}>
-          <ModalHeader color={colors.text}>Navigate to Dashboard?</ModalHeader>
-          <ModalCloseButton color={colors.text} />
-          <ModalBody>
-            <Text color={colors.text}>
-              Are you sure you want to leave this page? If you made changes and haven’t saved your work, they may be lost.
-            </Text>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={handleHomeConfirmed} colorScheme="blue" mr={3}>
-              Yes
-            </Button>
-            <Button onClick={onCloseDashboardModal} colorScheme="blue" variant="outline">
-              No
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Flex>
