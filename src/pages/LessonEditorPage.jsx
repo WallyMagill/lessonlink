@@ -52,8 +52,14 @@ function LessonEditorPage() {
     if (lesson) {
       setEditedLesson({
         ...lesson,
-        materials: lesson.materials || [],
-        steps: lesson.steps || [],
+        materials: (lesson.materials || []).map((material) => ({
+          id: `material-${Date.now()}-${Math.random()}`,
+          content: material,
+        })),
+        steps: (lesson.steps || []).map((step) => ({
+          id: `step-${Date.now()}-${Math.random()}`,
+          content: step,
+        })),
       });
     }
   }, [lesson]);
@@ -64,7 +70,14 @@ function LessonEditorPage() {
 
   const handleSave = async () => {
     try {
-      await updateLesson(id, editedLesson);
+      // Convert the materials and steps back to simple arrays before saving
+      const lessonToSave = {
+        ...editedLesson,
+        materials: editedLesson.materials.map((m) => m.content),
+        steps: editedLesson.steps.map((s) => s.content),
+      };
+
+      await updateLesson(id, lessonToSave);
       toast({
         title: 'Success!',
         description: 'All changes have been saved. You can now safely navigate away from the editor.',
@@ -72,16 +85,15 @@ function LessonEditorPage() {
         duration: 3000,
         isClosable: true,
       });
-      // navigate('/dashboard');
     } catch (error) {
+      console.error('Error saving lesson:', error);
       toast({
         title: 'Failed to save!',
-        description: 'Changes not saved',
-        status: 'failure',
+        description: error.response?.data?.message || 'Changes not saved',
+        status: 'error',
         duration: 3000,
         isClosable: true,
       });
-      console.error('Error saving lesson:', error);
     }
   };
 
@@ -110,6 +122,22 @@ function LessonEditorPage() {
     } catch (error) {
       console.error('Failed to add shared user:', error);
     }
+  };
+
+  const handleAddMaterial = () => {
+    const newId = `material-${Date.now()}`;
+    setEditedLesson((prev) => ({
+      ...prev,
+      materials: [...(prev.materials || []), { id: newId, content: '' }],
+    }));
+  };
+
+  const handleAddStep = () => {
+    const newId = `step-${Date.now()}`;
+    setEditedLesson((prev) => ({
+      ...prev,
+      steps: [...(prev.steps || []), { id: newId, content: '' }],
+    }));
   };
 
   if (!lesson || !editedLesson) {
@@ -253,14 +281,16 @@ function LessonEditorPage() {
                         pl={4}
                         sx={isDarkMode ? { 'li::marker': { color: 'white' } } : {}}
                       >
-                        {(editedLesson?.materials || []).map((material, index) => (
-                          <ListItem key={typeof material === 'string' ? `material-${material}-${index}` : `material-${index}`}>
+                        {(editedLesson?.materials || []).map((material) => (
+                          <ListItem key={material.id}>
                             <Input
-                              value={material || ''}
+                              value={material.content || ''}
                               onChange={(e) => {
-                                const newMaterials = [...editedLesson.materials];
-                                newMaterials[index] = e.target.value;
-                                handleChange('materials', newMaterials);
+                                const newMaterials = editedLesson.materials.map((m) => (m.id === material.id ? { ...m, content: e.target.value } : m));
+                                setEditedLesson((prev) => ({
+                                  ...prev,
+                                  materials: newMaterials,
+                                }));
                               }}
                               bg={colors.inputBg}
                               color={colors.text}
@@ -270,7 +300,7 @@ function LessonEditorPage() {
                         <ListItem>
                           <Button
                             size="sm"
-                            onClick={() => handleChange('materials', [...editedLesson.materials, ''])}
+                            onClick={handleAddMaterial}
                             color={isDarkMode ? 'white' : colors.text}
                             colorScheme={isDarkMode ? 'blue' : undefined}
                           >
@@ -323,14 +353,16 @@ function LessonEditorPage() {
                         pl={4}
                         sx={isDarkMode ? { 'li::marker': { color: 'white' } } : {}}
                       >
-                        {(editedLesson?.steps || []).map((step, index) => (
-                          <ListItem key={typeof step === 'string' ? `step-${step}-${index}` : `step-${index}`}>
+                        {(editedLesson?.steps || []).map((step) => (
+                          <ListItem key={step.id}>
                             <Input
-                              value={step || ''}
+                              value={step.content || ''}
                               onChange={(e) => {
-                                const newSteps = [...editedLesson.steps];
-                                newSteps[index] = e.target.value;
-                                handleChange('steps', newSteps);
+                                const newSteps = editedLesson.steps.map((s) => (s.id === step.id ? { ...s, content: e.target.value } : s));
+                                setEditedLesson((prev) => ({
+                                  ...prev,
+                                  steps: newSteps,
+                                }));
                               }}
                               bg={colors.inputBg}
                               color={colors.text}
@@ -340,7 +372,7 @@ function LessonEditorPage() {
                         <ListItem>
                           <Button
                             size="sm"
-                            onClick={() => handleChange('steps', [...editedLesson.steps, ''])}
+                            onClick={handleAddStep}
                             color={isDarkMode ? 'white' : colors.text}
                             colorScheme={isDarkMode ? 'blue' : undefined}
                           >
