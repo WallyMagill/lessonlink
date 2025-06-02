@@ -90,6 +90,12 @@ function DashboardPage() {
 
   // Add folder handler
   const handleAddFolder = async () => {
+    if (!isAuth) {
+      toast({
+        title: 'Sign In Needed', description: 'You must be signed in to create a folder', duration: 3000, isClosable: true,
+      });
+      return;
+    }
     if (!newFolderName.trim()) return;
     try {
       await createFolder(newFolderName.trim());
@@ -296,7 +302,7 @@ function DashboardPage() {
             </Flex>
           </Flex>
           <Stack spacing={2} align="stretch" width="100%">
-            {(isAuth ? filteredFolders : ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'])
+            {(isAuth ? filteredFolders : [])
               .map((grade) => (
                 <Flex
                   key={grade}
