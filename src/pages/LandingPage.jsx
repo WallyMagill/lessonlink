@@ -84,7 +84,7 @@ function FeaturesSection() {
             bg={useColorModeValue('white', 'gray.700')}
             p={8}
             borderRadius="2xl"
-            boxShadow="0 10px 20px rgba(59, 130, 246, 0.4)" // blue.500 shadow
+            boxShadow="0 10px 20px rgba(59, 130, 246, 0.4)"
             cursor="default"
             whileHover={{ y: -6, boxShadow: '0 12px 24px rgba(59, 130, 246, 0.6)' }}
             initial={{ opacity: 0, y: 30 }}
@@ -98,7 +98,7 @@ function FeaturesSection() {
                 p={4}
                 borderRadius="full"
                 display="inline-flex"
-                boxShadow="0 2px 6px rgba(59, 130, 246, 0.4)" // blue.500 shadow
+                boxShadow="0 2px 6px rgba(59, 130, 246, 0.4)"
               >
                 <Icon as={feature.icon} boxSize={7} />
               </Box>
@@ -152,7 +152,7 @@ function HowItWorksSection() {
           transition={{ duration: 0.7 }}
           borderRadius="2xl"
           overflow="hidden"
-          boxShadow="0 12px 24px rgba(59, 130, 246, 0.6)" // blue.500 shadow
+          boxShadow="0 12px 24px rgba(59, 130, 246, 0.6)"
         >
           <Image
             src={dashboardImage}
@@ -169,7 +169,7 @@ function HowItWorksSection() {
           bg={bg}
           p={10}
           borderRadius="2xl"
-          boxShadow="0 10px 20px rgba(59, 130, 246, 0.4)" // blue.500 shadow
+          boxShadow="0 10px 20px rgba(59, 130, 246, 0.4)"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}

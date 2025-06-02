@@ -6,16 +6,13 @@ import useStore from '../store';
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  // Get user and backend toggleTheme from zustand
   const user = useStore((state) => state.userSlice.current);
   const backendToggleTheme = useStore((state) => state.userSlice.toggleTheme);
 
-  // Use user's theme as the source of truth
   const [isDarkMode, setIsDarkMode] = useState(false);
   const initialized = useRef(false);
   const prevUserId = useRef(null);
 
-  // Only initialize from user.theme on first mount or user change
   useEffect(() => {
     if (user && user._id !== prevUserId.current) {
       initialized.current = false;
@@ -27,10 +24,9 @@ export function ThemeProvider({ children }) {
     }
   }, [user]);
 
-  // Toggle theme and update backend
   const toggleTheme = async () => {
-    setIsDarkMode((prev) => !prev); // Optimistically update local state
-    await backendToggleTheme(); // This will update user.theme in zustand
+    setIsDarkMode((prev) => !prev);
+    await backendToggleTheme();
   };
 
   const theme = useMemo(() => ({

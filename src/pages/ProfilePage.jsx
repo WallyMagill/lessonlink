@@ -24,7 +24,6 @@ function ProfilePage() {
 
   // don't have the user's id stored anywhere on front currently
   useEffect(() => {
-    // Assuming we have the current user's ID stored somewhere
     loadUser();
   }, []);
 

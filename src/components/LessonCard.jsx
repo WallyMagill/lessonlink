@@ -178,9 +178,7 @@ function LessonCard({ lesson, onDelete }) {
         tag: color,
       });
       setSelectedColor(color);
-      // Close modal after selected
       closeColorModal();
-      // Show success
       toast({
         title: 'Color Updated',
         description: `Lesson color changed to ${color}`,
@@ -188,12 +186,10 @@ function LessonCard({ lesson, onDelete }) {
         duration: 2000,
         isClosable: true,
       });
-      // Refresh lessons after color update
       await fetchAllLessons(isAuth);
     } catch (error) {
       console.error('Error selecting color:', error);
 
-      // Show error
       toast({
         title: 'Color Update Failed',
         description: 'Unable to update lesson color',
@@ -339,7 +335,7 @@ function LessonCard({ lesson, onDelete }) {
         </Text>
       </Box>
 
-      {/** Author Avatar & Name */}
+      {/* Author Avatar & Name */}
 
       <Box
         position="absolute"
@@ -360,7 +356,7 @@ function LessonCard({ lesson, onDelete }) {
         </Text>
       </Box>
 
-      {/** Menu */}
+      {/* Menu */}
 
       <Menu>
         <MenuButton
