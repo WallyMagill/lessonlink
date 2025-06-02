@@ -41,6 +41,7 @@ function DashboardPage() {
   const user = useStore(({ userSlice }) => userSlice.current);
   const folders = user?.folders || {};
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
+  const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
 
   useEffect(() => {
   // use a wrapper so can catch failed promises
@@ -77,7 +78,7 @@ function DashboardPage() {
     displayedLessons = displayedLessons.filter((lesson) => lesson.title?.toLowerCase().includes(lowerSearch));
   }
   if (!globalView) {
-    displayedLessons = displayedLessons.filter((lesson) => lesson.status === 'protected' || lesson?.author?.username === user?.username || lesson?.shared.includes(user?.id));
+    displayedLessons = displayedLessons.filter((lesson) => lesson.status === 'protected' || lesson?.author?.username === user?.username || lesson?.shared?.includes(user?.id));
   }
   if (selectedFolder && folders[selectedFolder]) {
     const lessonIds = folders[selectedFolder];
@@ -141,7 +142,9 @@ function DashboardPage() {
         subject: '',
         status: 'public',
       });
-      navigate(`/edit/${newLesson._id}`);
+      // Wait for the lesson to be loaded in the store
+      await fetchLesson(newLesson._id);
+      navigate(`/edit/${newLesson._id}?tab=1`);
     } catch (error) {
       console.error('Error creating new lesson:', error);
     }
@@ -425,6 +428,8 @@ function DashboardPage() {
               bg={colors.inputBg}
               color={colors.text}
               mb={{ base: 2, sm: 0 }}
+              border="1px solid"
+              borderColor={colors.border}
             />
             <Select
               width={{ base: '100%', sm: '120px' }}
@@ -435,7 +440,8 @@ function DashboardPage() {
               borderLeftRadius={{ base: 'md', sm: 0 }}
               borderTopLeftRadius={{ base: 'md', sm: 0 }}
               borderBottomLeftRadius={{ base: 'md', sm: 0 }}
-              borderLeft="none"
+              border="1px solid"
+              borderColor={colors.border}
             >
               <option value="all">All</option>
               <option value="title">Title</option>
@@ -468,7 +474,7 @@ function DashboardPage() {
               <IconButton icon={<AddIcon />} aria-label="Add lesson" colorScheme="blue" onClick={handleAdd} />
             </Flex>
           </Flex>
-          <Box flex={1} overflowY="auto" width="100%">
+          <Box flex={1} overflowY="auto" width="100%" pt={2}>
             {displayedLessons.length === 0 && (
             <Text color={colors.text}>No lessons available. Click the + button to create one!</Text>
             )}

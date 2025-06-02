@@ -112,12 +112,23 @@ function LessonEditorPage() {
     }
   };
 
-  if (!lesson) {
-    return <Text>Loading lesson...</Text>;
-  }
-
-  if (!editedLesson) {
-    return <Text>Lesson not found</Text>;
+  if (!lesson || !editedLesson) {
+    return (
+      <Box
+        width="100%"
+        height="100vh"
+        display="flex"
+        flexDirection="column"
+        bg={colors.background}
+        fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
+        overflow="hidden"
+      >
+        <Header />
+        <Flex flex="1" align="center" justify="center">
+          <Text color={colors.text}>Loading lesson...</Text>
+        </Flex>
+      </Box>
+    );
   }
 
   return (

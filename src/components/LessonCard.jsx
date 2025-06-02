@@ -42,6 +42,7 @@ function LessonCard({ lesson, onDelete }) {
   const addLessonToFolder = useStore(({ userSlice }) => userSlice.addLessonToFolder);
   const deleteLessonFromFolder = useStore(({ userSlice }) => userSlice.deleteLessonFromFolder);
   const createLesson = useStore(({ lessonSlice }) => lessonSlice.createLesson);
+  const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
   const { colors } = useTheme();
   // Filter folders by search
   const filteredFolders = Object.keys(folders).filter((folder) => folder.toLowerCase().includes(folderSearch.toLowerCase()));
@@ -203,9 +204,14 @@ function LessonCard({ lesson, onDelete }) {
     }
   };
 
-  const handleView = (event) => {
+  const handleView = async (event) => {
     event.preventDefault();
-    navigate(`/view/${lesson._id}`);
+    try {
+      await fetchLesson(lesson._id);
+      navigate(`/view/${lesson._id}`);
+    } catch (error) {
+      console.error('Error loading lesson:', error);
+    }
   };
 
   const handleEdit = async (event) => {
@@ -223,7 +229,12 @@ function LessonCard({ lesson, onDelete }) {
     if (user?.username !== lesson?.author?.username) {
       setIsRemixModalOpen(true);
     } else {
-      navigate(`/edit/${lesson._id}?tab=1`);
+      try {
+        await fetchLesson(lesson._id);
+        navigate(`/edit/${lesson._id}?tab=1`);
+      } catch (error) {
+        console.error('Error loading lesson:', error);
+      }
     }
   };
 
