@@ -73,6 +73,9 @@ export default function createAuthSlice(set, get) {
         };
 
         const response = await axios.post(`${ROOT_URL}/auth/signin`, extracted);
+        localStorage.setItem('token', response.data.token);
+        const intended = get().authSlice.intendedPath;
+
         set((state) => ({
           authSlice: {
             ...state.authSlice,
@@ -81,11 +84,14 @@ export default function createAuthSlice(set, get) {
             loading: false,
           },
         }));
-        localStorage.setItem('token', response.data.token);
+
+        navigate(intended || '/dashboard');
         return true;
       } catch (error) {
-        console.error('Sign In Failed:', error);
-        return false;
+        if (error.response?.data?.error) {
+          console.error('Backend error message:', error.response.data.error);
+        }
+        throw new Error(error?.response?.data?.error || 'Login failed. Please try again.');
       }
     },
     signupUser: async (fields, navigate) => {
@@ -95,7 +101,11 @@ export default function createAuthSlice(set, get) {
           email: fields.email,
           password: fields.password,
         };
+
         const response = await axios.post(`${ROOT_URL}/auth/signup`, extracted);
+        const intended = get().authSlice.intendedPath;
+        localStorage.setItem('token', response.data.token);
+
         set((state) => ({
           authSlice: {
             ...state.authSlice,
@@ -104,13 +114,12 @@ export default function createAuthSlice(set, get) {
             loading: false,
           },
         }));
-        localStorage.setItem('token', response.data.token);
+        navigate(intended || '/dashboard');
+        return { success: true };
       } catch (error) {
-        console.error('Sign Up Failed:', error);
         const message = error?.response?.data?.message || 'Signup failed. Please try again.';
         return { success: false, message };
       }
-      return { success: true };
     },
     signoutUser: async (navigate) => {
       localStorage.clear();
