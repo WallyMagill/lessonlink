@@ -13,6 +13,7 @@ function LandingHeader() {
   return (
     <Flex
       as="header"
+      flexDirection={{ base: 'column', md: 'row' }}
       width="100%"
       justifyContent="space-between"
       alignItems="center"
@@ -32,7 +33,6 @@ function LandingHeader() {
       >
         LESSONLINK
       </Button>
-
       {/* Navigation Buttons */}
       <HStack spacing={4}>
         <Button
@@ -59,7 +59,9 @@ function LandingHeader() {
         >
           Log In
         </Button>
+
       </HStack>
+
     </Flex>
   );
 }
