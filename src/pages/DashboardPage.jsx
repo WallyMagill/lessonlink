@@ -19,7 +19,6 @@ function DashboardPage() {
   const { colors } = useTheme();
 
   const [folderSearch, setFolderSearch] = useState('');
-  const [newFolderName, setNewFolderName] = useState('');
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [folderToDelete, setFolderToDelete] = useState(null);
   const [dragOverFolder, setDragOverFolder] = useState(null);
@@ -28,6 +27,7 @@ function DashboardPage() {
   const [filterType, setFilterType] = useState('all');
   const [lessonSearch, setLessonSearch] = useState('');
   const [folderToRename, setFolderToRename] = useState(null);
+  const [localFolderName, setLocalFolderName] = useState('');
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
@@ -98,10 +98,10 @@ function DashboardPage() {
       });
       return;
     }
-    if (!newFolderName.trim()) return;
+    if (!localFolderName.trim()) return;
     try {
-      await createFolder(newFolderName.trim());
-      setNewFolderName('');
+      await createFolder(localFolderName.trim());
+      setLocalFolderName('');
       onAddClose();
       toast({
         title: 'Folder created', status: 'success', duration: 2000, isClosable: true,
@@ -212,8 +212,8 @@ function DashboardPage() {
   };
 
   const handleRenameFolder = async () => {
-    if (!folderToRename || !newFolderName.trim()) return;
-    if (folderToRename === newFolderName) {
+    if (!folderToRename || !localFolderName.trim()) return;
+    if (folderToRename === localFolderName) {
       toast({
         title: 'New Name Needed',
         description: 'Please enter a new name',
@@ -223,10 +223,10 @@ function DashboardPage() {
       return;
     }
     try {
-      await renameFolder(folderToRename, newFolderName.trim());
-      if (selectedFolder === folderToRename) setSelectedFolder(newFolderName.trim());
+      await renameFolder(folderToRename, localFolderName.trim());
+      if (selectedFolder === folderToRename) setSelectedFolder(localFolderName.trim());
       setFolderToRename(null);
-      setNewFolderName('');
+      setLocalFolderName('');
       onRenameClose();
       toast({
         title: 'Folder renamed',
@@ -243,6 +243,29 @@ function DashboardPage() {
         isClosable: true,
       });
     }
+  };
+
+  // Add handlers for modal open/close
+  const handleAddModalOpen = () => {
+    setLocalFolderName('');
+    onAddOpen();
+  };
+
+  const handleRenameModalOpen = (folderName) => {
+    setFolderToRename(folderName);
+    setLocalFolderName(folderName);
+    onRenameOpen();
+  };
+
+  const handleAddModalClose = () => {
+    setLocalFolderName('');
+    onAddClose();
+  };
+
+  const handleRenameModalClose = () => {
+    setLocalFolderName('');
+    setFolderToRename(null);
+    onRenameClose();
   };
 
   if (isLoading) {
@@ -307,7 +330,7 @@ function DashboardPage() {
                 icon={<AddIcon />}
                 aria-label="Add folder"
                 colorScheme="blue"
-                onClick={onAddOpen}
+                onClick={handleAddModalOpen}
                 alignSelf={{ base: 'stretch', sm: 'center' }}
               />
             </Flex>
@@ -350,7 +373,7 @@ function DashboardPage() {
                         variant="ghost"
                         opacity={0.7}
                         color="white"
-                        onClick={() => { setFolderToRename(grade); setNewFolderName(grade); onRenameOpen(); }}
+                        onClick={() => handleRenameModalOpen(grade)}
                       />
                       <IconButton
                         icon={<DeleteIcon />}
@@ -394,7 +417,7 @@ function DashboardPage() {
           </Flex>
         )}
         {/* Add Folder Modal */}
-        <Modal isOpen={isAddOpen} onClose={onAddClose} isCentered>
+        <Modal isOpen={isAddOpen} onClose={handleAddModalClose} isCentered>
           <ModalOverlay />
           <ModalContent bg={colors.modalBg}>
             <ModalHeader color={colors.text}>Add New Folder</ModalHeader>
@@ -402,15 +425,15 @@ function DashboardPage() {
             <ModalBody>
               <Input
                 placeholder="Folder name"
-                value={newFolderName}
-                onChange={(e) => setNewFolderName(e.target.value)}
+                value={localFolderName}
+                onChange={(e) => setLocalFolderName(e.target.value)}
                 autoFocus
                 bg={colors.inputBg}
                 color={colors.text}
               />
             </ModalBody>
             <ModalFooter>
-              <Button onClick={onAddClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
+              <Button onClick={handleAddModalClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
               <Button colorScheme="blue" onClick={handleAddFolder}>Add</Button>
             </ModalFooter>
           </ModalContent>
@@ -431,7 +454,7 @@ function DashboardPage() {
           </ModalContent>
         </Modal>
         {/* Rename Folder Modal */}
-        <Modal isOpen={isRenameOpen} onClose={onRenameClose} isCentered>
+        <Modal isOpen={isRenameOpen} onClose={handleRenameModalClose} isCentered>
           <ModalOverlay />
           <ModalContent bg={colors.modalBg}>
             <ModalHeader color={colors.text}>Rename Folder</ModalHeader>
@@ -439,15 +462,15 @@ function DashboardPage() {
             <ModalBody>
               <Input
                 placeholder="New folder name"
-                value={newFolderName}
-                onChange={(e) => setNewFolderName(e.target.value)}
+                value={localFolderName}
+                onChange={(e) => setLocalFolderName(e.target.value)}
                 autoFocus
                 bg={colors.inputBg}
                 color={colors.text}
               />
             </ModalBody>
             <ModalFooter>
-              <Button onClick={onRenameClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
+              <Button onClick={handleRenameModalClose} mr={3} variant="ghost" color={colors.text}>Cancel</Button>
               <Button colorScheme="blue" onClick={handleRenameFolder}>Rename</Button>
             </ModalFooter>
           </ModalContent>
