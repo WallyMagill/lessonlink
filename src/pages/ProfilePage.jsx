@@ -22,9 +22,7 @@ function ProfilePage() {
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
   const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
 
-  // don't have the user's id stored anywhere on front currently
   useEffect(() => {
-    // Assuming we have the current user's ID stored somewhere
     loadUser();
   }, []);
 
@@ -42,7 +40,6 @@ function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      console.log(editedUser);
       await updateUser(editedUser.id, editedUser);
       navigate('/dashboard');
       toast({
@@ -279,14 +276,17 @@ function ProfilePage() {
               <Box>
                 <Button
                   size="lg"
-                  colorScheme="red"
+                  colorScheme="blue"
                   px={6}
                   py={4}
                   fontSize="md"
-                  _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
+                  _hover={{
+                    transform: 'translateY(-2px)', boxShadow: 'lg',
+                  }}
                   transition="all 0.2s"
                   onClick={handleOut}
                   color={isDarkMode ? 'white' : undefined}
+                  variant="outline"
                 >
                   Sign Out
                 </Button>
@@ -296,7 +296,8 @@ function ProfilePage() {
           {/* Account Settings */}
           <Box
             flex={1}
-            pl={8}
+            pl={{ base: 2, md: 8 }}
+            pr={{ base: 2, md: 0 }}
           >
             <Stack spacing={8}>
               <Box>
@@ -308,6 +309,11 @@ function ProfilePage() {
                   placeholder="name@school.org"
                   bg={colors.inputBg}
                   color={colors.text}
+                  width="100%"
+                  maxWidth="100%"
+                  minWidth={0}
+                  size={{ base: 'sm', md: 'md' }}
+                  fontSize={{ base: 'sm', md: 'md' }}
                 />
               </Box>
               <Box>
@@ -328,7 +334,12 @@ function ProfilePage() {
                     name={`${editedUser.username}`}
                     size="2xl"
                   />
-                  <IconButton icon={<EditIcon />} aria-label="Edit profile photo" color={colors.text} />
+                  <IconButton
+                    icon={<EditIcon />}
+                    aria-label="Edit profile photo"
+                    colorScheme="blue"
+                    color="white"
+                  />
                 </Flex>
               </Box>
             </Stack>

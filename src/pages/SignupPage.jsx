@@ -19,24 +19,29 @@ function SignupPage() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+  const intendedPath = useStore((state) => state.authSlice.intendedPath);
+  const clearIntendedPath = useStore((state) => state.authSlice.clearIntendedPath);
   const toast = useToast();
 
   const signupUser = useStore(({ authSlice }) => authSlice.signupUser);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await signupUser({ username, email, password }, navigate);
-      navigate('/dashboard');
-    } catch (error) {
+
+    const result = await signupUser({ username, email, password }, navigate);
+
+    if (!result.success) {
       toast({
         title: 'Signup failed',
-        description: error.message,
+        description: result.message,
         status: 'error',
         duration: 5000,
         isClosable: true,
       });
+      return;
     }
+    navigate(intendedPath || '/dashboard');
+    clearIntendedPath();
   };
 
   return (

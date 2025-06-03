@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const API_URL = 'http://localhost:3001/api';
 
 export default function createUserSlice(set, get) {
   return {
@@ -164,7 +163,6 @@ export default function createUserSlice(set, get) {
 
     createFolder: async (foldername) => {
       try {
-        console.log(foldername);
         const body = { foldername };
         const result = await axios.post(`${API_URL}/users/folders`, body, { headers: { authorization: localStorage.getItem('token') } });
         const updatedUser = result.data;
@@ -222,6 +220,35 @@ export default function createUserSlice(set, get) {
             data: body,
             headers: { authorization: localStorage.getItem('token') },
           },
+        );
+        const updatedUser = result.data;
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            current: updatedUser,
+            error: null,
+          },
+        }));
+      } catch (error) {
+        set((state) => ({
+          ...state,
+          userSlice: {
+            ...state.userSlice,
+            error: error.message,
+          },
+        }));
+        throw error;
+      }
+    },
+
+    renameFolder: async (oldName, newName) => {
+      try {
+        const body = { oldName, newName };
+        const result = await axios.put(
+          `${API_URL}/users/folders/rename`,
+          body,
+          { headers: { authorization: localStorage.getItem('token') } },
         );
         const updatedUser = result.data;
         set((state) => ({

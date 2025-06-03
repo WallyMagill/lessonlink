@@ -1,6 +1,9 @@
 import React from 'react';
-import { Flex, HStack, Button } from '@chakra-ui/react';
+import {
+  Flex, HStack, Button, Image,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import LessonLinkWhite from '../img/lessonlinkWHITE.png';
 
 function LandingHeader() {
   const navigate = useNavigate();
@@ -13,6 +16,7 @@ function LandingHeader() {
   return (
     <Flex
       as="header"
+      flexDirection={{ base: 'column', md: 'row' }}
       width="100%"
       justifyContent="space-between"
       alignItems="center"
@@ -27,12 +31,16 @@ function LandingHeader() {
         fontSize="1.25rem"
         color="#1a365d"
         background="transparent"
-        _active={{ opacity: 0.8 }}
         onClick={handleNavigate('/dashboard')}
+        _active={{ opacity: 0.5 }}
+        _hover={{ opacity: 0.8, background: 'transparent' }}
+        p={0}
+        border="none"
+        _focus={{ boxShadow: 'none' }}
+        _focusVisible={{ boxShadow: 'none' }}
       >
-        LESSONLINK
+        <Image src={LessonLinkWhite} alt="LessonLink Logo" height="35px" />
       </Button>
-
       {/* Navigation Buttons */}
       <HStack spacing={4}>
         <Button
@@ -59,7 +67,9 @@ function LandingHeader() {
         >
           Log In
         </Button>
+
       </HStack>
+
     </Flex>
   );
 }

@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const API_URL = 'http://localhost:3001/api';
 
 export default function createLessonSlice(set, get) {
   return {
@@ -9,6 +8,42 @@ export default function createLessonSlice(set, get) {
     current: {},
     error: null,
     loading: false,
+    selectedStandards: [],
+
+    setSelectedStandards: (standards) => {
+      set((state) => ({
+        ...state,
+        lessonSlice: {
+          ...state.lessonSlice,
+          selectedStandards: standards,
+        },
+      }), false, 'lessons/setSelectedStandards');
+    },
+
+    toggleStandard: (standard) => {
+      set((state) => {
+        const code = standard.standardCode;
+
+        const exists = state.lessonSlice.selectedStandards.includes(code);
+
+        let updatedSelectedStandards;
+        if (exists) {
+          updatedSelectedStandards = state.lessonSlice.selectedStandards.filter(
+            (c) => c !== code,
+          );
+        } else {
+          updatedSelectedStandards = [...state.lessonSlice.selectedStandards, code];
+        }
+
+        return {
+          ...state,
+          lessonSlice: {
+            ...state.lessonSlice,
+            selectedStandards: updatedSelectedStandards,
+          },
+        };
+      }, false, 'lessons/toggleStandard');
+    },
 
     // fetch all lessons
     fetchAllLessons: async (isAuth) => {
@@ -60,7 +95,7 @@ export default function createLessonSlice(set, get) {
       }));
 
       try {
-        const response = await axios.get(`${API_URL}/lessons/${id}`);
+        const response = await axios.get(`${API_URL}/lessons/${id}`, { headers: { authorization: localStorage.getItem('token') } });
         set((state) => ({
           ...state,
           lessonSlice: {

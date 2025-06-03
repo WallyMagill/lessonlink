@@ -27,7 +27,6 @@ function ShareModal({
   const handleCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      // alert('Link copied to clipboard!'); // Optional confirmation
     } catch (error) {
       console.error('Failed to copy link:', error);
     }
@@ -86,7 +85,8 @@ function ShareModal({
               color={isDarkMode ? 'white' : undefined}
               onClick={() => {
                 const subject = encodeURIComponent('View my lesson on LessonLink!');
-                const body = encodeURIComponent(`Hi,\n\nPlease view my lesson plan linked below:\n${window.location.href}`);
+                const viewUrl = window.location.href.replace('/edit', '/view');
+                const body = encodeURIComponent(`Hi,\n\nPlease view my lesson plan linked below:\n${viewUrl}`);
                 window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
               }}
             >
