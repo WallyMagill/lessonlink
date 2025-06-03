@@ -108,7 +108,11 @@ export default function createAuthSlice(set, get) {
         localStorage.setItem('token', response.data.token);
       } catch (error) {
         console.error('Sign Up Failed:', error);
+        const message = error?.response?.data?.message || 'Signup failed. Please try again.';
+        // throw new Error(message);
+        return { success: false, message };
       }
+      return { success: true };
     },
     signoutUser: async (navigate) => {
       localStorage.clear();

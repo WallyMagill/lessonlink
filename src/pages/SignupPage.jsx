@@ -27,19 +27,21 @@ function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await signupUser({ username, email, password }, navigate);
-      navigate(intendedPath || '/dashboard');
-      clearIntendedPath();
-    } catch (error) {
+
+    const result = await signupUser({ username, email, password }, navigate);
+
+    if (!result.success) {
       toast({
         title: 'Signup failed',
-        description: error.message,
+        description: result.message,
         status: 'error',
         duration: 5000,
         isClosable: true,
       });
+      return;
     }
+    navigate(intendedPath || '/dashboard');
+    clearIntendedPath();
   };
 
   return (
