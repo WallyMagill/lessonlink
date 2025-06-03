@@ -14,7 +14,7 @@ import {
   TagLabel,
   TagCloseButton,
 } from '@chakra-ui/react';
-import useLessonStore from '../store/index'; // or your actual store import path
+import useLessonStore from '../store/index';
 
 function RecursiveAccordion({
   data, toggleStandardSelection, selectedCodes, colors,

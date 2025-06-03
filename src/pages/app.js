@@ -13,9 +13,7 @@ function App({ Component, pageProps }) {
   return (
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <ChakraProvider theme={theme}>
-        {/* <Component {...pageProps} /> */}
-      </ChakraProvider>
+      <ChakraProvider theme={theme} />
     </>
   );
 }

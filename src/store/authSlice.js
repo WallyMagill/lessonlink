@@ -3,7 +3,6 @@
 import axios from 'axios';
 
 const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const ROOT_URL = 'http://localhost:3001/api';
 
 export default function createAuthSlice(set, get) {
   return {
@@ -109,7 +108,6 @@ export default function createAuthSlice(set, get) {
       } catch (error) {
         console.error('Sign Up Failed:', error);
         const message = error?.response?.data?.message || 'Signup failed. Please try again.';
-        // throw new Error(message);
         return { success: false, message };
       }
       return { success: true };

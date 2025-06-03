@@ -58,7 +58,6 @@ function FeaturesSection() {
       px={{ base: 6, md: 16 }}
       maxW="7xl"
       mx="auto"
-      // Removed bg, borderRadius, boxShadow here to avoid box effect
     >
       <Heading
         as="h2"
@@ -300,7 +299,7 @@ function LandingPage() {
             px={8}
             bg={cardBg}
             borderRadius="xl"
-            boxShadow="0 12px 24px rgba(59, 130, 246, 0.6)" // blue.500 shadow
+            boxShadow="0 12px 24px rgba(59, 130, 246, 0.6)"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}

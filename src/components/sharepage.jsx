@@ -27,7 +27,6 @@ function ShareModal({
   const handleCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      // alert('Link copied to clipboard!'); // Optional confirmation
     } catch (error) {
       console.error('Failed to copy link:', error);
     }

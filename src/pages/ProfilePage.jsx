@@ -22,7 +22,6 @@ function ProfilePage() {
   const loadUser = useStore(({ authSlice }) => authSlice.loadUser);
   const signoutUser = useStore(({ authSlice }) => authSlice.signoutUser);
 
-  // don't have the user's id stored anywhere on front currently
   useEffect(() => {
     loadUser();
   }, []);
@@ -297,7 +296,6 @@ function ProfilePage() {
           {/* Account Settings */}
           <Box
             flex={1}
-            // pl={8}
             pl={{ base: 2, md: 8 }}
             pr={{ base: 2, md: 0 }}
           >

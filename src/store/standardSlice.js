@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const API_URL = 'http://localhost:3001/api';
 
 export default function createStandardSlice(set, get) {
   return {

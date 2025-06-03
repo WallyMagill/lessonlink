@@ -57,7 +57,9 @@ function DashboardPage() {
         }
         await fetchAllLessons(isAuth);
       } catch (error) {
-        // toast.error(`failed to load all the posts: ${error}`);
+        toast({
+          title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true,
+        });
       }
     };
 

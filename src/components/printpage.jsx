@@ -9,7 +9,7 @@ function PrintPage({ isDarkMode }) {
     <button type="button"
       onClick={handlePrint}
       style={{
-        backgroundColor: isDarkMode ? '#3182ce' : 'rgb(245, 245, 245)', // Chakra blue.500
+        backgroundColor: isDarkMode ? '#3182ce' : 'rgb(245, 245, 245)',
         borderRadius: '8px',
         padding: '8px',
         cursor: 'pointer',
