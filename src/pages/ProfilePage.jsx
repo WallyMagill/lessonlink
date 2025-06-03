@@ -298,7 +298,9 @@ function ProfilePage() {
           {/* Account Settings */}
           <Box
             flex={1}
-            pl={8}
+            // pl={8}
+            pl={{ base: 2, md: 8 }}
+            pr={{ base: 2, md: 0 }}
           >
             <Stack spacing={8}>
               <Box>
@@ -310,6 +312,11 @@ function ProfilePage() {
                   placeholder="name@school.org"
                   bg={colors.inputBg}
                   color={colors.text}
+                  width="100%"
+                  maxWidth="100%"
+                  minWidth={0}
+                  size={{ base: 'sm', md: 'md' }}
+                  fontSize={{ base: 'sm', md: 'md' }}
                 />
               </Box>
               <Box>
