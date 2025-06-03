@@ -3,7 +3,7 @@ import {
   Flex, HStack, Button, Image,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import LessonLinkWhite from '../img/LessonLinkWHITE.png';
+import LessonLinkWhite from '../img/lessonlinkWHITE.png';
 
 function LandingHeader() {
   const navigate = useNavigate();

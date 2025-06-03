@@ -41,7 +41,6 @@ function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      console.log(editedUser);
       await updateUser(editedUser.id, editedUser);
       navigate('/dashboard');
       toast({

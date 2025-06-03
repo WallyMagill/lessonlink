@@ -19,8 +19,6 @@ function RequireAuth({ children }) {
   }
 
   if (!authenticated) {
-    // we need to store the path (where user wsa trying to go)
-    console.log(location.pathname);
     setIntendedPath(location.pathname);
     return <Navigate to="/login" />;
   } else {

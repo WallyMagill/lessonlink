@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { SettingsIcon } from '@chakra-ui/icons';
 import useStore from '../store';
 import { useTheme } from './ThemeContext';
-import LessonLinkWhite from '../img/LessonLinkWHITE.png';
+import LessonLinkWhite from '../img/lessonlinkWHITE.png';
 import LessonLinkBlack from '../img/LessonLinkBLACK.png';
 
 function Header() {
