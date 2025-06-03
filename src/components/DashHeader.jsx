@@ -17,11 +17,14 @@ import {
   Switch,
   Text,
   useDisclosure,
+  Image,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsIcon } from '@chakra-ui/icons';
 import useStore from '../store';
 import { useTheme } from './ThemeContext';
+import LessonLinkWhite from '../img/LessonLinkWHITE.png';
+import LessonLinkBlack from '../img/LessonLinkBLACK.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -75,10 +78,15 @@ function Header() {
         fontSize="1.25rem"
         color={colors.text}
         background="transparent"
-        _active={{ opacity: 0.8 }}
         onClick={handleHome}
+        _active={{ opacity: 0.5 }}
+        _hover={{ opacity: 0.8, background: 'transparent' }}
+        p={0}
+        border="none"
+        _focus={{ boxShadow: 'none' }}
+        _focusVisible={{ boxShadow: 'none' }}
       >
-        LESSONLINK
+        <Image src={isDarkMode ? LessonLinkBlack : LessonLinkWhite} alt="LessonLink Logo" height="35px" />
       </Button>
       <Flex
         display="flex"
