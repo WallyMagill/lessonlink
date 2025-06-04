@@ -1,0 +1,13 @@
+# Ignore all tiptap-related components and files
+src/components/tiptap-extension/**
+src/components/tiptap-icons/**
+src/components/tiptap-node/**
+src/components/tiptap-templates/**
+src/components/tiptap-ui/**
+src/components/tiptap-ui-primitive/**
+src/hooks/use-tiptap-editor.js
+src/hooks/use-mobile.js
+src/hooks/use-window-size.js
+src/hooks/use-cursor-visibility.js
+src/hooks/use-menu-navigation.js
+src/lib/tiptap-utils.js 

@@ -169,7 +169,6 @@ export default function createLessonSlice(set, get) {
       try {
         const response = await axios.put(`${API_URL}/lessons/${id}`, lessonData, { headers: { authorization: localStorage.getItem('token') } });
         const updatedLesson = response.data;
-
         set((state) => ({
           ...state,
           lessonSlice: {
@@ -183,6 +182,7 @@ export default function createLessonSlice(set, get) {
 
         return updatedLesson;
       } catch (error) {
+        console.error('Store updateLesson error:', error);
         set((state) => ({
           ...state,
           lessonSlice: {

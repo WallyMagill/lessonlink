@@ -44,7 +44,7 @@ function LoginPage() {
     } catch (error) {
       toast({
         title: 'Login failed',
-        description: error.message,
+        description: error?.response?.data?.error || error.message,
         status: 'error',
         duration: 5000,
         isClosable: true,

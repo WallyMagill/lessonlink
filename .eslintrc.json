@@ -14,7 +14,12 @@
     "new-cap": ["error", { "capIsNewExceptions": ["Router"] }],
     "no-console": 0,
     "import/no-unresolved": [2, { "caseSensitive": false }],
-    "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
+    "no-unused-vars": ["error", { 
+      "vars": "all", 
+      "args": "none", 
+      "varsIgnorePattern": "^_",
+      "argsIgnorePattern": "^_"
+    }],
     "no-underscore-dangle": 0,
     "arrow-body-style": 0,
     "one-var": ["error", { "uninitialized": "always", "initialized": "never" }],
@@ -42,23 +47,23 @@
   "plugins": [
     "react"
   ],
-      "overrides": [
-        {
-            "files": ["src/components/ui/**"],  // Target all files in the `ui` folder
-            "rules": {
-              "semi": "off",  // Disable semicolon rule for files in `src/components/ui/`
-              "eslint-comments/no-unused-disable": "off", // Disable unused-disable rule
-              "no-console": "off",  // Disable console warnings
-              "no-unused-vars": "off",  // Disable unused-vars rule
-              "react/jsx-uses-vars": "off",  // Disable unused vars warning
-              "react/jsx-uses-react": "off",  // Disable React-specific warnings
-              "react/react-in-jsx-scope": "off", // Disable React in-scope warning
-              "react/jsx-props-no-spreading": "off", // Disable prop spreading rule
-              "import/prefer-default-export": "off", // Disable prefer-default-export rule
-              "object-curly-newline": "off", // Disable object-curly-newline rule
-              "jsx-quotes": "off", // Disable jsx-quotes rule (to allow single quotes in JSX)
-              "prefer-arrow-callback": "off" // Disable prefer-arrow-callback rule
-            }
+  "overrides": [
+    {
+        "files": ["src/components/ui/**"],  // Target all files in the `ui` folder
+        "rules": {
+          "semi": "off",  // Disable semicolon rule for files in `src/components/ui/`
+          "eslint-comments/no-unused-disable": "off", // Disable unused-disable rule
+          "no-console": "off",  // Disable console warnings
+          "no-unused-vars": "off",  // Disable unused-vars rule
+          "react/jsx-uses-vars": "off",  // Disable unused vars warning
+          "react/jsx-uses-react": "off",  // Disable React-specific warnings
+          "react/react-in-jsx-scope": "off", // Disable React in-scope warning
+          "react/jsx-props-no-spreading": "off", // Disable prop spreading rule
+          "import/prefer-default-export": "off", // Disable prefer-default-export rule
+          "object-curly-newline": "off", // Disable object-curly-newline rule
+          "jsx-quotes": "off", // Disable jsx-quotes rule (to allow single quotes in JSX)
+          "prefer-arrow-callback": "off" // Disable prefer-arrow-callback rule
         }
-      ]
+    }
+  ]
 } 

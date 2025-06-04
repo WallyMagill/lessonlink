@@ -4,7 +4,7 @@ import {
   Box, Flex, Stack, Heading, IconButton, Input, Avatar, Button, Text,
   Tag, TagLabel, Select, useToast,
 } from '@chakra-ui/react';
-import { EditIcon, AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import useStore from '../store';
 import { useTheme } from '../components/ThemeContext';
@@ -333,12 +333,6 @@ function ProfilePage() {
                   <Avatar
                     name={`${editedUser.username}`}
                     size="2xl"
-                  />
-                  <IconButton
-                    icon={<EditIcon />}
-                    aria-label="Edit profile photo"
-                    colorScheme="blue"
-                    color="white"
                   />
                 </Flex>
               </Box>

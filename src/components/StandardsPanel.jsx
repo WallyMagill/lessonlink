@@ -15,6 +15,7 @@ import {
   TagCloseButton,
 } from '@chakra-ui/react';
 import useLessonStore from '../store/index';
+import { useTheme } from './ThemeContext';
 
 function RecursiveAccordion({
   data, toggleStandardSelection, selectedCodes, colors,
@@ -86,6 +87,12 @@ function RecursiveAccordion({
 }
 
 function StandardsPanel({ standards, colors }) {
+  const { isDarkMode } = useTheme();
+  const optionStyle = {
+    backgroundColor: isDarkMode ? '#2D3748' : 'white',
+    color: isDarkMode ? 'white' : 'black',
+  };
+
   const selectedStandards = useLessonStore((s) => s.lessonSlice.selectedStandards);
   const toggleStandard = useLessonStore((s) => s.lessonSlice.toggleStandard);
 
@@ -154,30 +161,57 @@ function StandardsPanel({ standards, colors }) {
 
       <Stack spacing={3} mb={4}>
         <Select
-          placeholder="Filter by Subject"
           value={subjectFilter}
           onChange={(e) => setSubjectFilter(e.target.value)}
           bg={colors.inputBg}
           color={colors.text}
           fontWeight="medium"
         >
-          <option value="Math">Math</option>
-          <option value="ELA-Literacy">ELA</option>
+          <option
+            value=""
+            style={optionStyle}
+          >
+            Filter by Subject
+          </option>
+          <option
+            value="Math"
+            style={optionStyle}
+          >Math
+          </option>
+          <option
+            value="ELA-Literacy"
+            style={optionStyle}
+          >
+            ELA
+          </option>
         </Select>
 
         <Select
-          placeholder="Filter by Grade"
           value={gradeFilter}
           onChange={(e) => setGradeFilter(e.target.value)}
           bg={colors.inputBg}
           color={colors.text}
           fontWeight="medium"
         >
-          <option value="Kindergarten">Kindergarten</option>
+          <option
+            value=""
+            style={optionStyle}
+          >
+            Filter by Grade
+          </option>
+          <option
+            value="Kindergarten"
+            style={optionStyle}
+          >Kindergarten
+          </option>
           {[...Array(8).keys()].map((g) => {
             const gradeStr = `Grade ${g + 1}`;
             return (
-              <option key={gradeStr} value={gradeStr}>
+              <option
+                key={gradeStr}
+                value={gradeStr}
+                style={optionStyle}
+              >
                 {gradeStr}
               </option>
             );
