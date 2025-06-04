@@ -50,7 +50,7 @@ function LessonEditorPage() {
   const [editedLesson, setEditedLesson] = useState(null);
   const [sharedUser, setSharedUser] = useState('');
   const [hasUsedCustomView, setHasUsedCustomView] = useState(false);
-  const { isOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const [showStandards, setShowStandards] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -224,6 +224,17 @@ function LessonEditorPage() {
     }
   };
 
+  const handleTabChange = (index) => {
+    // If trying to switch to custom view (tab 2) and haven't used it before, show warning
+    if (index === 2 && !hasUsedCustomView) {
+      onOpen();
+      return;
+    }
+    // Otherwise, allow normal tab switching
+    setTabIndex(index);
+    setSearchParams({ tab: index });
+  };
+
   const handleConfirmCustomView = () => {
     // Convert current lesson data to HTML and populate content
     const htmlContent = convertLessonToHTML(editedLesson);
@@ -334,10 +345,7 @@ function LessonEditorPage() {
           variant="enclosed"
           colorScheme="blue"
           index={tabIndex}
-          onChange={(index) => {
-            setTabIndex(index);
-            setSearchParams({ tab: index });
-          }}
+          onChange={handleTabChange}
         >
           <TabList>
             <Tab color={colors.text}>View</Tab>
