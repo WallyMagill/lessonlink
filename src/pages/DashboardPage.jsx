@@ -57,8 +57,6 @@ function DashboardPage() {
       try {
         if (!isAuth) {
           setGlobalView(true);
-        } else {
-          setGlobalView(false);
         }
         await fetchAllLessons(isAuth);
       } catch (error) {
