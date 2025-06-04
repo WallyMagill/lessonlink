@@ -37,6 +37,7 @@ function LessonEditorPage() {
     // use a wrapper so can catch failed promises
     const wrapper = async () => {
       try {
+        console.log('Fetching lesson with id:', id);
         await fetchLesson(id);
       } catch (error) {
         console.error('failed to retrieve post', error);
@@ -66,6 +67,7 @@ function LessonEditorPage() {
 
   // Function to convert structured lesson data to HTML content
   const convertLessonToHTML = (lessonData) => {
+    console.log('Converting lesson data to HTML:', lessonData);
     const materials = lessonData.materials?.filter((m) => m && m.trim()).map((m) => `<li>${m}</li>`).join('') || '';
     const steps = lessonData.steps?.filter((s) => s && s.trim()).map((s) => `<li>${s}</li>`).join('') || '';
 
@@ -112,7 +114,10 @@ function LessonEditorPage() {
 
   const handleSave = async () => {
     try {
+      console.log('Saving lesson with data:', editedLesson);
+      console.log('Content being saved:', editedLesson.content);
       await updateLesson(id, editedLesson);
+      console.log('Lesson saved successfully');
       navigate('/dashboard');
     } catch (error) {
       console.error('Error saving lesson:', error);
@@ -129,19 +134,29 @@ function LessonEditorPage() {
   };
 
   const handleChange = (field, value) => {
+    console.log(`handleChange called with field: ${field}, value:`, value);
+    console.log('Current editedLesson state:', editedLesson);
     const updatedLesson = {
       ...editedLesson,
       [field]: value,
     };
 
-    // Only auto-update content field with HTML if:
-    // 1. We're in template view AND
-    // 2. We haven't used custom view (meaning we're still using template-generated content)
+    // If we're updating content directly (from custom view), just use the provided value
+    if (field === 'content') {
+      console.log('Direct content update detected. New content:', value);
+      setEditedLesson(updatedLesson);
+      console.log('Updated lesson after content change:', updatedLesson);
+      return;
+    }
+
+    // If we're in template view and haven't used custom view, auto-generate content
     if (currentTabIndex === 0 && !hasUsedCustomView) {
       const htmlContent = convertLessonToHTML(updatedLesson);
+      console.log('Generated HTML content in template view:', htmlContent);
       updatedLesson.content = htmlContent;
     }
 
+    console.log('Final updatedLesson before setState:', updatedLesson);
     setEditedLesson(updatedLesson);
   };
 
@@ -154,6 +169,12 @@ function LessonEditorPage() {
     } catch (error) {
       console.error('Failed to add shared user:', error);
     }
+  };
+
+  // Add logging to SimpleEditor onChange
+  const handleEditorChange = (html) => {
+    console.log('SimpleEditor onChange called with html:', html);
+    handleChange('content', html);
   };
 
   if (!lesson) {
@@ -394,7 +415,7 @@ function LessonEditorPage() {
                 )}
                 <SimpleEditor
                   initialContent={editedLesson?.content || ''}
-                  onChange={(html) => handleChange('content', html)}
+                  onChange={handleEditorChange}
                 />
               </Box>
               <Flex gap={4} justify="flex-end">
