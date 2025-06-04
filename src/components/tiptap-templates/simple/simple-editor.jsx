@@ -158,6 +158,7 @@ export function SimpleEditor({ initialContent = null, onChange = null }) {
   const windowSize = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
   const toolbarRef = React.useRef(null)
+  const isInternalUpdate = React.useRef(false)
 
   // Ensure light mode by removing dark class
   React.useEffect(() => {
@@ -200,17 +201,27 @@ export function SimpleEditor({ initialContent = null, onChange = null }) {
     content: initialContent || content,
     onUpdate: ({ editor }) => {
       if (onChange) {
+        // Mark that this is an internal update from the editor
+        isInternalUpdate.current = true
         // Send HTML content to parent component
         const html = editor.getHTML()
         onChange(html)
+        // Reset the flag after the update
+        setTimeout(() => {
+          isInternalUpdate.current = false
+        }, 0)
       }
     },
   })
 
-  // Update editor content when initialContent changes
+  // Update editor content when initialContent changes (but not from internal updates)
   React.useEffect(() => {
-    if (editor && initialContent !== null) {
-      editor.commands.setContent(initialContent)
+    if (editor && initialContent !== null && !isInternalUpdate.current) {
+      const currentContent = editor.getHTML()
+      // Only update if the content is actually different
+      if (currentContent !== initialContent) {
+        editor.commands.setContent(initialContent)
+      }
     }
   }, [editor, initialContent])
 
