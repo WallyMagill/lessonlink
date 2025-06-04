@@ -201,9 +201,6 @@ function LessonEditorPage() {
                 <Stack spacing={6}>
                   <Box>
                     <Heading as="h1" size="xl" mb={4} color={colors.text}>{lesson.title}</Heading>
-                    <Text fontSize="sm" color={colors.text}>
-                      Subject: {lesson.subject} | Grade: {lesson.grade}
-                    </Text>
                   </Box>
 
                   <Box>
