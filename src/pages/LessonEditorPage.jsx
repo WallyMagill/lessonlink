@@ -118,7 +118,6 @@ function LessonEditorPage() {
     // use a wrapper so can catch failed promises
     const wrapper = async () => {
       try {
-        console.log('Fetching lesson with id:', id);
         await fetchLesson(id);
       } catch (error) {
         console.error('failed to retrieve post', error);
@@ -141,11 +140,9 @@ function LessonEditorPage() {
         })),
         content: lesson.content || '',
       };
-      console.log('Setting edited lesson:', initialLesson);
       setEditedLesson(initialLesson);
 
       if (lesson.content && lesson.content.trim() !== '') {
-        console.log('Lesson has existing content, marking as used custom view');
         setHasUsedCustomView(true);
       }
 
@@ -161,9 +158,6 @@ function LessonEditorPage() {
 
   const handleSave = async () => {
     try {
-      console.log('Saving lesson with data:', editedLesson);
-      console.log('Content being saved:', editedLesson.content);
-
       const extractTitleFromContent = (htmlContent) => {
         if (!htmlContent || htmlContent.trim() === '') return editedLesson.title;
         const tempDiv = document.createElement('div');
@@ -181,7 +175,6 @@ function LessonEditorPage() {
       };
 
       const extractedTitle = extractTitleFromContent(editedLesson.content);
-      console.log('Extracted title from content:', extractedTitle);
 
       const lessonToSave = {
         ...editedLesson,
@@ -249,8 +242,6 @@ function LessonEditorPage() {
   };
 
   const handleChange = (field, value) => {
-    console.log(`handleChange called with field: ${field}, value:`, value);
-    console.log('Current editedLesson state:', editedLesson);
     const updatedLesson = {
       ...editedLesson,
       [field]: value,
@@ -258,20 +249,16 @@ function LessonEditorPage() {
 
     // If we're updating content directly (from custom view), just use the provided value
     if (field === 'content') {
-      console.log('Direct content update detected. New content:', value);
       setEditedLesson(updatedLesson);
-      console.log('Updated lesson after content change:', updatedLesson);
       return;
     }
 
     // If we're in template view and haven't used custom view, auto-generate content
     if (tabIndex === 0 && !hasUsedCustomView) {
       const htmlContent = convertLessonToHTML(updatedLesson);
-      console.log('Generated HTML content in template view:', htmlContent);
       updatedLesson.content = htmlContent;
     }
 
-    console.log('Final updatedLesson before setState:', updatedLesson);
     setEditedLesson(updatedLesson);
   };
 
@@ -288,7 +275,6 @@ function LessonEditorPage() {
 
   // Add logging to SimpleEditor onChange
   const handleEditorChange = (html) => {
-    console.log('SimpleEditor onChange called with html:', html);
     handleChange('content', html);
   };
 
