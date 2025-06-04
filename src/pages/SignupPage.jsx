@@ -19,24 +19,29 @@ function SignupPage() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+  const intendedPath = useStore((state) => state.authSlice.intendedPath);
+  const clearIntendedPath = useStore((state) => state.authSlice.clearIntendedPath);
   const toast = useToast();
 
   const signupUser = useStore(({ authSlice }) => authSlice.signupUser);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await signupUser({ username, email, password }, navigate);
-      navigate('/dashboard');
-    } catch (error) {
+
+    const result = await signupUser({ username, email, password }, navigate);
+
+    if (!result.success) {
       toast({
         title: 'Signup failed',
-        description: error.message,
+        description: result.message,
         status: 'error',
         duration: 5000,
         isClosable: true,
       });
+      return;
     }
+    navigate(intendedPath || '/dashboard');
+    clearIntendedPath();
   };
 
   return (
@@ -58,8 +63,8 @@ function SignupPage() {
           boxShadow="lg"
         >
           <VStack spacing={6}>
-            <Heading color="blue.500" size="xl">Welcome Back</Heading>
-            <Text color="gray.600">Sign in to your account</Text>
+            <Heading color="blue.500" size="xl">Welcome</Heading>
+            <Text color="gray.600">Please Enter Your Information:</Text>
 
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
               <VStack spacing={4} w="100%">

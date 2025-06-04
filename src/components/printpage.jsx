@@ -1,19 +1,23 @@
 import React from 'react';
 import { FaPrint } from 'react-icons/fa';
 
-function PrintPage() {
+function PrintPage({ isDarkMode }) {
   function handlePrint() {
     window.print();
   }
   return (
-    <button type="submit"
+    <button type="button"
       onClick={handlePrint}
       style={{
-        backgroundColor: 'rgb(245, 245, 245)',
+        backgroundColor: isDarkMode ? '#3182ce' : 'rgb(245, 245, 245)',
         borderRadius: '8px',
         padding: '8px',
         cursor: 'pointer',
-        color: 'black',
+        color: isDarkMode ? 'white' : 'black',
+        border: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <FaPrint />

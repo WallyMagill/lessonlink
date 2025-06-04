@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {
+  useEffect, useState,
+} from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box, Flex, Stack, Input, Tabs, TabList, TabPanels, TabPanel, Tab,
-  Heading, List, ListItem, OrderedList, IconButton, Select, Text,
-  Button, Textarea, Switch, AlertDialog, AlertDialogBody, AlertDialogFooter,
+  Select,
+  Switch, AlertDialog, AlertDialogBody, AlertDialogFooter,
   AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, useDisclosure,
+  Heading, List, ListItem, OrderedList, IconButton, Text,
+  Button, Textarea, useToast, // Switch,
 } from '@chakra-ui/react';
-import { FaFileAlt } from 'react-icons/fa';
+import { FaFileAlt, FaTrash } from 'react-icons/fa';
+
 import Header from '../components/Header';
 import useStore from '../store';
 import PrintPage from '../components/printpage';
@@ -16,6 +21,9 @@ import { SimpleEditor } from '../components/tiptap-templates/simple/simple-edito
 // Import SCSS files for tiptap styling
 import '../styles/_variables.scss';
 import '../styles/_keyframe-animations.scss';
+import ShareButton from '../components/sharepage';
+import { useTheme } from '../components/ThemeContext';
+import StandardsPanel from '../components/StandardsPanel';
 
 function LessonEditorPage() {
   const { id } = useParams();
@@ -26,12 +34,21 @@ function LessonEditorPage() {
   const [hasUsedCustomView, setHasUsedCustomView] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
-
+  const [showStandards, setShowStandards] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = parseInt(searchParams.get('tab'), 10);
+  const [tabIndex, setTabIndex] = useState(Number.isNaN(tabParam) ? 0 : tabParam);
+  const toast = useToast();
   const lesson = useStore(({ lessonSlice }) => lessonSlice.current);
   const fetchLesson = useStore(({ lessonSlice }) => lessonSlice.fetchLesson);
   const updateLesson = useStore(({ lessonSlice }) => lessonSlice.updateLesson);
   const deleteLesson = useStore(({ lessonSlice }) => lessonSlice.deleteLesson);
   const shareLesson = useStore(({ lessonSlice }) => lessonSlice.shareLesson);
+  const { colors, isDarkMode } = useTheme();
+
+  const standards = useStore(({ standardSlice }) => standardSlice.standards);
+  const selectedStandards = useStore(({ lessonSlice }) => lessonSlice.selectedStandards);
+  const setSelectedStandards = useStore(({ lessonSlice }) => lessonSlice.setSelectedStandards);
 
   useEffect(() => {
     // use a wrapper so can catch failed promises
@@ -47,109 +64,91 @@ function LessonEditorPage() {
   }, []);
 
   useEffect(() => {
-    if (lesson) {
-      console.log('Loading lesson:', lesson);
-      const initialLesson = {
-        ...lesson,
-        materials: lesson.materials || [],
-        steps: lesson.steps || [],
-        content: lesson.content || '', // Ensure content is initialized
-      };
-      console.log('Setting edited lesson:', initialLesson);
-      setEditedLesson(initialLesson);
-      // Check if lesson already has content (indicating it might have been edited in custom view)
-      if (lesson.content && lesson.content.trim() !== '') {
-        console.log('Lesson has existing content, marking as used custom view');
-        setHasUsedCustomView(true);
+  if (lesson) {
+    const initialLesson = {
+      ...lesson,
+      materials: (lesson.materials || []).map((material) => ({
+        id: `material-${Date.now()}-${Math.random()}`,
+        content: material,
+      })),
+      steps: (lesson.steps || []).map((step) => ({
+        id: `step-${Date.now()}-${Math.random()}`,
+        content: step,
+      })),
+      content: lesson.content || '',
+    };
+    console.log('Setting edited lesson:', initialLesson);
+    setEditedLesson(initialLesson);
+
+    if (lesson.content && lesson.content.trim() !== '') {
+      console.log('Lesson has existing content, marking as used custom view');
+      setHasUsedCustomView(true);
+    }
+
+    setSelectedStandards(lesson.standards || []);
+  } else {
+    setSelectedStandards([]);
+  }
+}, [lesson]);
+
+useEffect(() => {
+  setTabIndex(Number.isNaN(tabParam) ? 0 : tabParam);
+}, [tabParam]);
+
+const handleSave = async () => {
+  try {
+    console.log('Saving lesson with data:', editedLesson);
+    console.log('Content being saved:', editedLesson.content);
+
+    const extractTitleFromContent = (htmlContent) => {
+      if (!htmlContent || htmlContent.trim() === '') return editedLesson.title;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+      const h1 = tempDiv.querySelector('h1');
+      if (h1 && h1.textContent.trim()) {
+        return h1.textContent.trim();
       }
-    }
-  }, [lesson]);
+      const textContent = tempDiv.textContent || tempDiv.innerText || '';
+      const firstLine = textContent.split('\n')[0].trim();
+      if (firstLine && firstLine.length > 0 && firstLine.length <= 100) {
+        return firstLine;
+      }
+      return editedLesson.title || 'Untitled Lesson';
+    };
 
-  // Function to convert structured lesson data to HTML content
-  const convertLessonToHTML = (lessonData) => {
-    console.log('Converting lesson data to HTML:', lessonData);
-    const materials = lessonData.materials?.filter((m) => m && m.trim()).map((m) => `<li>${m}</li>`).join('') || '';
-    const steps = lessonData.steps?.filter((s) => s && s.trim()).map((s) => `<li>${s}</li>`).join('') || '';
+    const extractedTitle = extractTitleFromContent(editedLesson.content);
+    console.log('Extracted title from content:', extractedTitle);
 
-    const html = `
-      <h1>${lessonData.title || 'Untitled Lesson'}</h1>
+    const lessonToSave = {
+      ...editedLesson,
+      title: extractedTitle,
+      materials: editedLesson.materials.map((m) => m.content),
+      steps: editedLesson.steps.map((s) => s.content),
+      standards: selectedStandards || [],
+    };
 
-      ${lessonData.subject ? `<h2>Subject</h2><p>${lessonData.subject}</p>` : ''}
+    await updateLesson(id, lessonToSave);
 
-      ${lessonData.grade ? `<h2>Grade</h2><p>Grade ${lessonData.grade}</p>` : ''}
+    toast({
+      title: 'Success!',
+      description: 'All changes have been saved. You can now safely navigate away from the editor.',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
 
-      ${lessonData.objectives ? `<h2>Learning Objectives</h2><p>${lessonData.objectives}</p>` : ''}
-
-      ${lessonData.overview ? `<h2>Overview</h2><p>${lessonData.overview}</p>` : ''}
-
-      ${materials ? `<h2>Materials</h2><ul>${materials}</ul>` : ''}
-
-      ${steps ? `<h2>Procedure</h2><ol>${steps}</ol>` : ''}
-    `.trim();
-
-    console.log('Generated HTML:', html);
-    return html;
-  };
-
-  const handleTabChange = (index) => {
-    // If switching to custom view (index 1) and haven't used it before
-    if (index === 1 && !hasUsedCustomView) {
-      onOpen(); // Show warning dialog
-      return;
-    }
-    setCurrentTabIndex(index);
-  };
-
-  const handleConfirmCustomView = () => {
-    // Convert current lesson data to HTML and populate content
-    const htmlContent = convertLessonToHTML(editedLesson);
-    setEditedLesson((prev) => ({
-      ...prev,
-      content: htmlContent,
-    }));
-    setHasUsedCustomView(true);
-    setCurrentTabIndex(1);
-    onClose();
-  };
-
-  const handleSave = async () => {
-    try {
-      console.log('Saving lesson with data:', editedLesson);
-      console.log('Content being saved:', editedLesson.content);
-      // Extract title from the first line of content
-      const extractTitleFromContent = (htmlContent) => {
-        if (!htmlContent || htmlContent.trim() === '') return editedLesson.title;
-        // Create a temporary div to parse HTML
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-        // Try to find first h1 tag
-        const h1 = tempDiv.querySelector('h1');
-        if (h1 && h1.textContent.trim()) {
-          return h1.textContent.trim();
-        }
-        // If no h1, get the first line of text content
-        const textContent = tempDiv.textContent || tempDiv.innerText || '';
-        const firstLine = textContent.split('\n')[0].trim();
-        // Return first line if it exists and isn't too long, otherwise keep current title
-        if (firstLine && firstLine.length > 0 && firstLine.length <= 100) {
-          return firstLine;
-        }
-        return editedLesson.title || 'Untitled Lesson';
-      };
-      const extractedTitle = extractTitleFromContent(editedLesson.content);
-      console.log('Extracted title from content:', extractedTitle);
-      const lessonToSave = {
-        ...editedLesson,
-        title: extractedTitle,
-      };
-      console.log('Final lesson data being saved:', lessonToSave);
-      await updateLesson(id, lessonToSave);
-      console.log('Lesson saved successfully');
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Error saving lesson:', error);
-    }
-  };
+    navigate('/dashboard');
+  } catch (err) {
+    console.error('Failed to save lesson:', err);
+    toast({
+      title: 'Error',
+      description: 'Something went wrong while saving. Please try again.',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  }
+};
 
   const handleDelete = async () => {
     try {
@@ -207,64 +206,131 @@ function LessonEditorPage() {
   if (!lesson) {
     return <Text>Loading lesson...</Text>;
   }
+  const handleAddMaterial = () => {
+    const newId = `material-${Date.now()}`;
+    setEditedLesson((prev) => ({
+      ...prev,
+      materials: [...(prev.materials || []), { id: newId, content: '' }],
+    }));
+  };
 
-  if (!editedLesson) {
-    return <Text>Lesson not found</Text>;
+  const handleAddStep = () => {
+    const newId = `step-${Date.now()}`;
+    setEditedLesson((prev) => ({
+      ...prev,
+      steps: [...(prev.steps || []), { id: newId, content: '' }],
+    }));
+  };
+  if (!lesson || !editedLesson) {
+    return (
+      <Box
+        width="100%"
+        height="100vh"
+        display="flex"
+        flexDirection="column"
+        bg={colors.background}
+        fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
+        overflow="hidden"
+      >
+        <Header />
+        <Flex flex="1" align="center" justify="center">
+          <Text color={colors.text}>Loading lesson...</Text>
+        </Flex>
+      </Box>
+    );
   }
 
   return (
     <Box
       width="100%"
-      minH="100vh"
-      bg="#f7fafc"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+      bg={colors.background}
       fontFamily="var(--chakra-fonts-body, Arial, sans-serif)"
-      overflowX="hidden"
+      overflow="hidden"
     >
       <Header />
-      <Box p={6}>
-        <Tabs variant="enclosed" colorScheme="blue" index={currentTabIndex} onChange={handleTabChange}>
+      <Box p={6}
+        flex="1"
+        overflowY="auto"
+      >
+        <Tabs
+          variant="enclosed"
+          colorScheme="blue"
+          index={tabIndex}
+          onChange={(index) => {
+            setTabIndex(index);
+            setSearchParams({ tab: index });
+          }}
+        >
           <TabList>
-            <Tab>Template</Tab>
-            <Tab>Custom</Tab>
+            <Tab color={colors.text}>View</Tab>
+            <Tab color={colors.text}>Edit
+            </Tab>
+            <Tab color={colors.text}>Custom</Tab>
           </TabList>
           <TabPanels>
-            {/* Template View */}
+            <TabPanel>
+              <Box maxW="800px" mx="auto" p={6} bg={colors.cardBg} borderRadius="md" boxShadow="0 1px 4px rgba(0,0,0,0.08)">
+                <Stack spacing={6}>
+                  <Box>
+                    <Heading as="h1" size="xl" mb={4} color={colors.text}>{lesson.title}</Heading>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Materials</Heading>
+                    <List spacing={2} styleType="disc" pl={4}>
+                      {lesson.materials?.map((material) => (
+                        <ListItem key={`material-${material}`} color={colors.text}>{material}</ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Learning Objectives</Heading>
+                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.objectives}</Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Overview</Heading>
+                    <Text whiteSpace="pre-wrap" color={colors.text}>{lesson.overview}</Text>
+                  </Box>
+
+                  <Box>
+                    <Heading as="h2" size="md" mb={2} color={colors.text}>Procedure</Heading>
+                    <OrderedList spacing={2} pl={4}>
+                      {lesson.steps?.map((step) => (
+                        <ListItem key={`step-${step}`} color={colors.text}>{step}</ListItem>
+                      ))}
+                    </OrderedList>
+                  </Box>
+                </Stack>
+              </Box>
+            </TabPanel>
             <TabPanel p={0} mt={4}>
               <Flex gap={6}>
-                <Box
-                  width="250px"
-                  bg="white"
-                  p={4}
-                  boxShadow="0 1px 4px rgba(0,0,0,0.08)"
-                  borderRadius="md"
-                >
-                  <Input placeholder="Search Standards..." mb={4} />
-                  <Stack spacing={3}>
-                    <Select
-                      placeholder="Filter by Subject"
-                      value={editedLesson.subject}
-                      onChange={(e) => handleChange('subject', e.target.value)}
-                    >
-                      <option>Science</option>
-                      <option>Math</option>
-                      <option>English</option>
-                    </Select>
-                    <Select
-                      placeholder="Filter by Grade"
-                      value={editedLesson.grade}
-                      onChange={(e) => handleChange('grade', parseInt(e.target.value, 10))}
-                    >
-                      <option value="3">Grade 3</option>
-                      <option value="4">Grade 4</option>
-                      <option value="5">Grade 5</option>
-                      <option value="6">Grade 6</option>
-                    </Select>
-                  </Stack>
-                </Box>
+                {showStandards && (
+                  <StandardsPanel
+                    standards={standards}
+                    colors={colors}
+                  />
+                )}
                 <Box flex={1}>
+                  <Flex justify="space-between" align="center" mb={4}>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowStandards(!showStandards)}
+                      leftIcon={<FaFileAlt />}
+                      color={isDarkMode ? 'white' : colors.text}
+                      colorScheme={isDarkMode ? 'blue' : undefined}
+                    >
+                      {showStandards ? 'Hide Standards' : 'Show Standards'}
+                    </Button>
+                  </Flex>
                   <Stack spacing={4}>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
@@ -277,35 +343,45 @@ function LessonEditorPage() {
                         fontWeight="bold"
                         mb={2}
                         placeholder="Lesson Title"
+                        bg={colors.inputBg}
+                        color={colors.text}
                       />
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Materials:</Heading>
-                      <List spacing={1} styleType="disc" pl={4}>
-                        {(editedLesson?.materials || []).map((material, index) => (
-                          // !!! TODO fix this to use a proper key
-                          // eslint-disable-next-line react/no-array-index-key
-                          <ListItem key={`material-${index}`}>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Materials:</Heading>
+                      <List spacing={1}
+                        styleType="disc"
+                        pl={4}
+                        sx={isDarkMode ? { 'li::marker': { color: 'white' } } : {}}
+                      >
+                        {(editedLesson?.materials || []).map((material) => (
+                          <ListItem key={material.id}>
                             <Input
-                              value={material || ''}
+                              value={material.content || ''}
                               onChange={(e) => {
-                                const newMaterials = [...editedLesson.materials];
-                                newMaterials[index] = e.target.value;
-                                handleChange('materials', newMaterials);
+                                const newMaterials = editedLesson.materials.map((m) => (m.id === material.id ? { ...m, content: e.target.value } : m));
+                                setEditedLesson((prev) => ({
+                                  ...prev,
+                                  materials: newMaterials,
+                                }));
                               }}
+                              bg={colors.inputBg}
+                              color={colors.text}
                             />
                           </ListItem>
                         ))}
                         <ListItem>
                           <Button
                             size="sm"
-                            onClick={() => handleChange('materials', [...editedLesson.materials, ''])}
+                            onClick={handleAddMaterial}
+                            color={isDarkMode ? 'white' : colors.text}
+                            colorScheme={isDarkMode ? 'blue' : undefined}
                           >
                             Add Material
                           </Button>
@@ -313,60 +389,71 @@ function LessonEditorPage() {
                       </List>
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Learning Objectives</Heading>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Learning Objectives</Heading>
                       <Textarea
                         value={editedLesson.objectives}
                         onChange={(e) => handleChange('objectives', e.target.value)}
                         placeholder="Enter learning objectives..."
+                        bg={colors.inputBg}
+                        color={colors.text}
                       />
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Overview</Heading>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Overview</Heading>
                       <Textarea
                         value={editedLesson.overview}
                         onChange={(e) => handleChange('overview', e.target.value)}
                         placeholder="Enter lesson overview..."
+                        bg={colors.inputBg}
+                        color={colors.text}
                       />
                     </Box>
                     <Box
-                      bg="white"
+                      bg={colors.cardBg}
                       p={6}
                       borderRadius="md"
                       boxShadow="0 1px 4px rgba(0,0,0,0.08)"
                       mb={4}
                     >
-                      <Heading as="h3" size="md" mb={2}>Procedure List</Heading>
-                      <OrderedList spacing={1} pl={4}>
-                        {(editedLesson?.steps || []).map((step, index) => (
-                          // !!! TODO fix this to use a proper key
-                          // eslint-disable-next-line react/no-array-index-key
-                          <ListItem key={`step-${index}`}>
+                      <Heading as="h3" size="md" mb={2} color={colors.text}>Procedure List</Heading>
+                      <OrderedList spacing={1}
+                        pl={4}
+                        sx={isDarkMode ? { 'li::marker': { color: 'white' } } : {}}
+                      >
+                        {(editedLesson?.steps || []).map((step) => (
+                          <ListItem key={step.id}>
                             <Input
-                              value={step || ''}
+                              value={step.content || ''}
                               onChange={(e) => {
-                                const newSteps = [...editedLesson.steps];
-                                newSteps[index] = e.target.value;
-                                handleChange('steps', newSteps);
+                                const newSteps = editedLesson.steps.map((s) => (s.id === step.id ? { ...s, content: e.target.value } : s));
+                                setEditedLesson((prev) => ({
+                                  ...prev,
+                                  steps: newSteps,
+                                }));
                               }}
+                              bg={colors.inputBg}
+                              color={colors.text}
                             />
                           </ListItem>
                         ))}
                         <ListItem>
                           <Button
                             size="sm"
-                            onClick={() => handleChange('steps', [...editedLesson.steps, ''])}
+                            onClick={handleAddStep}
+                            color={isDarkMode ? 'white' : colors.text}
+                            colorScheme={isDarkMode ? 'blue' : undefined}
                           >
                             Add Step
                           </Button>
@@ -402,34 +489,28 @@ function LessonEditorPage() {
                     </Box>
 
                     <Flex gap={4} mt={2}>
-                      <PrintPage />
-                      <EmailPage />
-                      <button type="submit" onClick={handleDelete}>Delete Lesson</button>
-                      {/* <button type="submit" onClick={() => handleChange('status', 'protected')}>Set Private</button> */}
-                      <Flex alignItems="center" gap={2}>
-                        <Text>
-                          {editedLesson.status === 'public' ? 'Public' : 'Private'}
-                        </Text>
-                        <Switch
-                          isChecked={editedLesson.status === 'public'}
-                          onChange={() => handleChange('status', editedLesson.status === 'public' ? 'protected' : 'public')}
-                        />
-                      </Flex>
-                      <Input
-                        onChange={(e) => setSharedUser(e.target.value)}
-                        mb={2}
-                        placeholder="enter an email to share with"
+                      <PrintPage isDarkMode={isDarkMode} />
+                      <IconButton
+                        icon={<FaTrash />}
+                        type="submit"
+                        onClick={handleDelete}
+                        aria-label="Delete Lesson"
+                        color={isDarkMode ? 'white' : colors.text}
+                        colorScheme={isDarkMode ? 'blue' : undefined}
                       />
-                      <Button onClick={handleAddShared} colorScheme="blue" mb={4}>Share</Button>
-                      <IconButton icon={<FaFileAlt />} aria-label="Save as File" />
+                      <ShareButton
+                        lesson={editedLesson}
+                        updateLesson={handleChange}
+                        shareLesson={handleAddShared}
+                      />
 
                       <Button colorScheme="blue" onClick={handleSave}>Save Changes</Button>
+
                     </Flex>
                   </Stack>
                 </Box>
               </Flex>
             </TabPanel>
-
             {/* Custom View */}
             <TabPanel>
               <Box mb={4}>
@@ -483,6 +564,7 @@ function LessonEditorPage() {
         </AlertDialog>
       </Box>
     </Box>
+
   );
 }
 

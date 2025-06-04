@@ -3,26 +3,46 @@
 import axios from 'axios';
 
 const ROOT_URL = 'https://project-api-lessonlink.onrender.com/api';
-// const ROOT_URL = 'http://localhost:3001/api';
 
 export default function createAuthSlice(set, get) {
   return {
     authenticated: false,
     email: '',
     user: {},
+    loading: true,
+    intendedPath: null,
+
+    // these update the path the user was trying to reach
+    setIntendedPath: (path) => set((state) => {
+      state.authSlice.intendedPath = path;
+    }),
+    clearIntendedPath: () => set((state) => {
+      state.authSlice.intendedPath = null;
+    }),
     // have to update load user to retrieve the user data, set this up on backend
     loadUser: async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        set((state) => ({
+          authSlice: {
+            ...state.authSlice,
+            authenticated: false,
+            email: '',
+            user: {},
+            loading: false,
+          },
+        }));
+        return;
+      }
       try {
         const response = await axios.get(`${ROOT_URL}/users`, { headers: { authorization: token } });
         const user = response.data;
-        console.log(user);
         set((state) => ({
           authSlice: {
             ...state.authSlice,
             authenticated: true,
             email: user.email,
+            loading: false,
             user,
           },
           userSlice: {
@@ -34,6 +54,15 @@ export default function createAuthSlice(set, get) {
       } catch (error) {
         console.error('Failed to load user', error);
         localStorage.removeItem('token');
+        set((state) => ({
+          authSlice: {
+            ...state.authSlice,
+            authenticated: false,
+            email: '',
+            user: {},
+            loading: false,
+          },
+        }));
       }
     },
     signinUser: async (fields, navigate) => {
@@ -44,19 +73,25 @@ export default function createAuthSlice(set, get) {
         };
 
         const response = await axios.post(`${ROOT_URL}/auth/signin`, extracted);
+        localStorage.setItem('token', response.data.token);
+        const intended = get().authSlice.intendedPath;
+
         set((state) => ({
           authSlice: {
             ...state.authSlice,
             authenticated: true,
             email: fields.email,
+            loading: false,
           },
         }));
-        localStorage.setItem('token', response.data.token);
-        navigate('/');
+
+        navigate(intended || '/dashboard');
         return true;
       } catch (error) {
-        console.error('Sign In Failed:', error);
-        return false;
+        if (error.response?.data?.error) {
+          console.error('Backend error message:', error.response.data.error);
+        }
+        throw new Error(error?.response?.data?.error || 'Login failed. Please try again.');
       }
     },
     signupUser: async (fields, navigate) => {
@@ -66,18 +101,24 @@ export default function createAuthSlice(set, get) {
           email: fields.email,
           password: fields.password,
         };
+
         const response = await axios.post(`${ROOT_URL}/auth/signup`, extracted);
+        const intended = get().authSlice.intendedPath;
+        localStorage.setItem('token', response.data.token);
+
         set((state) => ({
           authSlice: {
             ...state.authSlice,
             authenticated: true,
             email: fields.email,
+            loading: false,
           },
         }));
-        localStorage.setItem('token', response.data.token);
-        navigate('/');
+        navigate(intended || '/dashboard');
+        return { success: true };
       } catch (error) {
-        console.error('Sign Up Failed:', error);
+        const message = error?.response?.data?.message || 'Signup failed. Please try again.';
+        return { success: false, message };
       }
     },
     signoutUser: async (navigate) => {
@@ -87,6 +128,13 @@ export default function createAuthSlice(set, get) {
           ...state.authSlice,
           authenticated: false,
           email: '',
+          user: {},
+          loading: false,
+        },
+        userSlice: {
+          ...state.userSlice,
+          current: null,
+          error: null,
         },
       }));
     },
