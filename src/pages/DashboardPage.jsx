@@ -16,7 +16,12 @@ import { useTheme } from '../components/ThemeContext';
 function DashboardPage() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
+
+  const optionStyle = {
+    backgroundColor: isDarkMode ? '#2D3748' : 'white',
+    color: isDarkMode ? 'white' : 'black',
+  };
 
   const [folderSearch, setFolderSearch] = useState('');
   const [selectedFolder, setSelectedFolder] = useState(null);
@@ -543,9 +548,9 @@ function DashboardPage() {
               border="1px solid"
               borderColor={colors.border}
             >
-              <option value="all">All</option>
-              <option value="title">Title</option>
-              <option value="user">User</option>
+              <option value="all" style={optionStyle}>All</option>
+              <option value="title" style={optionStyle}>Title</option>
+              <option value="user" style={optionStyle}>User</option>
             </Select>
             <Flex gap={2}
               ml={2}
