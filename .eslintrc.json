@@ -14,7 +14,12 @@
     "new-cap": ["error", { "capIsNewExceptions": ["Router"] }],
     "no-console": 0,
     "import/no-unresolved": [2, { "caseSensitive": false }],
-    "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
+    "no-unused-vars": ["error", { 
+      "vars": "all", 
+      "args": "none", 
+      "varsIgnorePattern": "^_",
+      "argsIgnorePattern": "^_"
+    }],
     "no-underscore-dangle": 0,
     "arrow-body-style": 0,
     "one-var": ["error", { "uninitialized": "always", "initialized": "never" }],
