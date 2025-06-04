@@ -158,6 +158,9 @@ export default function createLessonSlice(set, get) {
 
     // updating a lesson
     updateLesson: async (id, lessonData) => {
+      console.log('Store updateLesson called with id:', id);
+      console.log('Store updateLesson called with data:', lessonData);
+      console.log('Content being sent to server:', lessonData.content);
       set((state) => ({
         ...state,
         lessonSlice: {
@@ -169,7 +172,8 @@ export default function createLessonSlice(set, get) {
       try {
         const response = await axios.put(`${API_URL}/lessons/${id}`, lessonData, { headers: { authorization: localStorage.getItem('token') } });
         const updatedLesson = response.data;
-
+        console.log('Server response for updateLesson:', updatedLesson);
+        console.log('Content returned from server:', updatedLesson.content);
         set((state) => ({
           ...state,
           lessonSlice: {
@@ -183,6 +187,7 @@ export default function createLessonSlice(set, get) {
 
         return updatedLesson;
       } catch (error) {
+        console.error('Store updateLesson error:', error);
         set((state) => ({
           ...state,
           lessonSlice: {

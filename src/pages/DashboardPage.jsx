@@ -159,6 +159,7 @@ function DashboardPage() {
         grade: 0,
         subject: '',
         status: 'public',
+        content: '',
       });
       // Wait for the lesson to be loaded in the store
       await fetchLesson(newLesson._id);
