@@ -116,7 +116,34 @@ function LessonEditorPage() {
     try {
       console.log('Saving lesson with data:', editedLesson);
       console.log('Content being saved:', editedLesson.content);
-      await updateLesson(id, editedLesson);
+      // Extract title from the first line of content
+      const extractTitleFromContent = (htmlContent) => {
+        if (!htmlContent || htmlContent.trim() === '') return editedLesson.title;
+        // Create a temporary div to parse HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlContent;
+        // Try to find first h1 tag
+        const h1 = tempDiv.querySelector('h1');
+        if (h1 && h1.textContent.trim()) {
+          return h1.textContent.trim();
+        }
+        // If no h1, get the first line of text content
+        const textContent = tempDiv.textContent || tempDiv.innerText || '';
+        const firstLine = textContent.split('\n')[0].trim();
+        // Return first line if it exists and isn't too long, otherwise keep current title
+        if (firstLine && firstLine.length > 0 && firstLine.length <= 100) {
+          return firstLine;
+        }
+        return editedLesson.title || 'Untitled Lesson';
+      };
+      const extractedTitle = extractTitleFromContent(editedLesson.content);
+      console.log('Extracted title from content:', extractedTitle);
+      const lessonToSave = {
+        ...editedLesson,
+        title: extractedTitle,
+      };
+      console.log('Final lesson data being saved:', lessonToSave);
+      await updateLesson(id, lessonToSave);
       console.log('Lesson saved successfully');
       navigate('/dashboard');
     } catch (error) {
