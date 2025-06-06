@@ -45,15 +45,6 @@ This architecture enables the lesson creation interface to provide both a simple
 1. Install dependencies: `npm install`
 2. Start development client: `npm run dev`
 
-### Environment Variables
-
-Create a `.env` file in the root directory with the following variables:
-```
-VITE_API_URL=your_api_url
-VITE_AUTH_DOMAIN=your_auth_domain
-VITE_AUTH_CLIENT_ID=your_client_id
-```
-
 ## Key Features
 
 - Modern, responsive UI with Chakra-UI based components;
