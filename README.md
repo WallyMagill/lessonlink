@@ -12,13 +12,27 @@ Hosted Link: https://project-lessonlink.onrender.com/
   - `components/`: Reusable UI components
     - `tiptap-*/`: Premade components from tiptap library (needed for custom editor)
     - `ui/`: Premade components from chakra-ui v2
-  - `hooks/`: Hooks made for proper interactions in custom editor
+  - `hooks/`: Custom React hooks that enhance editor functionality
   - `img/`: Custom logo for light and dark mode, as well image we uploaded for technigala
-  - `lib/`: Necessary for tiptap
+  - `lib/`: Core utilities and helper functions for tiptap editor operations
   - `pages/`: Fully designed pages that users can be routed to
   - `store/`: Global Zustand state management
   - `styles/`: Global styles and themes
   - `App.jsx`: Handles React Router configuration
+
+## Custom Editor Architecture
+
+The custom editor is built using [Tiptap](https://tiptap.dev/) (a headless rich text editor) with a modular component architecture:
+
+- **Core Foundation**: The `lib/tiptap-utils.js` provides essential utilities for editor operations, while custom hooks in `hooks/` manage editor state, responsive behavior, and user interactions.
+
+- **UI Layer**: The `tiptap-ui/` components create the toolbar interface (formatting buttons, dropdowns, etc.), built on top of primitive components from `tiptap-ui-primitive/` for consistency.
+
+- **Content Rendering**: Custom nodes in `tiptap-node/` define how different content types (headings, paragraphs, images, code blocks) are rendered and styled within the editor.
+
+- **Extensibility**: The `tiptap-extension/` directory contains custom extensions that add specialized functionality beyond Tiptap's default capabilities.
+
+This architecture enables the lesson creation interface to provide both a simple template mode for basic editing and an advanced custom editor with rich text capabilities similar to Notion.
 
 ## Setup Instructions
 
