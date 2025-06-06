@@ -1,10 +1,19 @@
 # LessonLink Client
 
-This is the frontend (client) application for the LessonLink platform, built with React and Vite.
+This is the frontend (client) application for the LessonLink platform, built with React and Vite. LessonLink is a comprehensive lesson planning and sharing platform designed for educators to create, organize, and collaborate on teaching materials.
 
 Hosted Link: https://project-lessonlink.onrender.com/
 
 *Please note the dashboard may take 30secs - 1 minute to load at first. This is due to the backend being run on a free instance of Render; it should be quick after first load.*
+
+## Technical Stack
+
+- **Frontend Framework**: React with Vite
+- **UI Components**: Chakra UI v2
+- **State Management**: Zustand
+- **Rich Text Editor**: Tiptap
+- **Routing**: React Router
+- **Styling**: CSS-in-JS with Chakra UI
 
 ## Project Structure
 
@@ -24,12 +33,9 @@ Hosted Link: https://project-lessonlink.onrender.com/
 
 The custom editor is built using [Tiptap](https://tiptap.dev/) (a headless rich text editor) with a modular component architecture:
 
-- **Core Foundation**: The `lib/tiptap-utils.js` provides essential utilities for editor operations, while custom hooks in `hooks/` manage editor state, responsive behavior, and user interactions.
-
-- **UI Layer**: The `tiptap-ui/` components create the toolbar interface (formatting buttons, dropdowns, etc.), built on top of primitive components from `tiptap-ui-primitive/` for consistency.
-
-- **Content Rendering**: Custom nodes in `tiptap-node/` define how different content types (headings, paragraphs, images, code blocks) are rendered and styled within the editor.
-
+- **Core Foundation**: The `lib/tiptap-utils.js` provides essential utilities for editor operations, while custom hooks in `hooks/` manage editor state, responsive behavior, and user interactions.  
+- **UI Layer**: The `tiptap-ui/` components create the toolbar interface (formatting buttons, dropdowns, etc.), built on top of primitive components from `tiptap-ui-primitive/` for consistency.  
+- **Content Rendering**: Custom nodes in `tiptap-node/` define how different content types (headings, paragraphs, images, code blocks) are rendered and styled within the editor.  
 - **Extensibility**: The `tiptap-extension/` directory contains custom extensions that add specialized functionality beyond Tiptap's default capabilities.
 
 This architecture enables the lesson creation interface to provide both a simple template mode for basic editing and an advanced custom editor with rich text capabilities similar to Notion.
@@ -38,6 +44,15 @@ This architecture enables the lesson creation interface to provide both a simple
 
 1. Install dependencies: `npm install`
 2. Start development client: `npm run dev`
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+```
+VITE_API_URL=your_api_url
+VITE_AUTH_DOMAIN=your_auth_domain
+VITE_AUTH_CLIENT_ID=your_client_id
+```
 
 ## Key Features
 
@@ -57,6 +72,15 @@ This architecture enables the lesson creation interface to provide both a simple
 - Global View;
 - Light and Dark mode;
 - User authenticaion;
+
+## API Integration
+
+The client integrates with the LessonLink backend API for:
+- User authentication
+- Lesson CRUD operations
+- File uploads
+- Email sharing
+- User profile management
 
 ## Key Features explanation
 TLDR at bottom: 
