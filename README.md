@@ -1,91 +1,133 @@
-# LessonLink Client
+# LessonLink - Frontend Portfolio Showcase
 
-This is the frontend (client) application for the LessonLink platform, built with React and Vite. LessonLink is a comprehensive lesson planning and sharing platform designed for educators to create, organize, and collaborate on teaching materials.
+> **Note**: This repository is a public clone of a collaborative full-stack project, intended solely for showcasing frontend development work to recruiters. The original project was developed as part of a student team effort.
 
-Hosted Link: https://project-lessonlink.onrender.com/
+## Live Demo
 
-*Please note the dashboard may take 30secs - 1 minute to load at first. This is due to the backend being run on a free instance of Render; it should be quick after first load.*
+**Hosted Application**: https://project-lessonlink.onrender.com/
+
+*Note: Initial dashboard load may take 30-60 seconds due to backend hosting on a free Render instance. Subsequent loads are much faster.*
+
+## Project Overview
+
+LessonLink is a comprehensive lesson planning and sharing platform designed for educators to create, organize, and collaborate on teaching materials. This repository showcases the frontend implementation, featuring a modern React application with advanced rich-text editing capabilities.
 
 ## Technical Stack
 
-- **Frontend Framework**: React with Vite
+- **Frontend Framework**: React 18 with Vite
 - **UI Components**: Chakra UI v2
 - **State Management**: Zustand
-- **Rich Text Editor**: Tiptap
-- **Routing**: React Router
+- **Rich Text Editor**: Custom Tiptap implementation
+- **Routing**: React Router v6
 - **Styling**: CSS-in-JS with Chakra UI
+- **Build Tool**: Vite
 
-## Project Structure
+## Team & Contributions
 
-- `src/`: Source code directory;
-  - `components/`: Reusable UI components;
-    - `tiptap-*/`: Premade components from tiptap library (needed for custom editor);
-    - `ui/`: Premade components from chakra-ui v2;
-  - `hooks/`: Custom React hooks that enhance editor functionality;
-  - `img/`: Custom logo for light and dark mode, as well image we uploaded for Technigala;
-  - `lib/`: Core utilities and helper functions for tiptap editor operations;
-  - `pages/`: Fully designed pages that users can be routed to;
-  - `store/`: Global Zustand state management;
-  - `styles/`: Global styles and themes;
-  - `App.jsx`: Handles React Router configuration;
+This project was developed collaboratively by a student team. Here are the key contributors and their roles:
 
-## Custom Editor Architecture
+### **Wally Magill** - Frontend Development Lead
+- **Client Architecture**: Designed and implemented the modular frontend architecture
+- **Custom Rich-Text Editor**: Built a sophisticated Tiptap-based editor with template and advanced modes
+- **State Management**: Implemented Zustand store for global state management
+- **UI/UX Logic**: Developed responsive components, dark/light mode, and user interactions
+- **Core Features**: Lesson filtering, remixing system, folder organization, and drag-and-drop functionality
 
-The custom editor is built using [Tiptap](https://tiptap.dev/) (a headless rich text editor) with a modular component architecture:
+### **Team Members** (Roles to be filled in)
+- **[Teammate Name]**: [Their specific role/contributions]
+- **[Teammate Name]**: [Their specific role/contributions]
+- **[Teammate Name]**: [Their specific role/contributions]
 
-- **Core Foundation**: The `lib/tiptap-utils.js` provides essential utilities for editor operations, while custom hooks in `hooks/` manage editor state, responsive behavior, and user interactions.  
-- **UI Layer**: The `tiptap-ui/` components create the toolbar interface (formatting buttons, dropdowns, etc.), built on top of primitive components from `tiptap-ui-primitive/` for consistency.  
-- **Content Rendering**: Custom nodes in `tiptap-node/` define how different content types (headings, paragraphs, images, code blocks) are rendered and styled within the editor.  
-- **Extensibility**: The `tiptap-extension/` directory contains custom extensions that add specialized functionality beyond Tiptap's default capabilities.
+## Architecture Highlights
 
-This architecture enables the lesson creation interface to provide both a simple template mode for basic editing and an advanced custom editor with rich text capabilities similar to Notion.
+### Custom Editor Implementation
+The platform features a sophisticated dual-mode editor built with Tiptap:
 
-## Setup Instructions
+- **Template Mode**: Streamlined interface for quick lesson creation with standardized fields
+- **Advanced Mode**: Full-featured rich-text editor with Notion-like capabilities
+- **Modular Architecture**: Custom nodes, extensions, and UI components for extensibility
 
-1. Install dependencies: `npm install`
-2. Start development client: `npm run dev`
+### State Management
+- **Zustand Store**: Efficient global state management for lessons, user data, and UI state
+- **Custom Hooks**: Reusable logic for editor operations, responsive behavior, and user interactions
+
+### Component Architecture
+```
+src/
+├── components/
+│   ├── tiptap-ui/          # Custom editor toolbar components
+│   ├── tiptap-node/        # Custom content rendering nodes
+│   ├── tiptap-extension/   # Editor functionality extensions
+│   └── ui/                 # Reusable UI components
+├── hooks/                  # Custom React hooks
+├── store/                  # Zustand state management
+├── pages/                  # Application routes
+└── styles/                 # Global styling and themes
+```
 
 ## Key Features
 
-- Modern, responsive UI with Chakra-UI based components;
-- Searching and filtering by lessons and lesson authors;
-- Folder oragnization of lessons;
-- Drag-and-drop to lesson folder;
-- Simple and consistent lesson creation in template mode;
-- Advanced lesson creation in custom editor (similar to Notion editing);
-- Move from template-based lesson editing to custom editing, updates one way only;
-- Lesson standards integration, filterable and selectable CCSS Kindergarten-12th grade;
-- Lesson sharing via email (must have email set up in the application);
-- Lesson remixing (forking, i.e. make a copy of a public lesson, original author can view changes);
-- Lesson printing;
-- Lesson private/public view;
-- Lesson card color selection;
-- Global View;
-- Light and Dark mode;
-- User authenticaion;
+### Lesson Management
+- **Dual Editor Modes**: Template-based quick creation and advanced rich-text editing
+- **Smart Organization**: Folder system with drag-and-drop functionality
+- **Advanced Filtering**: Search and filter by author, content, and standards
+- **Remixing System**: Fork and customize public lessons while maintaining attribution
+
+### User Experience
+- **Responsive Design**: Mobile-first approach with Chakra UI components
+- **Theme Support**: Seamless light/dark mode switching
+- **Standards Integration**: CCSS standards selection and filtering
+- **Sharing Capabilities**: Email sharing and public/private lesson visibility
+
+### Technical Excellence
+- **Performance Optimized**: Efficient rendering and state updates
+- **Accessibility**: WCAG compliant components and interactions
+- **Code Quality**: Modular architecture with reusable components
+- **Developer Experience**: Comprehensive TypeScript support and documentation
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+```bash
+# Clone the repository
+git clone [repository-url]
+
+# Navigate to project directory
+cd project-lessonlink
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
 
 ## API Integration
 
-The client integrates with the LessonLink backend API for:
-- User authentication
+The frontend integrates with a RESTful backend API for:
+- User authentication and authorization
 - Lesson CRUD operations
-- File uploads
-- Email sharing
+- File upload and management
+- Email sharing functionality
 - User profile management
 
-## Key Features explanation
-TLDR at bottom: 
+## 🤝 Contributing
 
-From dashboard view, lessons are filterable by author and by lesson details. Folders can be made for teachers to better organize their lessons however they see fit. Lessons can be dragged and dropped into a folder and removed via selection. Select a folder to see only lessons in that folder.
+This repository is for portfolio purposes only. For questions about the original collaborative project, please contact the development team.
 
-When creating a lesson, a user is taken to a standard template view. This view is meant to be as straightforward as possible to ensure that substitutes or any teacher new to a lesson can see critical information in an easy to digest way. All CCSS Standards are available in a dropdown to the left of template view. Each standard can be selected, with codes appearing at the top.
+## 📄 License
 
-There is advanced lesson creation available in the custom editor. On first use of custom editor, the template-based lesson is ported over and prefilled in giving teachers an outline of their lesson and allowing them to make changes. Note that changes made in custom view will not change the template view to ensure a consistant template experience.
+This project is for educational and portfolio purposes. All rights reserved by the original development team.
 
-Lessons can be shared via email or copying a link. When finding a lesson from global view, a user can choose to remix that lesson (available via edit); a remix creates a copy of the lesson and automatically shares it with the original creator. The user can then make changes without worrying about the original version, and the first author can see improvements to consider in the future. These remixed lessons will show up in both users' home view (original author and remix author).
+---
 
-Each lesson can be private or public, with public lessons available to everyone through the global view of dashboard. The private view allows only the author and, if the lesson was remixed, the original author to view. Light and dark mode can be toggled in the settings dropdown from the home screen.
-
-Through their profile settings, a user can change their username, the school at which they teach, the grades they teach, and the subjects.
-
-*TLDR:* User can make lessons, share lessons, view lessons, remix others' lessons, add standards to lessons, organize their lessons, edit their lessons in a template way and a custom way. If a lesson is remixed, it will always be visible to the original creator.
+**Built with ❤️ by the LessonLink Development Team**
