@@ -120,14 +120,10 @@ The frontend integrates with a RESTful backend API for:
 - Email sharing functionality
 - User profile management
 
-## 🤝 Contributing
+## Contributing
 
 This repository is for portfolio purposes only. For questions about the original collaborative project, please contact the development team.
 
-## 📄 License
+## License
 
 This project is for educational and portfolio purposes. All rights reserved by the original development team.
-
----
-
-**Built with ❤️ by the LessonLink Development Team**
